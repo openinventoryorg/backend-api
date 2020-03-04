@@ -1,4 +1,5 @@
 const express = require('express');
+const { sendErrorMessage } = require('./api/middlewares/error_handler');
 require('./config');
 
 const app = express();
@@ -14,5 +15,8 @@ require('./models').catch(() => logger.error('Application faced database connect
 
 // Configure API middlewares
 require('./api').defineEndPoints(app);
+
+// Error handling middleware
+app.use(sendErrorMessage);
 
 app.listen(process.env.PORT, () => logger.info(`Server started on port ${process.env.PORT}`));

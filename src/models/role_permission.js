@@ -1,3 +1,5 @@
+const { permissions } = require('./permissions');
+
 module.exports = (sequelize, DataTypes) => {
     const RolePermission = sequelize.define('RolePermission', {
         roleId: {
@@ -6,9 +8,8 @@ module.exports = (sequelize, DataTypes) => {
             references: { model: 'Role', key: 'id' },
         },
         permissionId: {
-            type: DataTypes.STRING(31),
+            type: DataTypes.ENUM(permissions),
             primaryKey: true,
-            references: { model: 'Permission', key: 'id' },
         },
     });
 

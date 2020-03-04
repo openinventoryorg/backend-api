@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 const logger = require('../loaders/logger');
 const UserSchema = require('./user');
 const RoleSchema = require('./role');
-const PermissionSchema = require('./permission');
 const LabSchema = require('./lab');
 const ItemSetSchema = require('./item_set');
 const AttributeSchema = require('./attribute');
@@ -34,7 +33,6 @@ async function initialize() {
         sequelize,
         User: UserSchema(sequelize, Sequelize),
         Role: RoleSchema(sequelize, Sequelize),
-        Permission: PermissionSchema(sequelize, Sequelize),
         Lab: LabSchema(sequelize, Sequelize),
         ItemSet: ItemSetSchema(sequelize, Sequelize),
         Attribute: AttributeSchema(sequelize, Sequelize),

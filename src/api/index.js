@@ -1,7 +1,7 @@
-const userRoutes = require('./routes/user');
+const registrarRoutes = require('./routes/registrar');
 
 const defineEndPoints = (app) => {
-    app.use('/api/user', userRoutes);
+    app.use('/api/registrar', registrarRoutes);
 };
 
 module.exports = { defineEndPoints };

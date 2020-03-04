@@ -19,6 +19,6 @@ module.exports = {
     rules: {
         'no-console': 'off',
         "indent": ["error", 4],
-        "linebreak-style": 0
+        "linebreak-style": 0,
     },
 };
