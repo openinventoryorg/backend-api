@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const RegistrarService = require('../../services/registrar');
-const ListService = require('../../services/list');
+const RegistrarService = require('../services/registrar');
+const ListService = require('../services/list');
 const { RegistrationTokenGenerationRequest, EmailBasedRequest } = require('./validators/registrar');
 
 router.put('/token', async (req, res, next) => {

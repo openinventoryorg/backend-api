@@ -12,8 +12,8 @@ class RegistrationService {
         const existingToken = await database.RegistrationToken
             .findOne({
                 where: { token, valid: true },
-                // attributes: ['email', 'assignedRoleId'],
-                include: [{ model: database.Role }],
+                attributes: ['email', ['assignedRoleId', 'roleId']],
+                include: [{ model: database.Role, attributes: ['name'] }],
             });
         if (!existingToken) {
             throw new Errors.BadRequest('Invalid token');

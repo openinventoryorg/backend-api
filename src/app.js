@@ -1,5 +1,5 @@
 const express = require('express');
-const { sendErrorMessage } = require('./api/middlewares/error_handler');
+const { sendErrorMessage } = require('./middlewares/error_handler');
 require('./config');
 
 const app = express();
@@ -14,7 +14,7 @@ const logger = require('./loaders/logger');
 require('./models').catch(() => logger.error('Application faced database connection issues'));
 
 // Configure API middlewares
-require('./api').defineEndPoints(app);
+require('./routes').defineEndPoints(app);
 
 // Error handling middleware
 app.use(sendErrorMessage);

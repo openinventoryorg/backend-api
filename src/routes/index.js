@@ -1,5 +1,5 @@
-const registrarRoutes = require('./routes/registrar');
-const registrationRoutes = require('./routes/registration');
+const registrarRoutes = require('./registrar');
+const registrationRoutes = require('./registration');
 
 const defineEndPoints = (app) => {
     app.use('/api/registration', registrationRoutes);

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const RegistrationService = require('../../services/registration');
+const RegistrationService = require('../services/registration');
 const { RegistrationTokenQuery } = require('./validators/registration');
 
 router.get('/verify', async (req, res, next) => {
