@@ -1,9 +1,9 @@
 const registrarRoutes = require('./routes/registrar');
-const listRoutes = require('./routes/list');
+const registrationRoutes = require('./routes/registration');
 
 const defineEndPoints = (app) => {
+    app.use('/api/registration', registrationRoutes);
     app.use('/api/registrar', registrarRoutes);
-    app.use('/api/list', listRoutes);
 };
 
 module.exports = { defineEndPoints };

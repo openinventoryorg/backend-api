@@ -12,8 +12,9 @@ module.exports = (sequelize, DataTypes) => {
             references: { model: 'Role', key: 'id' },
         },
         token: {
-            type: DataTypes.STRING(1023),
+            type: DataTypes.CHAR(96),
             allowNull: false,
+            unique: 'registration_token',
         },
         valid: {
             type: DataTypes.BOOLEAN,

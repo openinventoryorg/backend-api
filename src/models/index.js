@@ -1,18 +1,19 @@
 const Sequelize = require('sequelize');
 const logger = require('../loaders/logger');
-const UserSchema = require('./user');
-const RoleSchema = require('./role');
-const LabSchema = require('./lab');
-const ItemSetSchema = require('./item_set');
-const AttributeSchema = require('./attribute');
-const ItemSchema = require('./item');
-const ItemAttributeSchema = require('./item_attribute');
-const SupervisorSchema = require('./supervisor');
-const RequestSchema = require('./request');
-const RequestItemSchema = require('./request_item');
-const RegistrationTokenSchema = require('./registration_token');
-const RolePermissionSchema = require('./role_permission');
-const LabAssignSchema = require('./lab_assign');
+const Relations = require('./relations');
+const UserSchema = require('./schema/user');
+const RoleSchema = require('./schema/role');
+const LabSchema = require('./schema/lab');
+const ItemSetSchema = require('./schema/item_set');
+const AttributeSchema = require('./schema/attribute');
+const ItemSchema = require('./schema/item');
+const ItemAttributeSchema = require('./schema/item_attribute');
+const SupervisorSchema = require('./schema/supervisor');
+const RequestSchema = require('./schema/request');
+const RequestItemSchema = require('./schema/request_item');
+const RegistrationTokenSchema = require('./schema/registration_token');
+const RolePermissionSchema = require('./schema/role_permission');
+const LabAssignSchema = require('./schema/lab_assign');
 
 async function initialize() {
     // Default global settings for database models
@@ -45,6 +46,8 @@ async function initialize() {
         RolePermission: RolePermissionSchema(sequelize, Sequelize),
         LabAssign: LabAssignSchema(sequelize, Sequelize),
     };
+
+    Relations(db);
 
     try {
         // Connect to database

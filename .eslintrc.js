@@ -20,5 +20,6 @@ module.exports = {
         'no-console': 'off',
         "indent": ["error", 4],
         "linebreak-style": 0,
+        'no-continue': 'off'
     },
 };
