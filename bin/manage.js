@@ -17,13 +17,13 @@ async function main() {
             // Student Role
             await database.Role.create({
                 id: studentRoleId,
-                name: database.Permission.Requester,
+                name: 'Student',
             });
 
             // Administrator Role
             await database.Role.create({
                 id: adminRoleId,
-                name: database.Permission.Administrator,
+                name: 'Administrator',
             });
 
             // Permissions of student

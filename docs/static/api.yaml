@@ -13,7 +13,7 @@ servers:
 paths:
   /api/registrar/token:
     put:
-      summary: Request to generate an invite token for a email address
+      summary: Manage invite token for an email
       responses:
         '200':
           description: OK
@@ -23,6 +23,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: '"role" must be a valid GUID'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: Insufficient permissions
       operationId: get-api-registrar-token-generate
       description: |-
         Theis sends a request to generate a token for a specified address to create new account on the provided role. If the account is already created or if there is an already pending invite, this will also send an error status.
@@ -38,7 +52,11 @@ paths:
               properties:
                 requests:
                   $ref: '#/components/schemas/Registration-Role-Assign'
-            examples: {}
+            examples:
+              example:
+                value:
+                  email: user@gmail.com
+                  role: 42647147-69d2-4c2b-8c3b-d3cc30dfdd97
         description: ''
       tags:
         - registrar
@@ -57,6 +75,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: User user@gmail.com is not sent an invitation link or ther user has created a account.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: Insufficient permissions
       description: |-
         Theis sends a request to delete a token for a specified address. If the account is already created or if there isn't an already pending invite, this will also send an error status.
 
@@ -66,10 +98,27 @@ paths:
         - registrar
       security:
         - token: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+            examples:
+              example:
+                value:
+                  email: gayal@gmail.com
+        description: ''
   /api/registrar/roles:
     get:
       summary: List all available roles
-      tags: []
+      tags:
+        - registrar
       responses:
         '200':
           description: OK
@@ -82,6 +131,24 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Role'
+              examples:
+                example:
+                  value:
+                    roles:
+                      - id: 375840ad-2df8-45c9-aff7-eea54371487c
+                        name: REQUESTER
+                      - id: 40d1d03b-8305-45c3-ab9c-4d6c56022976
+                        name: ADMINISTRATOR
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: Insufficient permissions
       operationId: get-api-list-roles
       description: |-
         List all the roles
@@ -93,7 +160,8 @@ paths:
   /api/registration/verify:
     get:
       summary: Verify Registration Token
-      tags: []
+      tags:
+        - none
       responses:
         '200':
           description: OK
@@ -125,21 +193,22 @@ paths:
               examples:
                 example:
                   value:
-                    email: kdsuneraavinash@gmail.com
-                    roleId: 42647147-69d2-4c2b-8c3b-d3cc30dfdd97
+                    email: admin@admin.com
+                    roleId: beb4667e-20a5-4bc9-b2f5-5c9d1df1be55
                     Role:
-                      name: Student
+                      name: Administrator
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: Invalid token
       operationId: get-api-registration-verify
-      description: |-
-        Verify whether the registration token is valid. If valid returns email and assigned role.
-
-        > Required Permission Level: ANY/NONE
+      description: Verify whether the registration token is valid. If valid returns email and assigned role.
       requestBody:
         content:
           application/json:
@@ -154,15 +223,22 @@ paths:
             examples: {}
   /api/registration/register:
     post:
-      summary: ''
+      summary: Register an account
       operationId: post-api-registration-register
       responses:
         '200':
           description: OK
-      description: |-
-        Registers a user using the given token and details
-
-        > Required Permission Level: ANY/NONE
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: '"firstName" is required'
+      description: Registers a user using the given token and details
       requestBody:
         content:
           application/json:
@@ -182,6 +258,68 @@ paths:
                 - firstName
                 - lastName
                 - password
+            examples:
+              example:
+                value:
+                  token: pS_xf6FnP8T53sdX4Gw-J7s9.QfOlswnII9zfpIZAOqRj5bLXTI~kMsUe6yDH0JDnXzNTIDJJsQFscmAmDrGotie5G3I9Q_X
+                  firstName: Demo
+                  lastName: User
+                  password: password
+        description: ''
+      tags:
+        - none
+  /api/login:
+    post:
+      summary: Login using credentials
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT Token for the user
+                required:
+                  - token
+              examples:
+                example:
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiMzNkN2MxLTdhZWEtNGQxMC1iOTM3LWJiODc5NTgwZTdkMiIsImZpcnN0TmFtZSI6IkRlbW8iLCJsYXN0TmFtZSI6IlVzZXIiLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInBlcm1pc3Npb25zIjpbIkFETUlOSVNUUkFUT1IiXSwicm9sZSI6IkFkbWluaXN0cmF0b3IiLCJyb2xlSWQiOiJiZWI0NjY3ZS0yMGE1LTRiYzktYjJmNS01YzlkMWRmMWJlNTUiLCJpYXQiOjE1ODM0NTE5NDd9.tHNhRHUpu9GxKN9jLrV1ZzNaU4kfUnU8fVDOZanqeCI
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: "Email isn't registered in the system"
+      operationId: get-api-login
+      description: Login a user using email and password.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+                - email
+                - password
+            examples:
+              example:
+                value:
+                  email: admin@admin.com
+                  password: password
         description: ''
 components:
   schemas:
@@ -232,12 +370,16 @@ components:
           type: string
         name:
           type: string
+      required:
+        - id
+        - name
   securitySchemes:
     token:
-      name: JWT Token
+      name: token
       type: apiKey
       in: header
       description: JWT Token for the user
 tags:
   - name: registrar
   - name: error
+  - name: none
