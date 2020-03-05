@@ -1,11 +1,13 @@
 const Errors = require('../helpers/errors');
 
 // eslint-disable-next-line no-unused-vars
-const sendErrorMessage = (err, req, res, next) => {
+const errorHandlerMiddleware = (err, req, res, next) => {
     if (err instanceof Errors.BadRequest) {
         res.status(400).send({ message: err.message });
-    } else if (err instanceof Errors.Forbidden) {
+    } else if (err instanceof Errors.Unauthorized) {
         res.status(401).send({ message: err.message });
+    } else if (err instanceof Errors.Forbidden) {
+        res.status(403).send({ message: err.message });
     } else if (err instanceof Errors.NotFound) {
         res.status(404).send({ message: err.message });
     } else if (err instanceof Errors.UnprocessableEntity) {
@@ -15,4 +17,4 @@ const sendErrorMessage = (err, req, res, next) => {
     }
 };
 
-module.exports = { sendErrorMessage };
+module.exports = { errorHandlerMiddleware };

@@ -1,6 +1,6 @@
 const express = require('express');
-const { sendErrorMessage } = require('./middlewares/error_handler');
-const { jwtAuth } = require('./middlewares/authentication/jwt_auth');
+const { errorHandlerMiddleware } = require('./middlewares/error_handler');
+const { jwtAuthMiddleware } = require('./middlewares/jwt_auth');
 
 const app = express();
 
@@ -14,12 +14,12 @@ const logger = require('./loaders/logger');
 require('./models').catch(() => logger.error('Application faced database connection issues'));
 
 // Authentication Layer
-app.use(jwtAuth);
+app.use(jwtAuthMiddleware);
 
 // Configure API middlewares
 require('./routes').defineEndPoints(app);
 
 // Error handling middleware
-app.use(sendErrorMessage);
+app.use(errorHandlerMiddleware);
 
 app.listen(process.env.PORT, () => logger.info(`Server started on port ${process.env.PORT}`));
