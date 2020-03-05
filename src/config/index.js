@@ -12,6 +12,7 @@ module.exports = {
     port: parseInt(process.env.PORT, 3000),
     databaseURL: process.env.DATABASE_URL,
     jwtSecret: process.env.JWT_SECRET,
+    saltRounds: parseInt(process.env.SALT_ROUNDS, 10),
     logs: {
         level: process.env.LOG_LEVEL || 'silly',
     },

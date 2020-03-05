@@ -14,3 +14,4 @@ module.exports = ListService;
 
 // await database.Role.create({ id: 'UUID4', name: 'Student' });
 // await database.Role.create({ id: 'UUID4', name: 'Administrator' });
+// await database.RolePermission.create({ permissionId: 'REQUESTER', roleId: 'STUDENT_ROLE_ID' });
