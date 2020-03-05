@@ -58,10 +58,10 @@ paths:
                   email: user@gmail.com
                   role: 42647147-69d2-4c2b-8c3b-d3cc30dfdd97
         description: ''
-      tags:
-        - registrar
       security:
         - token: []
+      tags:
+        - Registrar
     parameters: []
     delete:
       summary: ''
@@ -94,8 +94,6 @@ paths:
 
 
         > Required Permission Level: REGISTRAR
-      tags:
-        - registrar
       security:
         - token: []
       requestBody:
@@ -114,11 +112,11 @@ paths:
                 value:
                   email: gayal@gmail.com
         description: ''
+      tags:
+        - Registrar
   /api/registrar/roles:
     get:
       summary: List all available roles
-      tags:
-        - registrar
       responses:
         '200':
           description: OK
@@ -156,12 +154,12 @@ paths:
         > Required Permission Level: REGISTRAR
       security:
         - token: []
+      tags:
+        - Registrar
     parameters: []
   /api/registration/verify:
     get:
       summary: Verify Registration Token
-      tags:
-        - none
       responses:
         '200':
           description: OK
@@ -221,6 +219,8 @@ paths:
               required:
                 - token
             examples: {}
+      tags:
+        - Registration
   /api/registration/register:
     post:
       summary: Register an account
@@ -267,11 +267,12 @@ paths:
                   password: password
         description: ''
       tags:
-        - none
+        - Registration
   /api/login:
     post:
       summary: Login using credentials
-      tags: []
+      tags:
+        - Login
       responses:
         '200':
           description: OK
@@ -344,8 +345,6 @@ components:
       required:
         - email
         - role
-      x-tags:
-        - registrar
     Error:
       title: Error
       type: object
@@ -360,8 +359,6 @@ components:
           value:
             message: Invalid details provided. Verification failed.
       description: ''
-      x-tags:
-        - error
     Role:
       title: Role
       type: object
@@ -380,6 +377,6 @@ components:
       in: header
       description: JWT Token for the user
 tags:
-  - name: registrar
-  - name: error
-  - name: none
+  - name: Registration
+  - name: Login
+  - name: Registrar
