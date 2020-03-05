@@ -1,0 +1,243 @@
+openapi: 3.0.0
+info:
+  title: SmartLab API v0.0.1
+  version: '1.0'
+  description: This is the api endpoint documentation for startLAB project - a inventory management application created specifically for computer labs.
+  license:
+    name: MIT
+  contact:
+    name: kdsuneraavinash
+    email: kdsuneraavinash@gmail.com
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /api/registrar/token:
+    put:
+      summary: Request to generate an invite token for a email address
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-api-registrar-token-generate
+      description: |-
+        Theis sends a request to generate a token for a specified address to create new account on the provided role. If the account is already created or if there is an already pending invite, this will also send an error status.
+
+
+        > Required Permission Level: REGISTRAR
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requests:
+                  $ref: '#/components/schemas/Registration-Role-Assign'
+            examples: {}
+        description: ''
+      tags:
+        - registrar
+      security:
+        - token: []
+    parameters: []
+    delete:
+      summary: ''
+      operationId: delete-api-registrar-token
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: |-
+        Theis sends a request to delete a token for a specified address. If the account is already created or if there isn't an already pending invite, this will also send an error status.
+
+
+        > Required Permission Level: REGISTRAR
+      tags:
+        - registrar
+      security:
+        - token: []
+  /api/registrar/roles:
+    get:
+      summary: List all available roles
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Role'
+      operationId: get-api-list-roles
+      description: |-
+        List all the roles
+
+        > Required Permission Level: REGISTRAR
+      security:
+        - token: []
+    parameters: []
+  /api/registration/verify:
+    get:
+      summary: Verify Registration Token
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: Email Address of the token owner
+                    format: email
+                  roleId:
+                    type: string
+                    description: Role Id of the token owner
+                    format: uuid
+                  Role:
+                    type: object
+                    required:
+                      - name
+                    properties:
+                      name:
+                        type: string
+                        description: Role name of the given token
+                required:
+                  - email
+                  - roleId
+                  - Role
+              examples:
+                example:
+                  value:
+                    email: kdsuneraavinash@gmail.com
+                    roleId: 42647147-69d2-4c2b-8c3b-d3cc30dfdd97
+                    Role:
+                      name: Student
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-api-registration-verify
+      description: |-
+        Verify whether the registration token is valid. If valid returns email and assigned role.
+
+        > Required Permission Level: ANY/NONE
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Registration token of the user
+              required:
+                - token
+            examples: {}
+  /api/registration/register:
+    post:
+      summary: ''
+      operationId: post-api-registration-register
+      responses:
+        '200':
+          description: OK
+      description: |-
+        Registers a user using the given token and details
+
+        > Required Permission Level: ANY/NONE
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                password:
+                  type: string
+              required:
+                - token
+                - firstName
+                - lastName
+                - password
+        description: ''
+components:
+  schemas:
+    Registration-Role-Assign:
+      title: Registration Token Generation Request
+      type: object
+      x-examples:
+        example:
+          value:
+            email: kdsuneraavinash@gmail.com
+            role: 776ef843-eb7f-4702-b572-23ef556b8d37
+      description: ''
+      properties:
+        email:
+          type: string
+          description: Email address to be sent the registration token
+          format: email
+        role:
+          type: string
+          description: Initial role for the account created by email address
+          format: uuid
+      required:
+        - email
+        - role
+      x-tags:
+        - registrar
+    Error:
+      title: Error
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error Message
+      required:
+        - message
+      x-examples:
+        example:
+          value:
+            message: Invalid details provided. Verification failed.
+      description: ''
+      x-tags:
+        - error
+    Role:
+      title: Role
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+  securitySchemes:
+    token:
+      name: JWT Token
+      type: apiKey
+      in: header
+      description: JWT Token for the user
+tags:
+  - name: registrar
+  - name: error
