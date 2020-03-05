@@ -14,6 +14,7 @@ const RequestItemSchema = require('./schema/request_item');
 const RegistrationTokenSchema = require('./schema/registration_token');
 const RolePermissionSchema = require('./schema/role_permission');
 const LabAssignSchema = require('./schema/lab_assign');
+const PermissionsSchema = require('./schema/permissions');
 
 async function initialize() {
     // Default global settings for database models
@@ -45,6 +46,7 @@ async function initialize() {
         RegistrationToken: RegistrationTokenSchema(sequelize, Sequelize),
         RolePermission: RolePermissionSchema(sequelize, Sequelize),
         LabAssign: LabAssignSchema(sequelize, Sequelize),
+        Permission: PermissionsSchema,
     };
 
     Relations(db);
