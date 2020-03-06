@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: SmartLab API v0.0.1
-  version: '1.0'
+  title: SmartLab API
+  version: 0.0.1
   description: This is the api endpoint documentation for startLAB project - a inventory management application created specifically for computer labs.
   license:
     name: MIT
@@ -13,7 +13,7 @@ servers:
 paths:
   /api/registrar/token:
     put:
-      summary: Manage invite token for an email
+      summary: Create invite token for an email
       responses:
         '200':
           description: OK
@@ -64,7 +64,7 @@ paths:
         - Registrar
     parameters: []
     delete:
-      summary: ''
+      summary: Delete invite token for an email
       operationId: delete-api-registrar-token
       responses:
         '200':
