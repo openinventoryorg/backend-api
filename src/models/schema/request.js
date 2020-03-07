@@ -21,39 +21,39 @@ module.exports = (sequelize, DataTypes) => {
         },
         reason: { type: DataTypes.TEXT },
         declineReason: {
-             type: DataTypes.TEXT, 
+            type: DataTypes.TEXT,
             Validation: {
-                declineReasonValidation: function(status){
-                    let nNullList = ['DECLINED', 'INVALIDATED']
-                    let nullList = ['REQUESTED', 'ACCEPTED']
+                declineReasonValidation(status) {
+                    const nNullList = ['DECLINED', 'INVALIDATED'];
+                    const nullList = ['REQUESTED', 'ACCEPTED'];
 
-                    nNullList.forEach(function(item, index, array) {
-                        if(status.type === item && declineReason === null) throw new Error("Decline Reason Validation Error!")
-                      })
+                    nNullList.forEach((item) => {
+                        if (status.type === item && this.declineReason === null) throw new Error('Decline Reason Validation Error!');
+                    });
 
-                    nullList.forEach(function(item, index, array) {
-                        if(status.type === item && returnedDate !== null) throw new Error("Decline Reason Validation Error!")
-                      })
-                }
-            }
+                    nullList.forEach((item) => {
+                        if (status.type === item && this.returnedDate !== null) throw new Error('Decline Reason Validation Error!');
+                    });
+                },
             },
+        },
         supervisorToken: {
             type: DataTypes.UUID,
             unique: 'supervisor_token',
             Validation: {
-                supervisorTokenValidation: function(status){
-                    let nNullList = ['REQUESTED','ACCEPTED']
-                    let nullList = [ 'DECLINED', 'INVALIDATED']
+                supervisorTokenValidation(status) {
+                    const nNullList = ['REQUESTED', 'ACCEPTED'];
+                    const nullList = ['DECLINED', 'INVALIDATED'];
 
-                    nNullList.forEach(function(item, index, array) {
-                        if(status.type === item && supervisorToken === null) throw new Error("Supervisor Token Validation Error!")
-                      })
+                    nNullList.forEach((item) => {
+                        if (status.type === item && this.supervisorToken === null) throw new Error('Supervisor Token Validation Error!');
+                    });
 
-                    nullList.forEach(function(item, index, array) {
-                        if(status.type === item && supervisorToken !== null) throw new Error("Supervisor Token Validation Error!")
-                      })
-                }
-            }
+                    nullList.forEach((item) => {
+                        if (status.type === item && this.supervisorToken !== null) throw new Error('Supervisor Token Validation Error!');
+                    });
+                },
+            },
         },
         status: {
             type: DataTypes.ENUM('REQUESTED', 'ACCEPTED', 'DECLINED', 'INVALIDATED'),

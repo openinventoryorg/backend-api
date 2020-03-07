@@ -10,15 +10,15 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
         },
         // This must be provided if editable is false
-        defaultValue: { 
-            type: DataTypes.TEXT ,
+        defaultValue: {
+            type: DataTypes.TEXT,
             validation: {
-                defaultValueValidation: function(editable){
-                    if(editable === false && defaultValue !== null) throw new Error("defaultValue validation Error")
-                }
-            }
-        
-        
+                defaultValueValidation(editable) {
+                    if (editable === false && this.defaultValue !== null) throw new Error('defaultValue validation Error');
+                },
+            },
+
+
         },
         editable: {
             type: DataTypes.BOOLEAN,

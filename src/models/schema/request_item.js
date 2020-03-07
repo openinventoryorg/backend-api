@@ -10,59 +10,54 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             references: { model: 'Request', key: 'id' },
         },
-        returnedDate: { 
+        returnedDate: {
             type: DataTypes.DATE,
-            Validation:{ 
-                returnedDateValidation: function(status) {
-                    let nNullList = ['PENDING', 'BORROWED', 'REJECTED']
-                    let nullList = ['RETURNED','EXPIRED' ]
-                    nNullList.forEach(function(item, index, array) {
-                        if(status.type === item && returnedDate !== null) throw new Error("Returned Date Validation Error!")
-                      })
+            Validation: {
+                returnedDateValidation(status) {
+                    const nNullList = ['PENDING', 'BORROWED', 'REJECTED'];
+                    const nullList = ['RETURNED', 'EXPIRED'];
+                    nNullList.forEach((item) => {
+                        if (status.type === item && this.returnedDate !== null) throw new Error('Returned Date Validation Error!');
+                    });
 
-                    nullList.forEach(function(item, index, array) {
-                        if(status.type === item && returnedDate === null) throw new Error("Returned Date Validation Error!")
-                      })
-                      
-                }
-            }
-         },
-        dueDate: { 
-            type: DataTypes.DATE, 
-            Validation:{ 
-                dueDateValidation: function(status) {
-
-                    let nNullList = ['PENDING', 'REJECTED']
-                    let nullList = ['RETURNED','BORROWED','EXPIRED' ]
-                    nNullList.forEach(function(item, index, array) {
-                        if(status.type === item && dueDate !== null) throw new Error("Due Date Validation Error!")
-                      })
-
-                    nullList.forEach(function(item, index, array) {
-                        if(status.type === item && dueDate === null) throw new Error("Due Date Validation Error!")
-                      })
-                      
-                }
-            }
+                    nullList.forEach((item) => {
+                        if (status.type === item && this.returnedDate === null) throw new Error('Returned Date Validation Error!');
+                    });
+                },
+            },
         },
-        borrowedDate: { 
+        dueDate: {
             type: DataTypes.DATE,
-            Validation:{ 
-                borrowedDateValidation: function(status) {
-                    
-                    let nNullList = ['PENDING', 'REJECTED']
-                    let nullList = ['RETURNED','BORROWED','EXPIRED' ]
-                    nNullList.forEach(function(item, index, array) {
-                        if(status.type === item && borrowedDate !== null) throw new Error("Borrowed Date Validation Error!")
-                      })
+            Validation: {
+                dueDateValidation(status) {
+                    const nNullList = ['PENDING', 'REJECTED'];
+                    const nullList = ['RETURNED', 'BORROWED', 'EXPIRED'];
+                    nNullList.forEach((item) => {
+                        if (status.type === item && this.dueDate !== null) throw new Error('Due Date Validation Error!');
+                    });
 
-                    nullList.forEach(function(item, index, array) {
-                        if(status.type === item && borrowedDate === null) throw new Error("Borrowed Date Validation Error!")
-                      })
-                    
-                }
-            }
-         },
+                    nullList.forEach((item) => {
+                        if (status.type === item && this.dueDate === null) throw new Error('Due Date Validation Error!');
+                    });
+                },
+            },
+        },
+        borrowedDate: {
+            type: DataTypes.DATE,
+            Validation: {
+                borrowedDateValidation(status) {
+                    const nNullList = ['PENDING', 'REJECTED'];
+                    const nullList = ['RETURNED', 'BORROWED', 'EXPIRED'];
+                    nNullList.forEach((item) => {
+                        if (status.type === item && this.borrowedDate !== null) throw new Error('Borrowed Date Validation Error!');
+                    });
+
+                    nullList.forEach((item) => {
+                        if (status.type === item && this.borrowedDate === null) throw new Error('Borrowed Date Validation Error!');
+                    });
+                },
+            },
+        },
         status: {
             type: DataTypes.ENUM('PENDING', 'BORROWED', 'RETURNED', 'REJECTED', 'EXPIRED'),
             defaultValue: 'PENDING',
