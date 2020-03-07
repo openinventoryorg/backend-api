@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         labId: {
             type: DataTypes.UUID,
             references: { model: 'Lab', key: 'id' },
+            Validation: {
+                labIdValidation(isDraft) {
+                    if (isDraft === false && this.labId !== null) throw new Error('LabId validation failed');
+                },
+            },
         },
         itemSetId: {
             type: DataTypes.UUID,

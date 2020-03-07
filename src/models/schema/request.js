@@ -20,10 +20,40 @@ module.exports = (sequelize, DataTypes) => {
             references: { model: 'Supervisor', key: 'id' },
         },
         reason: { type: DataTypes.TEXT },
-        declineReason: { type: DataTypes.TEXT },
+        declineReason: {
+            type: DataTypes.TEXT,
+            Validation: {
+                declineReasonValidation(status) {
+                    const nNullList = ['DECLINED', 'INVALIDATED'];
+                    const nullList = ['REQUESTED', 'ACCEPTED'];
+
+                    nNullList.forEach((item) => {
+                        if (status.type === item && this.declineReason === null) throw new Error('Decline Reason Validation Error!');
+                    });
+
+                    nullList.forEach((item) => {
+                        if (status.type === item && this.returnedDate !== null) throw new Error('Decline Reason Validation Error!');
+                    });
+                },
+            },
+        },
         supervisorToken: {
             type: DataTypes.UUID,
             unique: 'supervisor_token',
+            Validation: {
+                supervisorTokenValidation(status) {
+                    const nNullList = ['REQUESTED', 'ACCEPTED'];
+                    const nullList = ['DECLINED', 'INVALIDATED'];
+
+                    nNullList.forEach((item) => {
+                        if (status.type === item && this.supervisorToken === null) throw new Error('Supervisor Token Validation Error!');
+                    });
+
+                    nullList.forEach((item) => {
+                        if (status.type === item && this.supervisorToken !== null) throw new Error('Supervisor Token Validation Error!');
+                    });
+                },
+            },
         },
         status: {
             type: DataTypes.ENUM('REQUESTED', 'ACCEPTED', 'DECLINED', 'INVALIDATED'),
