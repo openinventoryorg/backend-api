@@ -46,7 +46,7 @@ class LoginService {
 
         const signedJwt = jwt.sign(userInformation);
 
-        return { token: signedJwt };
+        return { token: signedJwt, user: userInformation };
     }
 }
 

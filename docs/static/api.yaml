@@ -2,15 +2,234 @@ openapi: 3.0.0
 info:
   title: SmartLab API
   version: 0.0.1
-  description: This is the api endpoint documentation for startLAB project - a inventory management application created specifically for computer labs.
+  contact:
+    name: smartlab-technologies
+    email: kdsuneraavinash@gmail.com
   license:
     name: MIT
-  contact:
-    name: kdsuneraavinash
-    email: kdsuneraavinash@gmail.com
+  description: This is the api endpoint documentation for startLAB project - a inventory management application created specifically for computer labs.
 servers:
   - url: 'http://localhost:3000'
 paths:
+  /api/login:
+    post:
+      summary: Login using credentials
+      tags:
+        - Login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT Token for the user
+                  user:
+                    $ref: '#/components/schemas/User'
+                required:
+                  - token
+              examples:
+                example:
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZjMzYzYTBiLTZhNjQtNDY5YS1iMDk4LTkyNTE1NzMzYTE2MyIsImZpcnN0TmFtZSI6IlN1bmVyYSIsImxhc3ROYW1lIjoiQXZpbmFzaCIsImVtYWlsIjoia2RzdW5lcmFhdmluYXNoQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbIlJFUVVFU1RFUiJdLCJyb2xlIjoiU3R1ZGVudCIsInJvbGVJZCI6IjllN2NhYzA5LTJhYjMtNGQ3MC1iYTU4LWZhMTY1ZjhjYjQwMSIsImlhdCI6MTU4MzU5ODY5OX0.zvKDWbLZmxXKzBsvb_JF4pWiJyae15yEtux0pqvkM3g
+                    user:
+                      id: 6c363a0b-6a64-469a-b098-92515733a163
+                      firstName: Sunera
+                      lastName: Avinash
+                      email: kdsuneraavinash@gmail.com
+                      permissions:
+                        - REQUESTER
+                      role: Student
+                      roleId: 9e7cac09-2ab3-4d70-ba58-fa165f8cb401
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: "Email isn't registered in the system"
+      operationId: get-api-login
+      description: Login a user using email and password.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+                - email
+                - password
+            examples:
+              example:
+                value:
+                  email: admin@admin.com
+                  password: password
+        description: ''
+  /api/registration/register:
+    post:
+      summary: Register an account
+      operationId: post-api-registration-register
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: '"firstName" is required'
+      description: Registers a user using the given token and details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                password:
+                  type: string
+              required:
+                - token
+                - firstName
+                - lastName
+                - password
+            examples:
+              example:
+                value:
+                  token: pS_xf6FnP8T53sdX4Gw-J7s9.QfOlswnII9zfpIZAOqRj5bLXTI~kMsUe6yDH0JDnXzNTIDJJsQFscmAmDrGotie5G3I9Q_X
+                  firstName: Demo
+                  lastName: User
+                  password: password
+        description: ''
+      tags:
+        - Registration
+  /api/registration/verify:
+    get:
+      summary: Verify Registration Token
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: Email Address of the token owner
+                    format: email
+                  roleId:
+                    type: string
+                    description: Role Id of the token owner
+                    format: uuid
+                  Role:
+                    type: object
+                    required:
+                      - name
+                    properties:
+                      name:
+                        type: string
+                        description: Role name of the given token
+                required:
+                  - email
+                  - roleId
+                  - Role
+              examples:
+                example:
+                  value:
+                    email: admin@admin.com
+                    roleId: beb4667e-20a5-4bc9-b2f5-5c9d1df1be55
+                    Role:
+                      name: Administrator
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: Invalid token
+      operationId: get-api-registration-verify
+      description: Verify whether the registration token is valid. If valid returns email and assigned role.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Registration token of the user
+              required:
+                - token
+            examples: {}
+      tags:
+        - Registration
+  /api/registrar/roles:
+    get:
+      summary: List all available roles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Role'
+              examples:
+                example:
+                  value:
+                    roles:
+                      - id: 375840ad-2df8-45c9-aff7-eea54371487c
+                        name: REQUESTER
+                      - id: 40d1d03b-8305-45c3-ab9c-4d6c56022976
+                        name: ADMINISTRATOR
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example:
+                  value:
+                    message: Insufficient permissions
+      operationId: get-api-list-roles
+      description: |-
+        List all the roles
+
+        > Required Permission Level: REGISTRAR
+      security:
+        - token: []
+      tags:
+        - Registrar
+    parameters: []
   /api/registrar/token:
     put:
       summary: Create invite token for an email
@@ -114,216 +333,33 @@ paths:
         description: ''
       tags:
         - Registrar
-  /api/registrar/roles:
-    get:
-      summary: List all available roles
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  roles:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Role'
-              examples:
-                example:
-                  value:
-                    roles:
-                      - id: 375840ad-2df8-45c9-aff7-eea54371487c
-                        name: REQUESTER
-                      - id: 40d1d03b-8305-45c3-ab9c-4d6c56022976
-                        name: ADMINISTRATOR
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                example:
-                  value:
-                    message: Insufficient permissions
-      operationId: get-api-list-roles
-      description: |-
-        List all the roles
-
-        > Required Permission Level: REGISTRAR
-      security:
-        - token: []
-      tags:
-        - Registrar
-    parameters: []
-  /api/registration/verify:
-    get:
-      summary: Verify Registration Token
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  email:
-                    type: string
-                    description: Email Address of the token owner
-                    format: email
-                  roleId:
-                    type: string
-                    description: Role Id of the token owner
-                    format: uuid
-                  Role:
-                    type: object
-                    required:
-                      - name
-                    properties:
-                      name:
-                        type: string
-                        description: Role name of the given token
-                required:
-                  - email
-                  - roleId
-                  - Role
-              examples:
-                example:
-                  value:
-                    email: admin@admin.com
-                    roleId: beb4667e-20a5-4bc9-b2f5-5c9d1df1be55
-                    Role:
-                      name: Administrator
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                example:
-                  value:
-                    message: Invalid token
-      operationId: get-api-registration-verify
-      description: Verify whether the registration token is valid. If valid returns email and assigned role.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                  description: Registration token of the user
-              required:
-                - token
-            examples: {}
-      tags:
-        - Registration
-  /api/registration/register:
-    post:
-      summary: Register an account
-      operationId: post-api-registration-register
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                example:
-                  value:
-                    message: '"firstName" is required'
-      description: Registers a user using the given token and details
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                password:
-                  type: string
-              required:
-                - token
-                - firstName
-                - lastName
-                - password
-            examples:
-              example:
-                value:
-                  token: pS_xf6FnP8T53sdX4Gw-J7s9.QfOlswnII9zfpIZAOqRj5bLXTI~kMsUe6yDH0JDnXzNTIDJJsQFscmAmDrGotie5G3I9Q_X
-                  firstName: Demo
-                  lastName: User
-                  password: password
-        description: ''
-      tags:
-        - Registration
-  /api/login:
-    post:
-      summary: Login using credentials
-      tags:
-        - Login
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    description: JWT Token for the user
-                required:
-                  - token
-              examples:
-                example:
-                  value:
-                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiMzNkN2MxLTdhZWEtNGQxMC1iOTM3LWJiODc5NTgwZTdkMiIsImZpcnN0TmFtZSI6IkRlbW8iLCJsYXN0TmFtZSI6IlVzZXIiLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInBlcm1pc3Npb25zIjpbIkFETUlOSVNUUkFUT1IiXSwicm9sZSI6IkFkbWluaXN0cmF0b3IiLCJyb2xlSWQiOiJiZWI0NjY3ZS0yMGE1LTRiYzktYjJmNS01YzlkMWRmMWJlNTUiLCJpYXQiOjE1ODM0NTE5NDd9.tHNhRHUpu9GxKN9jLrV1ZzNaU4kfUnU8fVDOZanqeCI
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                example:
-                  value:
-                    message: "Email isn't registered in the system"
-      operationId: get-api-login
-      description: Login a user using email and password.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-              required:
-                - email
-                - password
-            examples:
-              example:
-                value:
-                  email: admin@admin.com
-                  password: password
-        description: ''
 components:
   schemas:
+    Role:
+      title: Role
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+        - id
+        - name
+    Error:
+      title: Error
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error Message
+      required:
+        - message
+      x-examples:
+        example:
+          value:
+            message: Invalid details provided. Verification failed.
+      description: ''
     Registration-Role-Assign:
       title: Registration Token Generation Request
       type: object
@@ -345,31 +381,37 @@ components:
       required:
         - email
         - role
-    Error:
-      title: Error
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error Message
-      required:
-        - message
-      x-examples:
-        example:
-          value:
-            message: Invalid details provided. Verification failed.
-      description: ''
-    Role:
-      title: Role
+    User:
+      title: User
       type: object
       properties:
         id:
           type: string
-        name:
+          format: uuid
+        firstName:
           type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        permissions:
+          type: array
+          items:
+            type: string
+        role:
+          type: string
+        roleId:
+          type: string
+          format: uuid
       required:
         - id
-        - name
+        - firstName
+        - lastName
+        - email
+        - permissions
+        - role
+        - roleId
   securitySchemes:
     token:
       name: token
