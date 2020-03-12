@@ -15,7 +15,7 @@ class RegistrationController {
      */
     static async Verify(req, res, next) {
         try {
-            const { value, error } = RegistrationTokenQuery.validate(req.body);
+            const { value, error } = RegistrationTokenQuery.validate({ token: req.params.token });
             if (error) throw error;
 
             const registrationToken = await RegistrationService
