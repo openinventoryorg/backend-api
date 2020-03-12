@@ -6,7 +6,7 @@ router.get('/verify', async (req, res, next) => {
     try {
         const { value, error } = RegistrationTokenQuery.validate(req.body);
         if (error) throw error;
-
+        console.log(res);
         const registrationToken = await RegistrationService
             .VerifyRegistrationToken(value.token);
         res.status(200).send(registrationToken);
