@@ -10,6 +10,7 @@ const Errors = require('../helpers/errors');
  * Note: next is required even if it is not used since,
  * Express will identify this as an error handler iff
  * it has 4 parameters listed.
+ * @category Middlewares
  * @param  {any} err Error object
  * @param  {any} req Request object
  * @param  {any} res Response object

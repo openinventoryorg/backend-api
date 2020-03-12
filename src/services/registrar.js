@@ -4,6 +4,8 @@ const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
 /**
  * Service associated with associating a registration token with users
+ * @abstract
+ * @category Services
  */
 class RegistrarService {
     /**

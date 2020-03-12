@@ -1,12 +1,8 @@
 const router = require('express').Router();
+const DemoController = require('../controllers/demo');
+const { permissionMiddleware } = require('../middlewares/permission');
+const permissions = require('../models/schema/permissions');
 
-// Demo request to check if a user is authenticated
-router.get('/', async (req, res, next) => {
-    try {
-        res.status(200).send({ message: 'Congrats, you are registered' });
-    } catch (err) {
-        next(err);
-    }
-});
+router.get('/', permissionMiddleware([permissions.Requester]), DemoController.Demo);
 
 module.exports = router;

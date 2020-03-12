@@ -1,10 +1,12 @@
 const { getDatabase } = require('../helpers/get_database');
 const Errors = require('../helpers/errors');
-const jwt = require('../helpers/jwt');
+const { jwtSign } = require('../helpers/jwt');
 const { checkPassword } = require('../helpers/password');
 
 /**
  * Service associated with logging in the user by generating a token
+ * @abstract
+ * @category Services
  */
 class LoginService {
     /**
@@ -54,7 +56,7 @@ class LoginService {
         userInformation.Role = undefined;
         userInformation.password = undefined;
 
-        const signedJwt = jwt.sign(userInformation);
+        const signedJwt = jwtSign(userInformation);
 
         return { token: signedJwt, user: userInformation };
     }

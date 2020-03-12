@@ -1,9 +1,11 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: services/login.js</title>
 
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -69,8 +71,8 @@
             <div class="column is-9-desktop">
                 <div class="content" id="main-content-wrapper">
                     <header class="page-title">
-                        <p>Title</p>
-                        <h1>Home</h1>
+                        <p>Source</p>
+                        <h1>services/login.js</h1>
                     </header>
                     
                     
@@ -78,71 +80,77 @@
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>SmartLab</h1>
-<h2>Guide 👨‍💻</h2>
-<h3>Database setup</h3>
-<p>Install <a href="https://www.postgresql.org/">postgresql</a> in the local machine and setup correctly. Use following command to login to the <code>psql</code> shell.</p>
-<pre class="prettyprint source lang-bash"><code>psql -U postgres
+        <article>
+            <pre class="prettyprint source linenums"><code>const { getDatabase } = require('../helpers/get_database');
+const Errors = require('../helpers/errors');
+const { jwtSign } = require('../helpers/jwt');
+const { checkPassword } = require('../helpers/password');
+
+/**
+ * Service associated with logging in the user by generating a token
+ * @abstract
+ * @category Services
+ */
+class LoginService {
+    /**
+     * Authenticate and log the user in.
+     *
+     * This gets hashed password by email and
+     * checks if the password match.
+     * If they match, this function would generate and
+     * send the token.
+     * Otherwise an error would be thrown.
+     * @param {string} email Email of the user
+     * @param {string} password Password of the user
+     * @returns {Promise&lt;{token: string, user: any}>} List of roles in the database
+     */
+    static async Login(email, password) {
+        const database = await getDatabase();
+
+        // User matching the given email, also fetch all required fields for token generation
+        const user = await database.User
+            .findOne({
+                where: { email },
+                attributes: ['id', 'firstName', 'lastName', 'email', 'password'],
+                include: [{
+                    model: database.Role,
+                    attributes: ['id', 'name'],
+                    include: [{
+                        model: database.RolePermission,
+                        attributes: [['permissionId', 'name']],
+                    }],
+                }],
+            });
+
+        // Check user existence
+        if (!user) throw new Errors.BadRequest('Email isn\'t registered in the system');
+
+        // Authenticate user password
+        const isValid = await checkPassword(password, user.password);
+        if (!isValid) throw new Errors.BadRequest('Email/Password mismatch');
+
+        // Get a json copy of model and format it to add the fields we need
+        const userInformation = user.toJSON();
+        userInformation.permissions = userInformation.Role.RolePermissions.map((rp) => rp.name);
+        userInformation.role = userInformation.Role.name;
+        userInformation.roleId = userInformation.Role.id;
+
+        // Unbind all unrequired fields
+        userInformation.Role = undefined;
+        userInformation.password = undefined;
+
+        const signedJwt = jwtSign(userInformation);
+
+        return { token: signedJwt, user: userInformation };
+    }
+}
+
+
+module.exports = LoginService;
 </code></pre>
-<p>Then enter below commands.</p>
-<pre class="prettyprint source lang-sql"><code>CREATE ROLE smartlab WITH LOGIN PASSWORD 'password';
-CREATE DATABASE smartlab;
-GRANT ALL PRIVILEGES ON DATABASE smartlab TO smartlab;
-\q
-</code></pre>
-<p>Then you should be able to login to <code>psql</code> as <code>smartlab</code>.</p>
-<pre class="prettyprint source lang-bash"><code>psql -U smartlab smartlab
-</code></pre>
-<h3>Node.js setup</h3>
-<p>Install</p>
-<ul>
-<li><a href="https://nodejs.org/en/">node.js v12.16.1 erbium</a></li>
-<li><a href="https://www.npmjs.com/get-npm">npm</a></li>
-<li><a href="https://www.npmjs.com/package/nodemon">nodemon</a></li>
-</ul>
-<pre class="prettyprint source lang-bash"><code>sudo pacman -S nodejs-lts-erbium
-sudo pacman -S npm
-npm install -g nodemon
-</code></pre>
-<p>After that <code>cd</code> to the project directory and run <code>npm install</code>.</p>
-<pre class="prettyprint source lang-bash"><code>cd directory/project
-npm install
-</code></pre>
-<p>Then create a <code>.env</code> file in the root with following content.
-You may change database user/password/secret as you wish.</p>
-<pre class="prettyprint source"><code>PORT=3000
-NODE_ENV=development
-DATABASE_URL=postgres://smartlab:password@localhost:5432/smartlab
-JWT_SECRET=thisisjwtsecret
-LOG_LEVEL=info
-</code></pre>
-<p>Then use <code>nodemon</code> or <code>node</code> to serve the pages.</p>
-<pre class="prettyprint source lang-bash"><code>nodemon start # If nodemon is installed
-node index.js # otherwise
-</code></pre>
-<p>Now visit http://localhost:3000/ and confirm that site is running.</p></article>
+        </article>
     </section>
-
-
 
 
 

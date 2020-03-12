@@ -12,7 +12,7 @@ const config = require('../config');
  * @param {user} user user information object
  * @returns {string} signed JWT token
  */
-const sign = (user) => jwt.sign(
+const jwtSign = (user) => jwt.sign(
     {
         id: user.id,
         firstName: user.firstName,
@@ -33,6 +33,6 @@ const sign = (user) => jwt.sign(
  * @param {string} token JWT string to verify
  * @returns {user} The decoded token which contains user information.
  */
-const verify = (token) => jwt.verify(token, config.jwtSecret);
+const jwtVerify = (token) => jwt.verify(token, config.jwtSecret);
 
-module.exports = { sign, verify };
+module.exports = { jwtSign, jwtVerify };

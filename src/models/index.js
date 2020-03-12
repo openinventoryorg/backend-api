@@ -21,7 +21,7 @@ const PermissionsSchema = require('./schema/permissions');
  *
  * @returns {Promise<any>} Database object promise
  */
-async function initialize() {
+async function initializeDatabase() {
     // Default global settings for database models
     const databaseOptions = {
         logging: (msg) => logger.debug(msg),
@@ -71,4 +71,4 @@ async function initialize() {
     return db;
 }
 
-module.exports = initialize();
+module.exports = initializeDatabase();

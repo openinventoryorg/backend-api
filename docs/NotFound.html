@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: NotFound</title>
 
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -69,18 +69,54 @@
             <div class="column is-9-desktop">
                 <div class="content" id="main-content-wrapper">
                     <header class="page-title">
-                        <p>Title</p>
-                        <h1>Home</h1>
+                        <p>Class</p>
+                        <h1>NotFound</h1>
                     </header>
                     
                     
 
 
 
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>NotFound<span class="signature">(m)</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class='vertical-section'>
+                <h3 class="title"><span>Constructor</span></h3>
+                <div class="members">
+                    <div class="member">
+
+
+    
+    <h4 class="name" id="NotFound">
+        <a class="href-link" href="#NotFound">#</a>
+        
+        <span class="code-name">
+            
+                new NotFound<span class="signature">(m)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Error class for 404: Not Found
+    </div>
     
 
 
-    <h3> </h3>
 
 
 
@@ -88,61 +124,150 @@
 
 
 
+    <h5>Parameters:</h5>
+    
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        
+<tr class="deep-level-0">
+  
+      <td class="name"><code>m</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Error message</td>
+</tr>
 
 
     
+    </tbody>
+</table>
 
 
 
 
-    <section>
-        <article><h1>SmartLab</h1>
-<h2>Guide 👨‍💻</h2>
-<h3>Database setup</h3>
-<p>Install <a href="https://www.postgresql.org/">postgresql</a> in the local machine and setup correctly. Use following command to login to the <code>psql</code> shell.</p>
-<pre class="prettyprint source lang-bash"><code>psql -U postgres
-</code></pre>
-<p>Then enter below commands.</p>
-<pre class="prettyprint source lang-sql"><code>CREATE ROLE smartlab WITH LOGIN PASSWORD 'password';
-CREATE DATABASE smartlab;
-GRANT ALL PRIVILEGES ON DATABASE smartlab TO smartlab;
-\q
-</code></pre>
-<p>Then you should be able to login to <code>psql</code> as <code>smartlab</code>.</p>
-<pre class="prettyprint source lang-bash"><code>psql -U smartlab smartlab
-</code></pre>
-<h3>Node.js setup</h3>
-<p>Install</p>
-<ul>
-<li><a href="https://nodejs.org/en/">node.js v12.16.1 erbium</a></li>
-<li><a href="https://www.npmjs.com/get-npm">npm</a></li>
-<li><a href="https://www.npmjs.com/package/nodemon">nodemon</a></li>
-</ul>
-<pre class="prettyprint source lang-bash"><code>sudo pacman -S nodejs-lts-erbium
-sudo pacman -S npm
-npm install -g nodemon
-</code></pre>
-<p>After that <code>cd</code> to the project directory and run <code>npm install</code>.</p>
-<pre class="prettyprint source lang-bash"><code>cd directory/project
-npm install
-</code></pre>
-<p>Then create a <code>.env</code> file in the root with following content.
-You may change database user/password/secret as you wish.</p>
-<pre class="prettyprint source"><code>PORT=3000
-NODE_ENV=development
-DATABASE_URL=postgres://smartlab:password@localhost:5432/smartlab
-JWT_SECRET=thisisjwtsecret
-LOG_LEVEL=info
-</code></pre>
-<p>Then use <code>nodemon</code> or <code>node</code> to serve the pages.</p>
-<pre class="prettyprint source lang-bash"><code>nodemon start # If nodemon is installed
-node index.js # otherwise
-</code></pre>
-<p>Now visit http://localhost:3000/ and confirm that site is running.</p></article>
-    </section>
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_errors.js.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_errors.js.html">helpers/errors.js</a>, <a href="helpers_errors.js.html#line70">line 70</a>
+            </span>
+        </p>
+    
+</dl>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+                </div>
+            </div>
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

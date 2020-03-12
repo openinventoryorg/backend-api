@@ -11,6 +11,7 @@ const Errors = require('../helpers/errors');
  * with the list provided as allowed permissions.
  *
  * Unauthenticated users will get a `401` error.
+ * @category Middlewares
  * @param  {string[]} allowedPermissions List of permissions that is allowed to
  * continue in this middleware.
  */

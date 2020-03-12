@@ -4,6 +4,8 @@ const logger = require('../loaders/logger');
 const { hashPassword } = require('../helpers/password');
 /**
  * Service associated with registering the user
+ * @abstract
+ * @category Services
  */
 class RegistrationService {
     /**

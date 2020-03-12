@@ -1,4 +1,4 @@
-const jwt = require('../helpers/jwt');
+const { jwtVerify } = require('../helpers/jwt');
 
 /**
  * Middleware that intercepts the request of a user and
@@ -12,6 +12,7 @@ const jwt = require('../helpers/jwt');
  *
  * This should be added as an middleware
  * before any permission checking middlewares.
+ * @category Middlewares
  * @param  {any} req Request object
  * @param  {any} res Response object
  * @param  {any} next Next callback
@@ -21,7 +22,7 @@ const jwtAuthMiddleware = (req, res, next) => {
     try {
         if (!token) throw Error('JWT Invalid');
         // Will throw an error if verification failed
-        const user = jwt.verify(token);
+        const user = jwtVerify(token);
         req.user = user;
         req.authenticated = true;
     } catch (ignored) {

@@ -2,6 +2,8 @@ const { getDatabase } = require('../helpers/get_database');
 
 /**
  * Service which is associated with listing items.
+ * @abstract
+ * @category Services
  */
 class ListService {
     /**

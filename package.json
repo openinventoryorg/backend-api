@@ -9,6 +9,7 @@
         "lint": "./node_modules/.bin/eslint --ext .js config/ models/ routes/ seeders/ app.js",
         "lint-fix": "./node_modules/.bin/eslint --fix --ext .js config/ models/ routes/ seeders/ app.js",
         "test": "echo \"Error: no test specified\" && exit 1",
+        "generate-docs": "jsdoc -c jsdoc.json",
         "manage": "node bin/manage.js"
     },
     "author": "kdsuneraavinash",
@@ -27,9 +28,11 @@
         "winston": "^3.2.1"
     },
     "devDependencies": {
+        "better-docs": "^1.4.7",
         "eslint": "^6.8.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-plugin-import": "^2.20.1",
+        "jsdoc": "^3.6.3",
         "nodemon": "^2.0.2"
     }
 }
