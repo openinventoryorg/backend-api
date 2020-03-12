@@ -2,8 +2,25 @@ const { getDatabase } = require('../helpers/get_database');
 const { generateSecureToken } = require('../helpers/secure_token');
 const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
-
+/**
+ * Service associated with associating a registration token with users
+ */
 class RegistrarService {
+    /**
+     * Send the registration token via email.
+     *
+     * This checks if the user already has a token,
+     * (There shouldn't - if there is that means either invitation already sent
+     * or user registered) and then sends the token via
+     * email.
+     * When the user registers using the token,
+     * he/she will be given the role specified in role id.
+     *
+     * No user can register without a token.
+     * @param {string} email Email of the user
+     * @param {string} roleId UUID of the role that should be assigned to user
+     * @returns {Promise<any>} Created registration token object
+     */
     static async SendRegistrationToken(email, roleId) {
         const database = await getDatabase();
         const token = generateSecureToken(96);
@@ -37,6 +54,14 @@ class RegistrarService {
         return registrationToken;
     }
 
+    /**
+     * Delete the registration token.
+     *
+     * This checks if the user already has a token,
+     * and whether it is valid.
+     * Otherwise deletion will fail.
+     * @param {string} email Email of the user
+     */
     static async DeleteRegistrationToken(email) {
         const database = await getDatabase();
 
@@ -48,7 +73,7 @@ class RegistrarService {
             .findOne({ where: { email, valid: true } });
         if (!existingActiveToken) {
             throw new Errors
-                .BadRequest(`User ${email} is not sent an invitation link or ther user has created a account.`);
+                .BadRequest(`User ${email} is not sent an invitation link or the user has created an account.`);
         }
 
         try {

@@ -2,6 +2,7 @@ const express = require('express');
 const { errorHandlerMiddleware } = require('./middlewares/error_handler');
 const { jwtAuthMiddleware } = require('./middlewares/jwt_auth');
 
+// Node express application
 const app = express();
 
 // Add body json parsing middleware
@@ -22,4 +23,5 @@ require('./routes').defineEndPoints(app);
 // Error handling middleware
 app.use(errorHandlerMiddleware);
 
+// Listen to the indicated port
 app.listen(process.env.PORT, () => logger.info(`Server started on port ${process.env.PORT}`));

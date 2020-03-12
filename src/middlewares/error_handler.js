@@ -1,6 +1,20 @@
 const { ValidationError } = require('@hapi/joi');
 const Errors = require('../helpers/errors');
 
+/**
+ * Middleware that intercepts errors and throws the corresponding JSON
+ * response to the client.
+ *
+ * This should be added as the last middleware.
+ *
+ * Note: next is required even if it is not used since,
+ * Express will identify this as an error handler iff
+ * it has 4 parameters listed.
+ * @param  {any} err Error object
+ * @param  {any} req Request object
+ * @param  {any} res Response object
+ * @param  {any} next Next callback
+ */
 // eslint-disable-next-line no-unused-vars
 const errorHandlerMiddleware = (err, req, res, next) => {
     if (err instanceof Errors.BadRequest) {

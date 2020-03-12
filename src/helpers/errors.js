@@ -1,5 +1,10 @@
 /* eslint-disable max-classes-per-file */
 class ExtendableError extends Error {
+    /**
+     * The abstract class for all handled error: 400, 401, 403, 404, 500
+     * @param  {string} message Error message
+     * @constructor
+     */
     constructor(message) {
         if (new.target === ExtendableError) {
             throw new TypeError('Abstract class "ExtendableError" cannot be instantiated directly.');
@@ -11,8 +16,12 @@ class ExtendableError extends Error {
     }
 }
 
-// 400 Bad Request
 class BadRequest extends ExtendableError {
+    /**
+     * Error class for 400: Bad Request
+     * @param  {string} m Error message
+     * @constructor
+     */
     constructor(m) {
         if (arguments.length === 0) {
             super('bad request');
@@ -22,8 +31,12 @@ class BadRequest extends ExtendableError {
     }
 }
 
-// 401 Unauthorized
 class Unauthorized extends ExtendableError {
+    /**
+     * Error class for 401: Unauthorized
+     * @param  {string} m Error message
+     * @constructor
+     */
     constructor(m) {
         if (arguments.length === 0) {
             super('unauthorized');
@@ -33,8 +46,12 @@ class Unauthorized extends ExtendableError {
     }
 }
 
-// 403 Forbidden
 class Forbidden extends ExtendableError {
+    /**
+     * Error class for 403: Forbidden
+     * @param  {string} m Error message
+     * @constructor
+     */
     constructor(m) {
         if (arguments.length === 0) {
             super('forbidden');
@@ -44,8 +61,12 @@ class Forbidden extends ExtendableError {
     }
 }
 
-// 404 Not Found
 class NotFound extends ExtendableError {
+    /**
+     * Error class for 404: Not Found
+     * @param  {string} m Error message
+     * @constructor
+     */
     constructor(m) {
         if (arguments.length === 0) {
             super('not found');
@@ -55,8 +76,12 @@ class NotFound extends ExtendableError {
     }
 }
 
-// 409 Conflict
 class Conflict extends ExtendableError {
+    /**
+     * Error class for 409: Conflict
+     * @param  {string} m Error message
+     * @constructor
+     */
     constructor(m) {
         if (arguments.length === 0) {
             super('conflict');
@@ -66,8 +91,12 @@ class Conflict extends ExtendableError {
     }
 }
 
-// 422 Unprocessable Entity
 class UnprocessableEntity extends ExtendableError {
+    /**
+     * Error class for 422: Unprocessable Entity
+     * @param  {string} m Error message
+     * @constructor
+     */
     constructor(m) {
         if (arguments.length === 0) {
             super('unprocessable entity');
@@ -77,8 +106,12 @@ class UnprocessableEntity extends ExtendableError {
     }
 }
 
-// 500 Internal Server Error
 class InternalServerError extends ExtendableError {
+    /**
+     * Error class for 500: Internal Server Error
+     * @param  {string} m Error message
+     * @constructor
+     */
     constructor(m) {
         if (arguments.length === 0) {
             super('internal server error');

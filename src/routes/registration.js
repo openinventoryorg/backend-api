@@ -2,6 +2,7 @@ const router = require('express').Router();
 const RegistrationService = require('../services/registration');
 const { RegistrationTokenQuery, UserInformation } = require('./validators/registration');
 
+// Uses an email token and returns user details of the associated user
 router.get('/verify', async (req, res, next) => {
     try {
         const { value, error } = RegistrationTokenQuery.validate(req.body);
@@ -15,6 +16,7 @@ router.get('/verify', async (req, res, next) => {
     }
 });
 
+// Registers a user according to a token, name and password
 router.post('/register', async (req, res, next) => {
     try {
         const { value, error } = UserInformation.validate(req.body);

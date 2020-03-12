@@ -3,6 +3,7 @@ const RegistrarService = require('../services/registrar');
 const ListService = require('../services/list');
 const { RegistrationTokenGenerationRequest, EmailBasedRequest } = require('./validators/registrar');
 
+// Creates a email token for the specified user on the given role
 router.put('/token', async (req, res, next) => {
     try {
         const { value, error } = RegistrationTokenGenerationRequest.validate(req.body);
@@ -16,6 +17,7 @@ router.put('/token', async (req, res, next) => {
     }
 });
 
+// Deletes the email token associated with a user
 router.delete('/token', async (req, res, next) => {
     try {
         const { value, error } = EmailBasedRequest.validate(req.body);
@@ -28,6 +30,7 @@ router.delete('/token', async (req, res, next) => {
     }
 });
 
+// Gets a list of roles available in the system
 router.get('/roles', async (req, res, next) => {
     try {
         const roles = await ListService.ListRoles();

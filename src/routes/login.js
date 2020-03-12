@@ -2,6 +2,7 @@ const router = require('express').Router();
 const LoginService = require('../services/login');
 const { LoginInformation } = require('./validators/login');
 
+// Logs a user in and gives the user a token
 router.post('/', async (req, res, next) => {
     try {
         const { value, error } = LoginInformation.validate(req.body);

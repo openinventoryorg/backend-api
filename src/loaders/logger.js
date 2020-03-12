@@ -2,11 +2,14 @@ const winston = require('winston');
 const config = require('../config');
 
 const transports = [];
+
 if (config.env !== 'development') {
+    // Not in development mode - add other transports
     transports.push(
         new winston.transports.Console(),
     );
 } else {
+    // In development mode - verbose logging
     transports.push(
         new winston.transports.Console({
             format: winston.format.combine(
@@ -17,6 +20,10 @@ if (config.env !== 'development') {
     );
 }
 
+
+/**
+ * Logger that will be used to emit error/info messages
+ */
 const logger = winston.createLogger({
     level: config.logs.level,
     levels: winston.config.npm.levels,
