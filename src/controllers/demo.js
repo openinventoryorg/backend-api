@@ -1,3 +1,5 @@
+const { sendMail } = require('../emails');
+
 /**
  * @abstract
  * @category Controllers
@@ -9,9 +11,17 @@ class DemoController {
      * @param {any} res Response
      * @param {any} next Next callback
      */
-    static async Demo(req, res, next) {
+    static async DemoNodeMailer(req, res, next) {
         try {
-            res.status(200).send({ message: 'Congrats, you are registered' });
+            sendMail(
+                {
+                    from: '"Fred Foo 👻" <foo@example.com>',
+                    to: 'kdsuneraavinash@gmail.com',
+                    template: 'mars',
+                    context: { name: 'Elon' },
+                },
+            );
+            res.status(200).send({ message: 'Email sending queued successfully' });
         } catch (err) {
             next(err);
         }

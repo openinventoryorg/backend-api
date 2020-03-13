@@ -18,4 +18,12 @@ module.exports = {
     logs: {
         level: process.env.LOG_LEVEL || 'silly', // The error logging level
     },
+    mail: {
+        // Automated email sender name
+        sender: process.env.MAIL_SENDER || 'noreply@openinventory.org',
+    },
+    site: {
+        // Token verification url: [verifyToken]/TOKEN
+        verifyToken: process.env.SITE_API || 'https://openinventory.org/register',
+    },
 };

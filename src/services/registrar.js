@@ -2,6 +2,9 @@ const { getDatabase } = require('../helpers/get_database');
 const { generateSecureToken } = require('../helpers/secure_token');
 const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
+const { sendMail } = require('../emails');
+const config = require('../config');
+
 /**
  * Service associated with associating a registration token with users
  * @abstract
@@ -46,7 +49,20 @@ class RegistrarService {
             .build({ email, assignedRoleId: roleId, token });
         try {
             await registrationToken.save();
-            // TODO: Send token via email
+
+            // Send the mail to the user
+            sendMail({
+                from: config.mail.sender,
+                to: email,
+                subject: 'Registration Link - Open Inventory',
+                template: 'registration_invite',
+                context: {
+                    email,
+                    link: `${config.site.verifyToken}/${token}`,
+                },
+            });
+
+            // Log the token for now
             logger.info(`Token generated for ${email} on role ${roleId} - ${token}`);
         } catch (err) {
             logger.error('Error while saving registration token: ', err);

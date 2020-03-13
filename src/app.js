@@ -17,6 +17,9 @@ require('./models').catch(() => logger.error('Application faced database connect
 // Authentication Layer
 app.use(jwtAuthMiddleware);
 
+// Initialize email sending service
+require('./emails');
+
 // Configure API middlewares
 require('./routes').defineEndPoints(app);
 
