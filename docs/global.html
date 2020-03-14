@@ -62,7 +62,7 @@
             <div class="column is-3" id="sidebarNav">
                 <div class="sidebar">
                     <nav>
-                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="BadRequest.html">BadRequest</a></li><li><a href="Conflict.html">Conflict</a></li><li><a href="ExtendableError.html">ExtendableError</a></li><li><a href="Forbidden.html">Forbidden</a></li><li><a href="InternalServerError.html">InternalServerError</a></li><li><a href="NotFound.html">NotFound</a></li><li><a href="Unauthorized.html">Unauthorized</a></li><li><a href="UnprocessableEntity.html">UnprocessableEntity</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkPassword">checkPassword</a></li><li><a href="global.html#generateSecureToken">generateSecureToken</a></li><li><a href="global.html#getDatabase">getDatabase</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#initializeDatabase">initializeDatabase</a></li><li><a href="global.html#jwtSign">jwtSign</a></li><li><a href="global.html#jwtVerify">jwtVerify</a></li><li><a href="global.html#logger">logger</a></li></ul></div><div class="category"><h2>Controllers</h2><h3>Classes</h3><ul><li><a href="DemoController.html">DemoController</a></li><li><a href="LoginController.html">LoginController</a></li><li><a href="RegistrarController.html">RegistrarController</a></li><li><a href="RegistrationController.html">RegistrationController</a></li></ul></div><div class="category"><h2>Middlewares</h2><h3>Global</h3><ul><li><a href="global.html#errorHandlerMiddleware">errorHandlerMiddleware</a></li><li><a href="global.html#jwtAuthMiddleware">jwtAuthMiddleware</a></li><li><a href="global.html#permissionMiddleware">permissionMiddleware</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="ListService.html">ListService</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="RegistrarService.html">RegistrarService</a></li><li><a href="RegistrationService.html">RegistrationService</a></li></ul></div>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="BadRequest.html">BadRequest</a></li><li><a href="Conflict.html">Conflict</a></li><li><a href="ExtendableError.html">ExtendableError</a></li><li><a href="Forbidden.html">Forbidden</a></li><li><a href="InternalServerError.html">InternalServerError</a></li><li><a href="NotFound.html">NotFound</a></li><li><a href="Unauthorized.html">Unauthorized</a></li><li><a href="UnprocessableEntity.html">UnprocessableEntity</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkPassword">checkPassword</a></li><li><a href="global.html#generateSecureToken">generateSecureToken</a></li><li><a href="global.html#getDatabase">getDatabase</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#initializeDatabase">initializeDatabase</a></li><li><a href="global.html#initializeEtherealMailTransport">initializeEtherealMailTransport</a></li><li><a href="global.html#jwtSign">jwtSign</a></li><li><a href="global.html#jwtSocketAuthMiddleware">jwtSocketAuthMiddleware</a></li><li><a href="global.html#jwtVerify">jwtVerify</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#message">message</a></li><li><a href="global.html#onSocketConnection">onSocketConnection</a></li><li><a href="global.html#sendMail">sendMail</a></li><li><a href="global.html#transportPromise">transportPromise</a></li></ul></div><div class="category"><h2>Controllers</h2><h3>Classes</h3><ul><li><a href="DemoController.html">DemoController</a></li><li><a href="LoginController.html">LoginController</a></li><li><a href="RegistrarController.html">RegistrarController</a></li><li><a href="RegistrationController.html">RegistrationController</a></li></ul></div><div class="category"><h2>Middlewares</h2><h3>Global</h3><ul><li><a href="global.html#errorHandlerMiddleware">errorHandlerMiddleware</a></li><li><a href="global.html#jwtAuthMiddleware">jwtAuthMiddleware</a></li><li><a href="global.html#permissionMiddleware">permissionMiddleware</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="ListService.html">ListService</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="RegistrarService.html">RegistrarService</a></li><li><a href="RegistrationService.html">RegistrationService</a></li></ul></div>
                     </nav>
                 </div>
             </div>
@@ -213,6 +213,79 @@
             <a href="loaders_logger.js.html" class="button">View Source</a>
             <span>
                 <a href="loaders_logger.js.html">loaders/logger.js</a>, <a href="loaders_logger.js.html#line27">line 27</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="transportPromise">
+    <a class="href-link" href="#transportPromise">#</a>
+    
+        
+            <span class='tag'>constant</span>
+        
+    
+    <span class="code-name">
+        transportPromise
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Promised future of ethereal transport to be used by sendmail method.
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="emails_index.js.html" class="button">View Source</a>
+            <span>
+                <a href="emails_index.js.html">emails/index.js</a>, <a href="emails_index.js.html#line65">line 65</a>
             </span>
         </p>
     
@@ -1281,6 +1354,143 @@ Throws 500 error if database connection failed.
 
 
     
+    <h4 class="name" id="initializeEtherealMailTransport">
+        <a class="href-link" href="#initializeEtherealMailTransport">#</a>
+        
+            
+                <span class='tag'>async</span>
+            
+        
+        <span class="code-name">
+            
+                initializeEtherealMailTransport<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Mail>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Initializes ethereal email trasnport by useing a test account.
+Fallbacks into json transport on an error.
+
+This also initializes the handlebar view engine for email templates.
+This will throw an error if initialization failed.
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+    <dt class="tag-todo">To Do:</dt>
+    <dd class="tag-todo">
+        <ul>
+            <li>Add real email sender transport</li>
+        </ul>
+    </dd>
+    
+
+    
+        <p class="tag-source">
+            <a href="emails_index.js.html" class="button">View Source</a>
+            <span>
+                <a href="emails_index.js.html">emails/index.js</a>, <a href="emails_index.js.html#line15">line 15</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>Transporter promise</div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">Promise.&lt;Mail></span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
     <h4 class="name" id="jwtAuthMiddleware">
         <a class="href-link" href="#jwtAuthMiddleware">#</a>
         
@@ -1666,6 +1876,182 @@ the user permission/roles change.
 
 
     
+    <h4 class="name" id="jwtSocketAuthMiddleware">
+        <a class="href-link" href="#jwtSocketAuthMiddleware">#</a>
+        
+        <span class="code-name">
+            
+                jwtSocketAuthMiddleware<span class="signature">(socket, next)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Acts as a middleware for sockets.
+
+This verifies that a socket presents a valid token and
+client details.
+If the data is not present, this does not allow to continue.
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        
+<tr class="deep-level-0">
+  
+      <td class="name"><code>socket</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">WebSocket</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Incoming socket connection</td>
+</tr>
+
+
+    
+
+        
+<tr class="deep-level-0">
+  
+      <td class="name"><code>next</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">any</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Next Callback</td>
+</tr>
+
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="socket_auth_middleware.js.html" class="button">View Source</a>
+            <span>
+                <a href="socket_auth_middleware.js.html">socket/auth_middleware.js</a>, <a href="socket_auth_middleware.js.html#line14">line 14</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
     <h4 class="name" id="jwtVerify">
         <a class="href-link" href="#jwtVerify">#</a>
         
@@ -1841,6 +2227,350 @@ This throws as error upon failure.
 
 
     
+    <h4 class="name" id="message">
+        <a class="href-link" href="#message">#</a>
+        
+        <span class="code-name">
+            
+                message<span class="signature">(type, payload, client)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Creates a message to encapsulate the payload.
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        
+<tr class="deep-level-0">
+  
+      <td class="name"><code>type</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Type of the message to send</td>
+</tr>
+
+
+    
+
+        
+<tr class="deep-level-0">
+  
+      <td class="name"><code>payload</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">any</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Payload data to send</td>
+</tr>
+
+
+    
+
+        
+<tr class="deep-level-0">
+  
+      <td class="name"><code>client</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Client type</td>
+</tr>
+
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="socket_connection.js.html" class="button">View Source</a>
+            <span>
+                <a href="socket_connection.js.html">socket/connection.js</a>, <a href="socket_connection.js.html#line7">line 7</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="onSocketConnection">
+        <a class="href-link" href="#onSocketConnection">#</a>
+        
+        <span class="code-name">
+            
+                onSocketConnection<span class="signature">(io)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        This adds the on connection callback to socket io server.
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        
+<tr class="deep-level-0">
+  
+      <td class="name"><code>io</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">SocketIO.Server</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Socket IO server</td>
+</tr>
+
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="socket_connection.js.html" class="button">View Source</a>
+            <span>
+                <a href="socket_connection.js.html">socket/connection.js</a>, <a href="socket_connection.js.html#line19">line 19</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
     <h4 class="name" id="permissionMiddleware">
         <a class="href-link" href="#permissionMiddleware">#</a>
         
@@ -1993,6 +2723,159 @@ continue in this middleware.</td>
 
 </div>
             
+                <div class="member">
+
+
+    
+    <h4 class="name" id="sendMail">
+        <a class="href-link" href="#sendMail">#</a>
+        
+            
+                <span class='tag'>async</span>
+            
+        
+        <span class="code-name">
+            
+                sendMail<span class="signature">(email)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Sends an email to the given url using a given template
+Don't await at this function as this will take a
+considerable amount of time to finish.
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        
+<tr class="deep-level-0">
+  
+      <td class="name"><code>email</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Promise.&lt;{from: string, to: string, subject: string, template: string, context: {any}}></span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Email object that should be sent</td>
+</tr>
+
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="emails_index.js.html" class="button">View Source</a>
+            <span>
+                <a href="emails_index.js.html">emails/index.js</a>, <a href="emails_index.js.html#line76">line 76</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
             </div>
         </div>
     
@@ -2015,7 +2898,7 @@ continue in this middleware.</td>
 
 <footer class="footer">
     <div class="content has-text-centered">
-        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Mar 12 2020 19:16:32 GMT+0530 (India Standard Time)</p>
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Sat Mar 14 2020 18:22:58 GMT+0530 (India Standard Time)</p>
         <p class="sidebar-created-by">
             <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
             <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>

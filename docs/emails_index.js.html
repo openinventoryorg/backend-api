@@ -5,7 +5,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>JSDoc: services/registrar.js</title>
+    <title>JSDoc: emails/index.js</title>
 
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -72,7 +72,7 @@
                 <div class="content" id="main-content-wrapper">
                     <header class="page-title">
                         <p>Source</p>
-                        <h1>services/registrar.js</h1>
+                        <h1>emails/index.js</h1>
                     </header>
                     
                     
@@ -82,113 +82,92 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const { getDatabase } = require('../helpers/get_database');
-const { generateSecureToken } = require('../helpers/secure_token');
-const Errors = require('../helpers/errors');
+            <pre class="prettyprint source linenums"><code>const nodemailer = require('nodemailer');
+const path = require('path');
+const hbs = require('nodemailer-express-handlebars');
 const logger = require('../loaders/logger');
-const { sendMail } = require('../emails');
-const config = require('../config');
 
 /**
- * Service associated with associating a registration token with users
- * @abstract
- * @category Services
+ * Initializes ethereal email trasnport by useing a test account.
+ * Fallbacks into json transport on an error.
+ *
+ * This also initializes the handlebar view engine for email templates.
+ * This will throw an error if initialization failed.
+ * @todo Add real email sender transport
+ * @returns {Promise&lt;Mail>} Transporter promise
  */
-class RegistrarService {
-    /**
-     * Send the registration token via email.
-     *
-     * This checks if the user already has a token,
-     * (There shouldn't - if there is that means either invitation already sent
-     * or user registered) and then sends the token via
-     * email.
-     * When the user registers using the token,
-     * he/she will be given the role specified in role id.
-     *
-     * No user can register without a token.
-     * @param {string} email Email of the user
-     * @param {string} roleId UUID of the role that should be assigned to user
-     * @returns {Promise&lt;any>} Created registration token object
-     */
-    static async SendRegistrationToken(email, roleId) {
-        const database = await getDatabase();
-        const token = generateSecureToken(96);
-
-        // No need to check if user is already registered
-        // since, if the user is registered, the token
-        // will be invalid (not deleted).
-        // So existence of token shows either,
-        // invitation link is already sent or
-        // account already created
-
-        const existingToken = await database.RegistrationToken
-            .findOne({ where: { email } });
-        if (existingToken) {
-            throw new Errors
-                .BadRequest(`User ${email} is already sent an invitation link or account already created`);
-        }
-
-        // Build and save token
-        const registrationToken = database.RegistrationToken
-            .build({ email, assignedRoleId: roleId, token });
+const initializeEtherealMailTransport = async () => {
+    try {
+        let transporter;
         try {
-            await registrationToken.save();
+            // Generate test SMTP service account from ethereal.email
+            const etherealUser = await nodemailer.createTestAccount();
 
-            // Send the mail to the user
-            sendMail({
-                from: config.mail.sender,
-                to: email,
-                subject: 'Registration Link - Open Inventory',
-                template: 'registration_invite',
-                context: {
-                    email,
-                    link: `${config.site.verifyToken}/${token}`,
-                },
+            // create reusable transporter object using the default SMTP transport
+            transporter = nodemailer.createTransport({
+                host: 'smtp.ethereal.email',
+                port: 587,
+                secure: false,
+                auth: { etherealUser },
             });
-
-            // Log the token for now
-            logger.info(`Token generated for ${email} on role ${roleId} - ${token}`);
+            logger.info(`Ethereal account created: ${etherealUser.user} | ${etherealUser.pass}`);
         } catch (err) {
-            logger.error('Error while saving registration token: ', err);
-            throw new Errors.BadRequest('Invalid data. Token saving failed.');
+            logger.error(`Ethereal account creation failed. Fallback into stream transport. ${err}`);
+            // On error use json transporter since we must not halt the programme
+            transporter = nodemailer.createTransport({
+                jsonTransport: true,
+            });
         }
 
-        return registrationToken;
+        // Set directories
+        const templatesDir = path.join(__dirname, 'templates');
+
+        // Define handlebar options
+        const handlebarOptions = {
+            viewEngine: {
+                extName: '.hbs',
+                partialsDir: templatesDir,
+                layoutsDir: templatesDir,
+                defaultLayout: '',
+            },
+            viewPath: templatesDir,
+            extName: '.hbs',
+        };
+
+        // Use handlebar as the template engine
+        transporter.use('compile', hbs(handlebarOptions));
+        return transporter;
+    } catch (err) {
+        logger.error(`Something went wrong: ${err.message}`);
+        throw err;
     }
+};
 
-    /**
-     * Delete the registration token.
-     *
-     * This checks if the user already has a token,
-     * and whether it is valid.
-     * Otherwise deletion will fail.
-     * @param {string} email Email of the user
-     */
-    static async DeleteRegistrationToken(email) {
-        const database = await getDatabase();
+/**
+ * Promised future of ethereal transport to be used by sendmail method.
+ */
+const transportPromise = initializeEtherealMailTransport();
 
-        // To delete registration token, it has to be
-        // in created and valid state. (If deleted can't delete,
-        // if created and invalid then account is already created)
-
-        const existingActiveToken = await database.RegistrationToken
-            .findOne({ where: { email, valid: true } });
-        if (!existingActiveToken) {
-            throw new Errors
-                .BadRequest(`User ${email} is not sent an invitation link or the user has created an account.`);
-        }
-
-        try {
-            await existingActiveToken.destroy();
-        } catch (err) {
-            logger.error('Error while deleting registration token: ', err);
-            throw new Errors.BadRequest('Invalid data. Token deletion failed.');
-        }
+/**
+ * Sends an email to the given url using a given template
+ * Don't await at this function as this will take a
+ * considerable amount of time to finish.
+ *
+ * @param {Promise&lt;{from: string, to: string,
+ * subject: string, template: string, context: {any}}>} email
+ * Email object that should be sent
+ */
+const sendMail = async (email) => {
+    try {
+        const transport = await transportPromise;
+        const info = await transport.sendMail(email);
+        logger.info('Email Sent [URL] %s', nodemailer.getTestMessageUrl(info));
+    } catch (err) {
+        logger.error('Email sending failure: ', err);
     }
-}
+};
 
-
-module.exports = RegistrarService;
+module.exports = { sendMail };
 </code></pre>
         </article>
     </section>

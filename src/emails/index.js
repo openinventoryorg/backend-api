@@ -5,6 +5,7 @@ const logger = require('../loaders/logger');
 
 /**
  * Initializes ethereal email trasnport by useing a test account.
+ * Fallbacks into json transport on an error.
  *
  * This also initializes the handlebar view engine for email templates.
  * This will throw an error if initialization failed.
@@ -13,16 +14,26 @@ const logger = require('../loaders/logger');
  */
 const initializeEtherealMailTransport = async () => {
     try {
-        // Generate test SMTP service account from ethereal.email
-        const etherealUser = await nodemailer.createTestAccount();
+        let transporter;
+        try {
+            // Generate test SMTP service account from ethereal.email
+            const etherealUser = await nodemailer.createTestAccount();
 
-        // create reusable transporter object using the default SMTP transport
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.ethereal.email',
-            port: 587,
-            secure: false,
-            auth: etherealUser,
-        });
+            // create reusable transporter object using the default SMTP transport
+            transporter = nodemailer.createTransport({
+                host: 'smtp.ethereal.email',
+                port: 587,
+                secure: false,
+                auth: { etherealUser },
+            });
+            logger.info(`Ethereal account created: ${etherealUser.user} | ${etherealUser.pass}`);
+        } catch (err) {
+            logger.error(`Ethereal account creation failed. Fallback into stream transport. ${err}`);
+            // On error use json transporter since we must not halt the programme
+            transporter = nodemailer.createTransport({
+                jsonTransport: true,
+            });
+        }
 
         // Set directories
         const templatesDir = path.join(__dirname, 'templates');
@@ -41,11 +52,9 @@ const initializeEtherealMailTransport = async () => {
 
         // Use handlebar as the template engine
         transporter.use('compile', hbs(handlebarOptions));
-
-        logger.info(`Ethereal account created: ${etherealUser.user} | ${etherealUser.pass}`);
         return transporter;
     } catch (err) {
-        logger.error('Email Sender account connection issue: ', err);
+        logger.error(`Something went wrong: ${err.message}`);
         throw err;
     }
 };
