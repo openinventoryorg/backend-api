@@ -8,6 +8,7 @@ const logger = require('../loaders/logger');
  * This verifies that a socket presents a valid token and
  * client details.
  * If the data is not present, this does not allow to continue.
+ * @category Middlewares
  * @param {WebSocket} socket Incoming socket connection
  * @param {any} next Next Callback
  */
