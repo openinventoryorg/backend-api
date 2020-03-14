@@ -6,6 +6,6 @@ router.post('/create', permissionMiddleware([]), ManageLabsController.PostLab);
 router.put('/:id', permissionMiddleware([]), ManageLabsController.PutLab);
 router.delete('/:id', permissionMiddleware([]), ManageLabsController.DeleteLab);
 router.patch('/:id', permissionMiddleware([]), ManageLabsController.UpdateLab);
-router.get('/list', permissionMiddleware([]), ManageLabsController.ListLabs);
+router.get('/list', ManageLabsController.ListLabs);
 
 module.exports = router;
