@@ -9,9 +9,9 @@ const { LoginInformation } = require('./validators/login');
 class LoginController {
     /**
      * Logs a user in and gives the user a token.
-     * @param {any} req Request
-     * @param {any} res Response
-     * @param {any} next Next callback
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
     static async Login(req, res, next) {
         try {

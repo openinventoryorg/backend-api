@@ -7,9 +7,9 @@ const { sendMail } = require('../emails');
 class DemoController {
     /**
      * Demo request to check if a user is authenticated
-     * @param {any} req Request
-     * @param {any} res Response
-     * @param {any} next Next callback
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
     static async DemoNodeMailer(req, res, next) {
         try {

@@ -1,14 +1,12 @@
 # Open Inventory
 
-![Open Inventory](assets/full_logo.png)
+![Open Inventory](https://github.com/openinventoryorg/backend-api/raw/master/assets/full_logo.png)
 
 ## Setup
 
 ### Database Setup
 
 #### Postgres Setup
-
-![Postgres](https://i0.wp.com/www.computersnyou.com/wp-content/uploads/2014/12/postgresql-logo.png?fit=610%2C280&ssl=1)
 
 Install [postgresql](https://www.postgresql.org/) in the local machine and setup correctly. Then use following command to login to the `psql` shell.
 
@@ -32,8 +30,6 @@ psql -U openinventoryuser openinventoryuser
 ```
 
 ### Node.js setup
-
-![Node JS](https://cdn.freebiesupply.com/logos/thumbs/2x/nodejs-1-logo.png)
 
 Install NodeJS. This program was tested with NodeJS 12.16.1 LTS.
 

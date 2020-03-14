@@ -13,9 +13,9 @@ const { jwtVerify } = require('../helpers/jwt');
  * This should be added as an middleware
  * before any permission checking middlewares.
  * @category Middlewares
- * @param  {any} req Request object
- * @param  {any} res Response object
- * @param  {any} next Next callback
+ * @param {Request} req Request
+ * @param {Response} res Response
+ * @param {NextFunction} next Next callback
  */
 const jwtAuthMiddleware = (req, res, next) => {
     const token = req.get('token');

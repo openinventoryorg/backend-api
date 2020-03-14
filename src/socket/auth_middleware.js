@@ -10,7 +10,7 @@ const logger = require('../loaders/logger');
  * If the data is not present, this does not allow to continue.
  * @category Middlewares
  * @param {WebSocket} socket Incoming socket connection
- * @param {any} next Next Callback
+ * @param {NextFunction} next Next callback
  */
 const jwtSocketAuthMiddleware = (socket, next) => {
     try {

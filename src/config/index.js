@@ -9,7 +9,11 @@ if (!envFound) {
     throw new Error("⚠️  Couldn't find .env file  ⚠️");
 }
 
-module.exports = {
+/**
+ * Configurations object related with this server.
+ * Most of these settings are loaded from .env file
+ */
+const configurations = {
     env: process.env.NODE_ENV, // Environment type
     port: parseInt(process.env.PORT, 3000), // Port number
     databaseURL: process.env.DATABASE_URL, // Database connection string
@@ -27,3 +31,5 @@ module.exports = {
         verifyToken: process.env.SITE_API || 'https://openinventory.org/register',
     },
 };
+
+module.exports = configurations;

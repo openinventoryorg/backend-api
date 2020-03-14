@@ -1,10 +1,10 @@
 /**
  * Creates a message to encapsulate the payload.
  * @param {string} type Type of the message to send
- * @param {any} payload Payload data to send
+ * @param {Object} payload Payload data to send
  * @param {string} client Client type
  */
-const message = (type, payload, client) => ({
+const encapsulateSocketMessage = (type, payload, client) => ({
     type,
     data: payload,
     timestamp: new Date(),
@@ -25,16 +25,19 @@ const onSocketConnection = (io) => (socket) => {
     socket.join(room);
 
     // Send a message saying that user of this type connected
-    io.in(room).emit('server#message', message('connect', client, client));
+    io.in(room).emit('server#message',
+        encapsulateSocketMessage('connect', client, client));
 
     // If this user sends a message, repeat that to the room
     socket.on('client#message', (msg) => {
-        io.in(room).emit('server#message', message('message', msg, client));
+        io.in(room).emit('server#message',
+            encapsulateSocketMessage('message', msg, client));
     });
 
     // When user disconnects, emit message
     socket.on('disconnect', () => {
-        io.in(room).emit('server#message', message('disconnect', client, client));
+        io.in(room).emit('server#message',
+            encapsulateSocketMessage('disconnect', client, client));
         socket.leave(room);
     });
 };

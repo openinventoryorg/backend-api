@@ -2,6 +2,7 @@ const crypto = require('crypto');
 
 /**
  * Modified from: https://github.com/sindresorhus/crypto-random-string/blob/master/index.js
+ *
  * @license
  * Copyright (c) Sindre Sorhus (sindresorhus.com)
  *
@@ -21,7 +22,7 @@ const crypto = require('crypto');
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *
- * @param {int} length Length of the token to be generated
+ * @param {number} length Length of the token to be generated
  * @returns {string} Secure random token of specified length
  */
 const generateSecureToken = (length) => {

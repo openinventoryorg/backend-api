@@ -1,7 +1,8 @@
 {
-    "name": "smartlab-backend",
+    "name": "openinventory_backend",
     "version": "0.0.1",
     "repository": "https://github.com/openinventoryorg/backend-api",
+    "homepage": "https://openinventoryorg.github.io/docs/",
     "description": "An automated inventory Management System for Computer Labs",
     "main": "src/app.js",
     "scripts": {
@@ -32,7 +33,7 @@
         "winston": "^3.2.1"
     },
     "devDependencies": {
-        "better-docs": "^1.4.7",
+        "clean-jsdoc-theme": "^2.2.11",
         "eslint": "^6.8.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-plugin-import": "^2.20.1",
