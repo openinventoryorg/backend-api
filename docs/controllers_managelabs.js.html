@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>InternalServerError</title>
+    <title>controllers/managelabs.js</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -47,192 +47,126 @@
 
 <div id="main">
     
-    <h1 class="page-title">InternalServerError</h1>
+    <h1 class="page-title">controllers/managelabs.js</h1>
     
 
     
 
 
 
-
-<section>
-
-
-<header>
     
-        
-        <h2>
-        
-        InternalServerError
-        
-        </h2>
-        
-        
-            <div class="class-description">Error class for 500: Internal Server Error</div>
-            <hr/>
-        
-    
-</header>
-
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-        <h2>Constructor</h2>
-    
-
-    <h4 class="name" id="InternalServerError"><span class="type-signature"></span>new InternalServerError<span class="signature">(m)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <div class="method-member-container flex flex-col w-100 overflow-auto mt-20">
-        <strong>Parameters:</strong>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>m</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Error message</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    </div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <div class="details-item-container">
-            <dt class="tag-source">Source:</dt>
-            <dd class="tag-source"><ul class="dummy"><li>
-                <a href="helpers_errors.js.html">helpers/errors.js</a>, <a href="helpers_errors.js.html#line107">line 107</a>
-            </li></ul></dd>
-        </div>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const LabsService = require('../services/labs');
+const ListService = require('../services/list');
+const { CreateLab, LabIdQuery, CreateLabQuery } = require('./validators/managelabs');
+
+/**
+ * Controller which manages labs
+ * @abstract
+ * @category Controllers
+ */
+class ManageLabsController {
+    /**
+     * Creates a new lab.
+     *
+     * This creates a new lab and returns details including ID.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async PostLab(req, res, next) {
+        try {
+            const { value, error } = CreateLab.validate(req.body);
+            if (error) throw error;
+
+            const lab = await LabsService.CreateLab(value);
+            res.status(200).send(lab);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Creates a lab with given id and details.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async PutLab(req, res, next) {
+        try {
+            const { value, error } = CreateLabQuery.validate({
+                id: req.params.id,
+                ...req.body,
+            });
+            if (error) throw error;
+
+            const lab = await LabsService.PutLab(value);
+            res.status(200).send(lab);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Deletes an existing lab with given id.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async DeleteLab(req, res, next) {
+        try {
+            const { value, error } = LabIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
+
+            await LabsService.DeleteLab(value.id);
+            res.sendStatus(200);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Updates lab details with given details and ID.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async UpdateLab(req, res, next) {
+        try {
+            const { value, error } = CreateLabQuery.validate({
+                ...req.body,
+                id: req.params.id,
+            });
+            if (error) throw error;
+
+            const lab = await LabsService.UpdateLab(value);
+            res.status(200).send(lab);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Gets a list of labs available in the system
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListLabs(req, res, next) {
+        try {
+            const labs = await ListService.ListLabs();
+            res.status(200).send(labs);
+        } catch (err) {
+            next(err);
+        }
+    }
+}
+
+module.exports = ManageLabsController;
+</code></pre>
+        </article>
+    </section>
 
 
 

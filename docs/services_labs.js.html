@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>InternalServerError</title>
+    <title>services/labs.js</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -47,192 +47,140 @@
 
 <div id="main">
     
-    <h1 class="page-title">InternalServerError</h1>
+    <h1 class="page-title">services/labs.js</h1>
     
 
     
 
 
 
-
-<section>
-
-
-<header>
     
-        
-        <h2>
-        
-        InternalServerError
-        
-        </h2>
-        
-        
-            <div class="class-description">Error class for 500: Internal Server Error</div>
-            <hr/>
-        
-    
-</header>
-
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-        <h2>Constructor</h2>
-    
-
-    <h4 class="name" id="InternalServerError"><span class="type-signature"></span>new InternalServerError<span class="signature">(m)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <div class="method-member-container flex flex-col w-100 overflow-auto mt-20">
-        <strong>Parameters:</strong>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>m</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Error message</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    </div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <div class="details-item-container">
-            <dt class="tag-source">Source:</dt>
-            <dd class="tag-source"><ul class="dummy"><li>
-                <a href="helpers_errors.js.html">helpers/errors.js</a>, <a href="helpers_errors.js.html#line107">line 107</a>
-            </li></ul></dd>
-        </div>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { getDatabase } = require('../helpers/get_database');
+const Errors = require('../helpers/errors');
+const logger = require('../loaders/logger');
+
+/**
+ * Service that manages CUD of labs
+ * @abstract
+ * @category Services
+ */
+class LabsService {
+    /**
+     * Creates lab with given data.
+     * Id will be automatically generated.
+     * @param {Object} lab Lab object to create
+     * @param {string} lab.title Title of lab
+     * @param {string} lab.subtitle Subtitle of lab
+     * @param {string} lab.image Image of lab
+     * @returns {Promise&lt;Object>} Created lab object
+     */
+    static async CreateLab({ title, subtitle, image }) {
+        const database = await getDatabase();
+
+        const lab = database.Lab.build({ title, subtitle, image });
+        try {
+            await lab.save();
+        } catch (err) {
+            logger.error('Error while saving lab: ', err);
+            throw new Errors.BadRequest('Invalid data. Lab creation failed.');
+        }
+        return lab;
+    }
+
+    /**
+     * Creates lab with given data and ID.
+     * @param {Object} lab Lab object to create
+     * @param {string} lab.id ID of lab to be created
+     * @param {string} lab.title Title of lab
+     * @param {string} lab.subtitle Subtitle of lab
+     * @param {string} lab.image Image of lab
+     * @returns {Promise&lt;Object>} Created lab object
+     */
+    static async PutLab({
+        id, title, subtitle, image,
+    }) {
+        const database = await getDatabase();
+
+        const existingLab = await database.Lab.findOne({ where: { id } });
+
+        if (existingLab) {
+            throw new Errors.BadRequest(`Lab ${id} already exists.`);
+        }
+
+        const lab = await database.Lab.build({
+            id, title, subtitle, image,
+        });
+
+        try {
+            lab.save();
+        } catch (err) {
+            logger.error('Error while updating lab: ', err);
+            throw new Errors.BadRequest('Invalid data. Lab update failed.');
+        }
+        return lab;
+    }
+
+    /**
+     * Deletes lab with given id.
+     * @param {string} id Id of the lab to delete
+     */
+    static async DeleteLab(id) {
+        const database = await getDatabase();
+
+        const existingLab = await database.Lab.findOne({ where: { id } });
+
+        if (!existingLab) {
+            throw new Errors.BadRequest(`Lab ${id} does not exist.`);
+        }
+
+        try {
+            await existingLab.destroy();
+        } catch (err) {
+            logger.error('Error while deleting lab: ', err);
+            throw new Errors.BadRequest('Invalid data. Lab deletion failed.');
+        }
+    }
+
+    /**
+     * Updates lab with given id.
+     * All fields will be overridden by new ones.
+     * @param {Object} lab Lab object to create
+     * @param {string} lab.id ID of lab
+     * @param {string} lab.title Title of lab
+     * @param {string} lab.subtitle Subtitle of lab
+     * @param {string} lab.image Image of lab
+     * @returns {Promise&lt;Object>} Created lab object
+     */
+    static async UpdateLab({
+        id, title, subtitle, image,
+    }) {
+        const database = await getDatabase();
+
+        const existingLab = await database.Lab.findOne({ where: { id } });
+
+        if (!existingLab) {
+            throw new Errors.BadRequest(`Lab ${id} does not exist.`);
+        }
+
+        try {
+            const lab = await existingLab.update({
+                id, title, subtitle, image,
+            });
+            return lab;
+        } catch (err) {
+            logger.error('Error while updating lab: ', err);
+            throw new Errors.BadRequest('Invalid data. Lab update failed.');
+        }
+    }
+}
+
+
+module.exports = LabsService;
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -17,6 +17,16 @@ class ListService {
         });
         return { roles };
     }
+
+    /**
+     * Lists the labs available.
+     * @returns {Promise<{labs: Object[]}>} List of labs in the database
+     */
+    static async ListLabs() {
+        const database = await getDatabase();
+        const labs = await database.Lab.findAll();
+        return { labs };
+    }
 }
 
 module.exports = ListService;
