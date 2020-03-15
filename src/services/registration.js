@@ -2,8 +2,21 @@ const { getDatabase } = require('../helpers/get_database');
 const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
 const { hashPassword } = require('../helpers/password');
-
+/**
+ * Service associated with registering the user
+ * @abstract
+ * @category Services
+ */
 class RegistrationService {
+    /**
+     * Verifies whether a registration token is valid.
+     *
+     * This checks if the user already has a token and it is valid.
+     * Then this will return the user details associated with the token.
+     * If the token is invalid, this will throw an error.
+     * @param {string} token Registration token
+     * @returns {Promise<any>} Associated user details
+     */
     static async VerifyRegistrationToken(token) {
         const database = await getDatabase();
 
@@ -23,6 +36,20 @@ class RegistrationService {
         return existingToken;
     }
 
+    /**
+     * Creates a user with the given token.
+     *
+     * This creates the user with the given details.
+     * The token has to be valid to create the account.
+     * This will invalidate the registration token.
+     *
+     * Note that user need to explicitly login to receive a JWT token.
+     * @param {string} token Registration token of the user
+     * @param {string} firstName First name of the user
+     * @param {string} lastName Last name of the user
+     * @param {string} password Password of the user
+     * @returns {Promise<any>} Created user details
+     */
     static async Register(token, firstName, lastName, password) {
         const database = await getDatabase();
 

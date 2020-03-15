@@ -16,7 +16,12 @@ const RolePermissionSchema = require('./schema/role_permission');
 const LabAssignSchema = require('./schema/lab_assign');
 const PermissionsSchema = require('./schema/permissions');
 
-async function initialize() {
+/**
+ * Database initialization function
+ *
+ * @returns {Promise<any>} Database object promise
+ */
+async function initializeDatabase() {
     // Default global settings for database models
     const databaseOptions = {
         logging: (msg) => logger.debug(msg),
@@ -49,6 +54,7 @@ async function initialize() {
         Permission: PermissionsSchema,
     };
 
+    // Register relations
     Relations(db);
 
     try {
@@ -65,4 +71,4 @@ async function initialize() {
     return db;
 }
 
-module.exports = initialize();
+module.exports = initializeDatabase();

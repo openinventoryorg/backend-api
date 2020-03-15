@@ -1,3 +1,8 @@
+/**
+ * Defines relationships between database models.
+ *
+ * @param {any} database Database object
+ */
 module.exports = (database) => {
     database.Role.hasMany(database.RegistrationToken, { foreignKey: 'assignedRoleId' });
     database.RegistrationToken.belongsTo(database.Role, { foreignKey: 'assignedRoleId' });

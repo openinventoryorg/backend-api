@@ -1,18 +1,30 @@
 const { getDatabase } = require('../helpers/get_database');
 const Errors = require('../helpers/errors');
-// const logger = require('../loaders/logger');
-const jwt = require('../helpers/jwt');
+const { jwtSign } = require('../helpers/jwt');
 const { checkPassword } = require('../helpers/password');
 
+/**
+ * Service associated with logging in the user by generating a token
+ * @abstract
+ * @category Services
+ */
 class LoginService {
+    /**
+     * Authenticate and log the user in.
+     *
+     * This gets hashed password by email and
+     * checks if the password match.
+     * If they match, this function would generate and
+     * send the token.
+     * Otherwise an error would be thrown.
+     * @param {string} email Email of the user
+     * @param {string} password Password of the user
+     * @returns {Promise<{token: string, user: any}>} List of roles in the database
+     */
     static async Login(email, password) {
         const database = await getDatabase();
 
-        // Get hashed password by email =>
-        // Check if password matches =>
-        // Generate JWT =>
-        // Send the token
-
+        // User matching the given email, also fetch all required fields for token generation
         const user = await database.User
             .findOne({
                 where: { email },
@@ -44,7 +56,7 @@ class LoginService {
         userInformation.Role = undefined;
         userInformation.password = undefined;
 
-        const signedJwt = jwt.sign(userInformation);
+        const signedJwt = jwtSign(userInformation);
 
         return { token: signedJwt, user: userInformation };
     }

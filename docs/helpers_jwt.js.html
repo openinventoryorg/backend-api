@@ -1,0 +1,150 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>JSDoc: helpers/jwt.js</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+</head>
+
+<body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    
+                     
+                        <h1 class="navbar-item">Open Inventory - Backend Source API Reference</h1>
+                    
+                    <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                 
+                <div class="navbar-menu">
+                    <div class="navbar-end">
+                    
+                        <div class="navbar-item">
+                            <a href="https://github.com/openinventorysystem/backend-api" target="_blank">
+                                Github
+                            </a>
+                        </div>
+                    
+                        <div class="navbar-item">
+                            <a href="https://openinventorysystem.github.io/docs/" target="_blank">
+                                Complete Documentation
+                            </a>
+                        </div>
+                    
+                    </div>
+                </div>
+                
+            </nav>
+        </div>
+    </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-3" id="sidebarNav">
+                <div class="sidebar">
+                    <nav>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="BadRequest.html">BadRequest</a></li><li><a href="Conflict.html">Conflict</a></li><li><a href="ExtendableError.html">ExtendableError</a></li><li><a href="Forbidden.html">Forbidden</a></li><li><a href="InternalServerError.html">InternalServerError</a></li><li><a href="NotFound.html">NotFound</a></li><li><a href="Unauthorized.html">Unauthorized</a></li><li><a href="UnprocessableEntity.html">UnprocessableEntity</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkPassword">checkPassword</a></li><li><a href="global.html#generateSecureToken">generateSecureToken</a></li><li><a href="global.html#getDatabase">getDatabase</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#initializeDatabase">initializeDatabase</a></li><li><a href="global.html#jwtSign">jwtSign</a></li><li><a href="global.html#jwtVerify">jwtVerify</a></li><li><a href="global.html#logger">logger</a></li></ul></div><div class="category"><h2>Controllers</h2><h3>Classes</h3><ul><li><a href="DemoController.html">DemoController</a></li><li><a href="LoginController.html">LoginController</a></li><li><a href="RegistrarController.html">RegistrarController</a></li><li><a href="RegistrationController.html">RegistrationController</a></li></ul></div><div class="category"><h2>Middlewares</h2><h3>Global</h3><ul><li><a href="global.html#errorHandlerMiddleware">errorHandlerMiddleware</a></li><li><a href="global.html#jwtAuthMiddleware">jwtAuthMiddleware</a></li><li><a href="global.html#permissionMiddleware">permissionMiddleware</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="ListService.html">ListService</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="RegistrarService.html">RegistrarService</a></li><li><a href="RegistrationService.html">RegistrationService</a></li></ul></div>
+                    </nav>
+                </div>
+            </div>
+            <div class="column is-9-desktop">
+                <div class="content" id="main-content-wrapper">
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>helpers/jwt.js</h1>
+                    </header>
+                    
+                    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const jwt = require('jsonwebtoken');
+const config = require('../config');
+
+/**
+ * Signs a user using the JWT secret.
+ *
+ * Here all the user details are signed.
+ * User permissions and roles are also signed to
+ * make authenticating fast.
+ * As a result the token may need to be blacklisted if
+ * the user permission/roles change.
+ * @param {user} user user information object
+ * @returns {string} signed JWT token
+ */
+const jwtSign = (user) => jwt.sign(
+    {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        permissions: user.permissions,
+        role: user.role,
+        roleId: user.roleId,
+    },
+    config.jwtSecret,
+);
+
+/**
+ * Synchronously verify given token using the secret key to get a decoded token.
+ *
+ * This returns the user object if successfull.
+ * This throws as error upon failure.
+ * @param {string} token JWT string to verify
+ * @returns {user} The decoded token which contains user information.
+ */
+const jwtVerify = (token) => jwt.verify(token, config.jwtSecret);
+
+module.exports = { jwtSign, jwtVerify };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Mar 12 2020 19:16:32 GMT+0530 (India Standard Time)</p>
+        <p class="sidebar-created-by">
+            <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+            <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+        </p>
+    </div>
+</footer>
+
+
+<script src="scripts/app.min.js"></script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

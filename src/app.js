@@ -3,6 +3,7 @@ const cors = require('cors');
 const { errorHandlerMiddleware } = require('./middlewares/error_handler');
 const { jwtAuthMiddleware } = require('./middlewares/jwt_auth');
 
+// Node express application
 const app = express();
 
 
@@ -33,4 +34,5 @@ require('./routes').defineEndPoints(app);
 // Error handling middleware
 app.use(errorHandlerMiddleware);
 
+// Listen to the indicated port
 app.listen(process.env.PORT, () => logger.info(`Server started on port ${process.env.PORT}`));

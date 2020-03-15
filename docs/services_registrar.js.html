@@ -1,0 +1,203 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>JSDoc: services/registrar.js</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+</head>
+
+<body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    
+                     
+                        <h1 class="navbar-item">Open Inventory - Backend Source API Reference</h1>
+                    
+                    <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                 
+                <div class="navbar-menu">
+                    <div class="navbar-end">
+                    
+                        <div class="navbar-item">
+                            <a href="https://github.com/openinventorysystem/backend-api" target="_blank">
+                                Github
+                            </a>
+                        </div>
+                    
+                        <div class="navbar-item">
+                            <a href="https://openinventorysystem.github.io/docs/" target="_blank">
+                                Complete Documentation
+                            </a>
+                        </div>
+                    
+                    </div>
+                </div>
+                
+            </nav>
+        </div>
+    </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-3" id="sidebarNav">
+                <div class="sidebar">
+                    <nav>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="BadRequest.html">BadRequest</a></li><li><a href="Conflict.html">Conflict</a></li><li><a href="ExtendableError.html">ExtendableError</a></li><li><a href="Forbidden.html">Forbidden</a></li><li><a href="InternalServerError.html">InternalServerError</a></li><li><a href="NotFound.html">NotFound</a></li><li><a href="Unauthorized.html">Unauthorized</a></li><li><a href="UnprocessableEntity.html">UnprocessableEntity</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkPassword">checkPassword</a></li><li><a href="global.html#generateSecureToken">generateSecureToken</a></li><li><a href="global.html#getDatabase">getDatabase</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#initializeDatabase">initializeDatabase</a></li><li><a href="global.html#jwtSign">jwtSign</a></li><li><a href="global.html#jwtVerify">jwtVerify</a></li><li><a href="global.html#logger">logger</a></li></ul></div><div class="category"><h2>Controllers</h2><h3>Classes</h3><ul><li><a href="DemoController.html">DemoController</a></li><li><a href="LoginController.html">LoginController</a></li><li><a href="RegistrarController.html">RegistrarController</a></li><li><a href="RegistrationController.html">RegistrationController</a></li></ul></div><div class="category"><h2>Middlewares</h2><h3>Global</h3><ul><li><a href="global.html#errorHandlerMiddleware">errorHandlerMiddleware</a></li><li><a href="global.html#jwtAuthMiddleware">jwtAuthMiddleware</a></li><li><a href="global.html#permissionMiddleware">permissionMiddleware</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="ListService.html">ListService</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="RegistrarService.html">RegistrarService</a></li><li><a href="RegistrationService.html">RegistrationService</a></li></ul></div>
+                    </nav>
+                </div>
+            </div>
+            <div class="column is-9-desktop">
+                <div class="content" id="main-content-wrapper">
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>services/registrar.js</h1>
+                    </header>
+                    
+                    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { getDatabase } = require('../helpers/get_database');
+const { generateSecureToken } = require('../helpers/secure_token');
+const Errors = require('../helpers/errors');
+const logger = require('../loaders/logger');
+/**
+ * Service associated with associating a registration token with users
+ * @abstract
+ * @category Services
+ */
+class RegistrarService {
+    /**
+     * Send the registration token via email.
+     *
+     * This checks if the user already has a token,
+     * (There shouldn't - if there is that means either invitation already sent
+     * or user registered) and then sends the token via
+     * email.
+     * When the user registers using the token,
+     * he/she will be given the role specified in role id.
+     *
+     * No user can register without a token.
+     * @param {string} email Email of the user
+     * @param {string} roleId UUID of the role that should be assigned to user
+     * @returns {Promise&lt;any>} Created registration token object
+     */
+    static async SendRegistrationToken(email, roleId) {
+        const database = await getDatabase();
+        const token = generateSecureToken(96);
+
+        // No need to check if user is already registered
+        // since, if the user is registered, the token
+        // will be invalid (not deleted).
+        // So existence of token shows either,
+        // invitation link is already sent or
+        // account already created
+
+        const existingToken = await database.RegistrationToken
+            .findOne({ where: { email } });
+        if (existingToken) {
+            throw new Errors
+                .BadRequest(`User ${email} is already sent an invitation link or account already created`);
+        }
+
+        // Build and save token
+        const registrationToken = database.RegistrationToken
+            .build({ email, assignedRoleId: roleId, token });
+        try {
+            await registrationToken.save();
+            // TODO: Send token via email
+            logger.info(`Token generated for ${email} on role ${roleId} - ${token}`);
+        } catch (err) {
+            logger.error('Error while saving registration token: ', err);
+            throw new Errors.BadRequest('Invalid data. Token saving failed.');
+        }
+
+        return registrationToken;
+    }
+
+    /**
+     * Delete the registration token.
+     *
+     * This checks if the user already has a token,
+     * and whether it is valid.
+     * Otherwise deletion will fail.
+     * @param {string} email Email of the user
+     */
+    static async DeleteRegistrationToken(email) {
+        const database = await getDatabase();
+
+        // To delete registration token, it has to be
+        // in created and valid state. (If deleted can't delete,
+        // if created and invalid then account is already created)
+
+        const existingActiveToken = await database.RegistrationToken
+            .findOne({ where: { email, valid: true } });
+        if (!existingActiveToken) {
+            throw new Errors
+                .BadRequest(`User ${email} is not sent an invitation link or the user has created an account.`);
+        }
+
+        try {
+            await existingActiveToken.destroy();
+        } catch (err) {
+            logger.error('Error while deleting registration token: ', err);
+            throw new Errors.BadRequest('Invalid data. Token deletion failed.');
+        }
+    }
+}
+
+
+module.exports = RegistrarService;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Mar 12 2020 19:16:32 GMT+0530 (India Standard Time)</p>
+        <p class="sidebar-created-by">
+            <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+            <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+        </p>
+    </div>
+</footer>
+
+
+<script src="scripts/app.min.js"></script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
