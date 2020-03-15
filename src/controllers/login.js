@@ -24,6 +24,18 @@ class LoginController {
             next(err);
         }
     }
+
+    /**
+     * Verifies a user token using JWT verification middleware result.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     */
+    static async Verify(req, res) {
+        if (req.authenticated) {
+            res.sendStatus(200);
+        }
+        res.sendStatus(401);
+    }
 }
 
 
