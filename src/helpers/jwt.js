@@ -9,18 +9,27 @@ const config = require('../config');
  * make authenticating fast.
  * As a result the token may need to be blacklisted if
  * the user permission/roles change.
- * @param {user} user user information object
+ * @param {Object} user User details object
+ * @param {string} user.id User id
+ * @param {string} user.firstName User first name
+ * @param {string} user.lastName User last name
+ * @param {string} user.email User email address
+ * @param {string[]} user.permissions List of permissions of the user
+ * @param {string} user.role Role of the user
+ * @param {string} user.roleId Id of the role
  * @returns {string} signed JWT token
  */
-const jwtSign = (user) => jwt.sign(
+const jwtSign = ({
+    id, firstName, lastName, email, permissions, role, roleId,
+}) => jwt.sign(
     {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        permissions: user.permissions,
-        role: user.role,
-        roleId: user.roleId,
+        id,
+        firstName,
+        lastName,
+        email,
+        permissions,
+        role,
+        roleId,
     },
     config.jwtSecret,
 );

@@ -1,7 +1,7 @@
 /**
  * Defines relationships between database models.
  *
- * @param {any} database Database object
+ * @param {Models} database Database object
  */
 module.exports = (database) => {
     database.Role.hasMany(database.RegistrationToken, { foreignKey: 'assignedRoleId' });
@@ -9,4 +9,6 @@ module.exports = (database) => {
     database.Role.hasMany(database.User, { foreignKey: 'roleId' });
     database.User.belongsTo(database.Role, { foreignKey: 'roleId' });
     database.Role.hasMany(database.RolePermission, { foreignKey: 'roleId' });
+    database.User.hasMany(database.LabAssign, { foreignKey: 'userId' });
+    database.Lab.hasMany(database.LabAssign, { foreignKey: 'labId' });
 };

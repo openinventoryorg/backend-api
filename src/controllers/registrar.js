@@ -10,9 +10,9 @@ const { RegistrationTokenGenerationRequest, EmailBasedRequest } = require('./val
 class RegistrarController {
     /**
      * Creates a email token for the specified user on the given role
-     * @param {any} req Request
-     * @param {any} res Response
-     * @param {any} next Next callback
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
     static async PutToken(req, res, next) {
         try {
@@ -29,9 +29,9 @@ class RegistrarController {
 
     /**
      * Deletes the email token associated with a user
-     * @param {any} req Request
-     * @param {any} res Response
-     * @param {any} next Next callback
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
     static async DeleteToken(req, res, next) {
         try {
@@ -47,9 +47,9 @@ class RegistrarController {
 
     /**
      * Gets a list of roles available in the system
-     * @param {any} req Request
-     * @param {any} res Response
-     * @param {any} next Next callback
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
     static async ListRoles(req, res, next) {
         try {

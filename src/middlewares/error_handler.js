@@ -11,10 +11,10 @@ const Errors = require('../helpers/errors');
  * Express will identify this as an error handler iff
  * it has 4 parameters listed.
  * @category Middlewares
- * @param  {any} err Error object
- * @param  {any} req Request object
- * @param  {any} res Response object
- * @param  {any} next Next callback
+ * @param  {Error} err Error object
+ * @param {Request} req Request
+ * @param {Response} res Response
+ * @param {NextFunction} next Next callback
  */
 // eslint-disable-next-line no-unused-vars
 const errorHandlerMiddleware = (err, req, res, next) => {

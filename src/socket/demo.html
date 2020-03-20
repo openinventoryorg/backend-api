@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.0/css/mdb.min.css" rel="stylesheet">
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        .page {
+            height: 100vh;
+        }
+
+        .message {
+            max-width: 40vw;
+        }
+    </style>
+    <title>Open Invenoty - Web Socket Connection Demo</title>
+</head>
+
+<body>
+    <div id="app">
+        <div class="row page bg-dark">
+            <div class="col-6">
+                <div class="row align-items-center h-100">
+                    <div class="col-6 mx-auto">
+                        <div class="jumbotron">
+                            <div>
+                                <h3 class="text-center">Set Client Settings</h3>
+                                <hr />
+                                <div class="form-group">
+                                    <label for="token">Client Token</label>
+                                    <input type="text" class="form-control" id="token" placeholder="TOKEN"
+                                        v-model="tokenInput">
+                                </div>
+                                <div class="form-group">
+                                    <label for="client">Client Type</label>
+                                    <select class="form-control browser-default custom-select" id="client"
+                                        v-model="clientInput">
+                                        <option value="web" selected>Browser</option>
+                                        <option value="mobile">Mobile</option>
+                                    </select>
+                                </div>
+                                <div class="text-right">
+                                    <button class="btn btn-primary btn-md" v-on:click="connect">Connect</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 bg-white page" style="overflow: scroll; padding-bottom: 100px;">
+                <div class="message m-2 row" v-for="message in messages">
+                    <div class="p-3 text-center w-100 text-muted" v-if="message.type === 'connect'">
+                        New client joined: {{message.data}}
+                    </div>
+                    <div class="p-3 text-center w-100 text-muted" v-if="message.type === 'disconnect'">
+                        Client left: {{message.data}}
+                    </div>
+                    <div class="row" v-if="message.type == 'message'">
+                        <div class="red lighten-2 p-2 rounded-circle text-white text-center mr-3"
+                            style="height: 48px; width: 48px; font-size: 24px;">
+                            {{message.client[0].toUpperCase()}}
+                        </div>
+                        <div class="grey lighten-2 p-2 rounded text-dark">
+                            {{message.data}}
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white" style="position: fixed; bottom: 0; width: 50vw; height: 85px;">
+                    <hr />
+                    <div class="row px-4">
+                        <div class="col-8 p-1">
+                            <input type="text" class="form-control" placeholder="Message" v-model="message">
+                        </div>
+                        <div class="col-3 p-1">
+                            <button type="submit" class="btn btn-primary btn-md btn-block" v-on:click="send">
+                                <i class="fas fa-paper-plane mr-1"></i>
+                                Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.0/js/mdb.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script>
+        let app = new Vue({
+            el: '#app',
+            data: {
+                token: '',
+                client: 'web',
+                tokenInput: '',
+                clientInput: 'web',
+                messages: [],
+                message: '',
+                socket: null,
+            },
+            methods: {
+                connect: function () {
+                    this.token = this.tokenInput;
+                    this.client = this.clientInput;
+                    this.messages = [];
+                    this.defineSocket(this.client, this.token);
+
+                },
+                send: function () {
+                    this.sendMessage(this.message);
+                    this.message = '';
+                },
+                defineSocket: function (client, token) {
+                    this.socket = io('http://localhost:3000', {
+                        query: {
+                            client: client,
+                            token: token
+                        }
+                    });
+                    this.socket.on('server#message', (msg) => {
+                        this.messages.push(msg);
+                    });
+                },
+                sendMessage: function (msg) {
+                    if (this.socket == null) return;
+                    this.socket.emit('client#message', msg);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

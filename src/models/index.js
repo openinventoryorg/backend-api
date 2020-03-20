@@ -18,8 +18,7 @@ const PermissionsSchema = require('./schema/permissions');
 
 /**
  * Database initialization function
- *
- * @returns {Promise<any>} Database object promise
+ * @returns {Promise<Models>} Database object promise
  */
 async function initializeDatabase() {
     // Default global settings for database models

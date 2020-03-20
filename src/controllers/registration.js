@@ -9,9 +9,9 @@ const { RegistrationTokenQuery, UserInformation } = require('./validators/regist
 class RegistrationController {
     /**
      * Uses an email token and returns user details of the associated user
-     * @param {any} req Request
-     * @param {any} res Response
-     * @param {any} next Next callback
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
     static async Verify(req, res, next) {
         try {
@@ -28,9 +28,9 @@ class RegistrationController {
 
     /**
      * Registers a user according to a token, name and password
-     * @param {any} req Request
-     * @param {any} res Response
-     * @param {any} next Next callback
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
     static async Register(req, res, next) {
         try {

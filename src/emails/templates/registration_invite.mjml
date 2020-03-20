@@ -1,0 +1,40 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+
+        <mj-text align="center" font-size="28px" color="#0192FF" font-family="helvetica" font-weight="bold">
+          Open Inventory
+        </mj-text>
+        <mj-text align="center" font-size="20px" color="#0192FF" font-family="helvetica" font-weight="bold">
+          System Registration Invitation
+        </mj-text>
+
+        <mj-divider border-color="#0192FF"></mj-divider>
+
+        <mj-text font-size="16px" font-family="helvetica">Hello {{email}},</mj-text>
+
+        <mj-text font-size="16px" font-family="helvetica">
+          Here is your registration link for open inventory laboratory system. Using this link you can now use
+          the mobile client to borrow lab items easily.
+        </mj-text>
+
+        <mj-button href="{{link}}"> Register </mj-button>
+
+        <mj-text font-size="16px" font-family="helvetica">
+          Click above link in order to register. If the button does not work, paste the follwing link in your
+          browser.
+        </mj-text>
+
+        <mj-text font-size="16px" font-family="helvetica">
+          {{link}}
+        </mj-text>
+
+        <mj-text font-size="16px" font-family="helvetica">
+          Thank You.
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
