@@ -1,4 +1,6 @@
 const { getDatabase } = require('../helpers/get_database');
+const { permissions } = require('../models/schema/permissions');
+
 
 /**
  * Service which is associated with listing items.
@@ -26,6 +28,14 @@ class ListService {
         const database = await getDatabase();
         const labs = await database.Lab.findAll();
         return { labs };
+    }
+
+    /**
+     * Lists the permissions available.
+     * @returns {Promise<{permissions: Object[]}>} List of permissions available
+     */
+    static async ListRolePermissions() {
+        return { permissions };
     }
 }
 
