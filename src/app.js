@@ -1,13 +1,20 @@
 const express = require('express');
 const socketIo = require('socket.io');
+const cors = require('cors');
 
 // Node express application
 const app = express();
 const { errorHandlerMiddleware } = require('./middlewares/error_handler');
 const { jwtAuthMiddleware } = require('./middlewares/jwt_auth');
+const { corsErrorHandlerMiddleware } = require('./middlewares/cors_error_handler');
+
 
 // Add body json parsing middleware
 app.use(require('body-parser').json());
+
+// Avoid CORS same origin error in development. Remove in production
+app.use(cors());
+app.use(corsErrorHandlerMiddleware);
 
 // Enable logging service
 const logger = require('./loaders/logger');

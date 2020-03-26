@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Home</title>
+    <title>controllers/manageroles.js</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -47,76 +47,121 @@
 
 <div id="main">
     
+    <h1 class="page-title">controllers/manageroles.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const RolesService = require('../services/roles');
+const ListService = require('../services/list');
+const { CreateRole, RoleIdQuery, CreateRoleQuery } = require('./validators/manageroles');
 
+/**
+ * Controller which manages roles
+ * @abstract
+ * @category Controllers
+ */
+class ManageRolesController {
+    /**
+     * Creates a new role.
+     *
+     * This creates a new role and returns details including ID.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async PostRole(req, res, next) {
+        try {
+            const { value, error } = CreateRole.validate(req.body);
+            if (error) throw error;
+            const role = await RolesService.CreateRole(value);
+            res.status(200).send(role);
+        } catch (err) {
+            next(err);
+        }
+    }
 
+    /**
+     * Gets an existing role with given id.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async GetRole(req, res, next) {
+        try {
+            const { value, error } = RoleIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
+            const role = await RolesService.GetRole(value.id);
+            res.status(200).send(role);
+        } catch (err) {
+            next(err);
+        }
+    }
 
+    /**
+     * Deletes an existing role with given id.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async DeleteRole(req, res, next) {
+        try {
+            const { value, error } = RoleIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
 
+            await RolesService.DeleteRole(value.id);
+            res.sendStatus(200);
+        } catch (err) {
+            next(err);
+        }
+    }
 
+    /**
+     * Updates role details with given details and ID.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async UpdateRole(req, res, next) {
+        try {
+            const { value, error } = CreateRoleQuery.validate({
+                ...req.body,
+                id: req.params.id,
+            });
+            if (error) throw error;
 
+            const role = await RolesService.UpdateRole(value);
+            res.status(200).send(role);
+        } catch (err) {
+            next(err);
+        }
+    }
 
+    /**
+     * Gets a list of roles available in the system
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListRoles(req, res, next) {
+        try {
+            const roles = await ListService.ListRoles();
+            res.status(200).send(roles);
+        } catch (err) {
+            next(err);
+        }
+    }
+}
 
-
-    
-
-
-    <section class="readme">
-        <article><h1>Open Inventory</h1>
-<p><img src="https://github.com/openinventoryorg/backend-api/raw/master/assets/full_logo.png" alt="Open Inventory"></p>
-<h2>Setup</h2>
-<h3>Database Setup</h3>
-<h4>Postgres Setup</h4>
-<p>Install <a href="https://www.postgresql.org/">postgresql</a> in the local machine and setup correctly. Then use following command to login to the <code>psql</code> shell.</p>
-<pre class="prettyprint source lang-bash"><code>psql -U postgres
+module.exports = ManageRolesController;
 </code></pre>
-<p>Then enter below commands in order to create the role from which the server will access the database.</p>
-<pre class="prettyprint source lang-sql"><code>CREATE ROLE openinventoryuser WITH LOGIN PASSWORD 'password';
-CREATE DATABASE openinventorydatabase;
-GRANT ALL PRIVILEGES ON DATABASE openinventorydatabase TO openinventoryuser;
-\q
-</code></pre>
-<p>Then you should be able to login to <code>psql</code> as <code>openinventoryuser</code>.</p>
-<pre class="prettyprint source lang-bash"><code>psql -U openinventoryuser openinventoryuser
-</code></pre>
-<h3>Node.js setup</h3>
-<p>Install NodeJS. This program was tested with NodeJS 12.16.1 LTS.</p>
-<ul>
-<li><a href="https://nodejs.org/en/">node.js v12.16.1 erbium</a></li>
-<li><a href="https://www.npmjs.com/get-npm">npm</a></li>
-</ul>
-<p>On arch based systems,</p>
-<pre class="prettyprint source lang-bash"><code>sudo pacman -S nodejs-lts-erbium
-sudo pacman -S npm
-</code></pre>
-<p>After that <code>cd</code> to the project directory and run <code>npm install</code>.</p>
-<h3>Run Project</h3>
-<pre class="prettyprint source lang-bash"><code>cd directory/project
-npm install
-</code></pre>
-<p>Then create a <code>.env</code> file in the project directory with following content.
-You have to set the database user/password/secret as you wish.</p>
-<pre class="prettyprint source lang-text"><code>PORT=3000
-NODE_ENV=development
-DATABASE_URL=postgres://openinventoryuser:password@localhost:5432/openinventorydatabase
-SALT_ROUNDS=10
-JWT_SECRET=gpV3XgVPf3Nq26CRwtmVLGu2aQFgXyqPtWr8Yp4CNN675xEhqd3UGCWg2hDVpvDq
-LOG_LEVEL=info
-MAIL_SENDER=openinventory@gmail.com
-SITE_API=https://openinventory.org/register
-</code></pre>
-<p>Then use <code>nodemon</code> or <code>node</code> to serve the pages.</p>
-<pre class="prettyprint source lang-bash"><code>npm run dev # to run using nodemon
-npm start   # otherwise
-</code></pre>
-<p>Now visit <a href="http:%5C/%5C/localhost:3000/">http://localhost:3000/</a> and confirm that site is running.</p></article>
+        </article>
     </section>
-
-
 
 
 

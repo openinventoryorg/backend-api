@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Home</title>
+    <title>ManageRolesController</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -47,11 +47,45 @@
 
 <div id="main">
     
+    <h1 class="page-title">ManageRolesController</h1>
+    
 
     
 
 
 
+
+<section>
+
+
+<header>
+    
+        
+        <h2>
+        
+        ManageRolesController
+        
+        </h2>
+        
+        
+            <div class="class-description">Controller which manages roles</div>
+            <hr/>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+        <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="ManageRolesController"><span class="type-signature">(abstract) </span>new ManageRolesController<span class="signature">()</span><span class="type-signature"></span></h4>
+
     
 
 
@@ -62,61 +96,1003 @@
 
 
 
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class="details-item-container">
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source"><ul class="dummy"><li>
+                <a href="controllers_manageroles.js.html">controllers/manageroles.js</a>, <a href="controllers_manageroles.js.html#line10">line 10</a>
+            </li></ul></dd>
+        </div>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".DeleteRole"><span class="type-signature">(async, static) </span>DeleteRole<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
+
     
 
 
-    <section class="readme">
-        <article><h1>Open Inventory</h1>
-<p><img src="https://github.com/openinventoryorg/backend-api/raw/master/assets/full_logo.png" alt="Open Inventory"></p>
-<h2>Setup</h2>
-<h3>Database Setup</h3>
-<h4>Postgres Setup</h4>
-<p>Install <a href="https://www.postgresql.org/">postgresql</a> in the local machine and setup correctly. Then use following command to login to the <code>psql</code> shell.</p>
-<pre class="prettyprint source lang-bash"><code>psql -U postgres
-</code></pre>
-<p>Then enter below commands in order to create the role from which the server will access the database.</p>
-<pre class="prettyprint source lang-sql"><code>CREATE ROLE openinventoryuser WITH LOGIN PASSWORD 'password';
-CREATE DATABASE openinventorydatabase;
-GRANT ALL PRIVILEGES ON DATABASE openinventorydatabase TO openinventoryuser;
-\q
-</code></pre>
-<p>Then you should be able to login to <code>psql</code> as <code>openinventoryuser</code>.</p>
-<pre class="prettyprint source lang-bash"><code>psql -U openinventoryuser openinventoryuser
-</code></pre>
-<h3>Node.js setup</h3>
-<p>Install NodeJS. This program was tested with NodeJS 12.16.1 LTS.</p>
-<ul>
-<li><a href="https://nodejs.org/en/">node.js v12.16.1 erbium</a></li>
-<li><a href="https://www.npmjs.com/get-npm">npm</a></li>
-</ul>
-<p>On arch based systems,</p>
-<pre class="prettyprint source lang-bash"><code>sudo pacman -S nodejs-lts-erbium
-sudo pacman -S npm
-</code></pre>
-<p>After that <code>cd</code> to the project directory and run <code>npm install</code>.</p>
-<h3>Run Project</h3>
-<pre class="prettyprint source lang-bash"><code>cd directory/project
-npm install
-</code></pre>
-<p>Then create a <code>.env</code> file in the project directory with following content.
-You have to set the database user/password/secret as you wish.</p>
-<pre class="prettyprint source lang-text"><code>PORT=3000
-NODE_ENV=development
-DATABASE_URL=postgres://openinventoryuser:password@localhost:5432/openinventorydatabase
-SALT_ROUNDS=10
-JWT_SECRET=gpV3XgVPf3Nq26CRwtmVLGu2aQFgXyqPtWr8Yp4CNN675xEhqd3UGCWg2hDVpvDq
-LOG_LEVEL=info
-MAIL_SENDER=openinventory@gmail.com
-SITE_API=https://openinventory.org/register
-</code></pre>
-<p>Then use <code>nodemon</code> or <code>node</code> to serve the pages.</p>
-<pre class="prettyprint source lang-bash"><code>npm run dev # to run using nodemon
-npm start   # otherwise
-</code></pre>
-<p>Now visit <a href="http:%5C/%5C/localhost:3000/">http://localhost:3000/</a> and confirm that site is running.</p></article>
-    </section>
+
+    <div class="description">
+        Deletes an existing role with given id.
+    </div>
 
 
+
+
+
+
+
+
+
+    <div class="method-member-container flex flex-col w-100 overflow-auto mt-20">
+        <strong>Parameters:</strong>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Request</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Request</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Response</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Response</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">NextFunction</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Next callback</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class="details-item-container">
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source"><ul class="dummy"><li>
+                <a href="controllers_manageroles.js.html">controllers/manageroles.js</a>, <a href="controllers_manageroles.js.html#line53">line 53</a>
+            </li></ul></dd>
+        </div>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".GetRole"><span class="type-signature">(async, static) </span>GetRole<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+    <div class="description">
+        Gets an existing role with given id.
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="method-member-container flex flex-col w-100 overflow-auto mt-20">
+        <strong>Parameters:</strong>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Request</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Request</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Response</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Response</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">NextFunction</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Next callback</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class="details-item-container">
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source"><ul class="dummy"><li>
+                <a href="controllers_manageroles.js.html">controllers/manageroles.js</a>, <a href="controllers_manageroles.js.html#line36">line 36</a>
+            </li></ul></dd>
+        </div>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".ListRoles"><span class="type-signature">(async, static) </span>ListRoles<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+    <div class="description">
+        Gets a list of roles available in the system
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="method-member-container flex flex-col w-100 overflow-auto mt-20">
+        <strong>Parameters:</strong>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Request</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Request</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Response</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Response</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">NextFunction</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Next callback</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class="details-item-container">
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source"><ul class="dummy"><li>
+                <a href="controllers_manageroles.js.html">controllers/manageroles.js</a>, <a href="controllers_manageroles.js.html#line92">line 92</a>
+            </li></ul></dd>
+        </div>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".PostRole"><span class="type-signature">(async, static) </span>PostRole<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+    <div class="description">
+        Creates a new role.
+
+This creates a new role and returns details including ID.
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="method-member-container flex flex-col w-100 overflow-auto mt-20">
+        <strong>Parameters:</strong>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Request</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Request</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Response</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Response</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">NextFunction</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Next callback</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class="details-item-container">
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source"><ul class="dummy"><li>
+                <a href="controllers_manageroles.js.html">controllers/manageroles.js</a>, <a href="controllers_manageroles.js.html#line19">line 19</a>
+            </li></ul></dd>
+        </div>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".UpdateRole"><span class="type-signature">(async, static) </span>UpdateRole<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+    <div class="description">
+        Updates role details with given details and ID.
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="method-member-container flex flex-col w-100 overflow-auto mt-20">
+        <strong>Parameters:</strong>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Request</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Request</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Response</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Response</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">NextFunction</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Next callback</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class="details-item-container">
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source"><ul class="dummy"><li>
+                <a href="controllers_manageroles.js.html">controllers/manageroles.js</a>, <a href="controllers_manageroles.js.html#line71">line 71</a>
+            </li></ul></dd>
+        </div>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
