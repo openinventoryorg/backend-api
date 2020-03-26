@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         dueDate: { type: DataTypes.DATE },
         borrowedDate: { type: DataTypes.DATE },
         status: {
-            type: DataTypes.ENUM('PENDING', 'BORROWED', 'RETURNED', 'REJECTED', 'EXPIRED'),
+            type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'BORROWED', 'RETURNED', 'REJECTED', 'EXPIRED'),
             defaultValue: 'PENDING',
             allowNull: false,
         },

@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const path = require('path');
 const hbs = require('nodemailer-express-handlebars');
+const config = require('../config');
 const logger = require('../loaders/logger');
 
 
@@ -15,17 +16,17 @@ const logger = require('../loaders/logger');
  */
 const initializeEtherealMailTransport = async () => {
     try {
-        // Generate test SMTP service account from ethereal.email
-        const etherealUser = await nodemailer.createTestAccount();
-
-        // create reusable transporter object using the default SMTP transport
+        // create reusable transporter object using the ethereal SMTP transport
         const transporter = nodemailer.createTransport({
             host: 'smtp.ethereal.email',
             port: 587,
             secure: false,
-            auth: { etherealUser },
+            auth: {
+                user: config.mail.etherealUsername,
+                pass: config.mail.etherealPassword,
+            },
         });
-        logger.info(`Ethereal account created: ${etherealUser.user} | ${etherealUser.pass}`);
+        logger.info('Logged into etheral account');
 
         // Set directories
         const templatesDir = path.join(__dirname, 'templates');

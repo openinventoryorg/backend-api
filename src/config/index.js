@@ -25,6 +25,8 @@ const configurations = {
     mail: {
         // Automated email sender name
         sender: process.env.MAIL_SENDER || 'noreply@openinventory.org',
+        etherealUsername: process.env.ETHEREAL_USERNAME || 'username',
+        etherealPassword: process.env.ETHEREAL_PASSWORD || 'password',
     },
     site: {
         // Token verification url: [verifyToken]/TOKEN

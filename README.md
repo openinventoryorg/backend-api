@@ -63,6 +63,8 @@ SALT_ROUNDS=10
 JWT_SECRET=gpV3XgVPf3Nq26CRwtmVLGu2aQFgXyqPtWr8Yp4CNN675xEhqd3UGCWg2hDVpvDq
 LOG_LEVEL=info
 MAIL_SENDER=openinventory@gmail.com
+ETHEREAL_USERNAME=hazle.dickens@ethereal.email
+ETHEREAL_PASSWORD=29rrnccVqMvX4wWVNa
 SITE_API=https://openinventory.org/register
 ```
 
