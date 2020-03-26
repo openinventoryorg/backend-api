@@ -96,6 +96,11 @@ class RolesService {
             throw new Errors.BadRequest(`Role ${id} does not exist.`);
         }
 
+        // Protect base roles
+        if (existingRole.name === 'Student' || existingRole.name === 'Administrator') {
+            throw new Errors.BadRequest('Student/Administrator Roles cannot be deleted.');
+        }
+
         // role,rolePermission deleted within a transaction
         try {
             await database.sequelize.transaction(async (t) => {
@@ -125,13 +130,19 @@ class RolesService {
         const database = await getDatabase();
 
         const existingRole = await database.Role.findOne({ where: { id } });
+
         if (!existingRole) {
             throw new Errors.BadRequest(`Role ${id} does not exist.`);
         }
 
         const sameNameRole = await database.Role.findOne({ where: { name } });
-        if (sameNameRole) {
-            throw new Errors.BadRequest(`A role with the name ${name} is already created. Role name must be unique`);
+        if (sameNameRole && sameNameRole.id !== id) {
+            throw new Errors.BadRequest(`Another role with the name ${name} is already created. Role name must be unique`);
+        }
+
+        // Protect base roles
+        if (existingRole.name === 'Student' || existingRole.name === 'Administrator') {
+            throw new Errors.BadRequest('Student/Administrator Roles cannot be updated.');
         }
 
         const permissionList = permissions.map((permissionId) => ({
