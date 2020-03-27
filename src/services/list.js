@@ -21,6 +21,22 @@ class ListService {
     }
 
     /**
+     * Lists the tokens available.
+     * @returns {Promise<{tokens: any[]}>} List of tokens in the database
+     */
+    static async ListTokens() {
+        const database = await getDatabase();
+        const tokens = await database.RegistrationToken.findAll({
+            attributes: ['email', 'valid', 'updatedAt'],
+            include: [{
+                model: database.Role,
+                attributes: ['id', 'name'],
+            }],
+        });
+        return { tokens };
+    }
+
+    /**
      * Lists the labs available.
      * @returns {Promise<{labs: Object[]}>} List of labs in the database
      */
