@@ -15,7 +15,6 @@ class ManagePermissionsController {
     static async ListRolePermissions(req, res, next) {
         try {
             const permissions = await ListService.ListRolePermissions();
-            console.log(permissions);
             res.status(200).send(permissions);
         } catch (err) {
             next(err);

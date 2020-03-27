@@ -72,6 +72,78 @@ class RegistrarService {
         return registrationToken;
     }
 
+    /** Send the registration tokens via email.
+    *
+    * This checks if the users already have tokens,
+    * (There shouldn't - if there is that means either invitation already sent
+    * or user registered) and then sends the tokens via
+    * email.
+    * When the user registers using the token,
+    * he/she will be given the role specified in role id.
+    *
+    * No user can register without a token.
+    *
+    * This is a slow operation.
+    *
+    * If there is atleast one invalid user, operation will fail.
+    * @param {string[]} emails Email of the user
+    * @param {string} roleId UUID of the role that should be assigned to user
+    */
+    static async SendRegistrationTokenList(emails, roleId) {
+        const database = await getDatabase();
+        const uniqueEmails = [...new Set(emails)];
+        const tokens = {};
+
+        try {
+            // Transaction to make sure rollback
+            await database.sequelize.transaction(async (t) => {
+                const promises = uniqueEmails.map(async (email) => {
+                    const token = generateSecureToken(96);
+                    tokens[email] = token;
+
+                    const existingToken = await database.RegistrationToken.findOne({
+                        where: { email },
+                    }, { transaction: t });
+
+                    if (existingToken) {
+                        throw new Errors
+                            .BadRequest(`User ${email} is already sent an invitation link or account already created`);
+                    }
+
+                    const registrationToken = database.RegistrationToken
+                        .build({ email, assignedRoleId: roleId, token });
+                    await registrationToken.save({ transaction: t });
+                });
+
+                await Promise.all(promises);
+            });
+        } catch (err) {
+            logger.error('Error while creating registration tokens: ', err);
+            if (err instanceof Errors.BadRequest) throw err;
+            throw new Errors.BadRequest('Invalid data. Token saving failed.');
+        }
+
+        try {
+            uniqueEmails.forEach((email) => {
+                const token = tokens[email];
+
+                sendMail({
+                    from: config.mail.sender,
+                    to: email,
+                    subject: 'Registration Link - Open Inventory',
+                    template: 'registration_invite',
+                    context: {
+                        email,
+                        link: `${config.site.verifyToken}/${token}`,
+                    },
+                });
+                logger.info(`Token generated for ${email} on role ${roleId} - ${token}`);
+            });
+        } catch (err) {
+            logger.error('Error while saving registration token: ', err);
+        }
+    }
+
     /**
      * Delete the registration token.
      *

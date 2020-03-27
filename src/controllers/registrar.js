@@ -1,6 +1,6 @@
 const RegistrarService = require('../services/registrar');
 const ListService = require('../services/list');
-const { RegistrationTokenGenerationRequest, EmailBasedRequest } = require('./validators/registrar');
+const { RegistrationTokenGenerationRequest, EmailBasedRequest, RegistrationTokenListRequest } = require('./validators/registrar');
 
 /**
  * Controller which associates registration tokens with users
@@ -8,6 +8,26 @@ const { RegistrationTokenGenerationRequest, EmailBasedRequest } = require('./val
  * @category Controllers
  */
 class RegistrarController {
+    /**
+     * Creates email tokens for the specified users on the given role
+     * If token creation failed for at least one user, tokens won't get created.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async PostTokens(req, res, next) {
+        try {
+            const { value, error } = RegistrationTokenListRequest.validate(req.body);
+            if (error) throw error;
+
+            await RegistrarService
+                .SendRegistrationTokenList(value.emails, value.role);
+            res.sendStatus(200);
+        } catch (err) {
+            next(err);
+        }
+    }
+
     /**
      * Creates a email token for the specified user on the given role
      * @param {Request} req Request
