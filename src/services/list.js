@@ -16,6 +16,10 @@ class ListService {
         const database = await getDatabase();
         const roles = await database.Role.findAll({
             attributes: ['id', 'name'],
+            include: [{
+                model: database.RolePermission,
+                attributes: [['permissionId', 'name']],
+            }],
         });
         return { roles };
     }
