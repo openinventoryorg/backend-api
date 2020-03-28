@@ -22,6 +22,7 @@ class ListService {
 
     /**
      * Lists the tokens available.
+     * Only 20 most recent entries are given.
      * @returns {Promise<{tokens: any[]}>} List of tokens in the database
      */
     static async ListTokens() {
@@ -32,6 +33,8 @@ class ListService {
                 model: database.Role,
                 attributes: ['id', 'name'],
             }],
+            order: [['updatedAt', 'DESC']],
+            limit: 20,
         });
         return { tokens };
     }
