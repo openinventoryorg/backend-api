@@ -66,6 +66,21 @@ class RegistrarController {
     }
 
     /**
+     * Gets a list of tokens available in the system
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async GetTokens(req, res, next) {
+        try {
+            const tokens = await ListService.ListTokens();
+            res.status(200).send(tokens);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
      * Gets a list of roles available in the system
      * @param {Request} req Request
      * @param {Response} res Response
