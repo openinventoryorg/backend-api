@@ -11,4 +11,5 @@ module.exports = (database) => {
     database.Role.hasMany(database.RolePermission, { foreignKey: 'roleId' });
     database.User.hasMany(database.LabAssign, { foreignKey: 'userId' });
     database.Lab.hasMany(database.LabAssign, { foreignKey: 'labId' });
+    database.ItemSet.hasMany(database.Attribute, { foreignKey: 'itemSetId' });
 };

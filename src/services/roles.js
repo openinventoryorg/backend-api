@@ -52,7 +52,7 @@ class RolesService {
 
     /**
       * Gets role with given id.
-      * @param {string} id Id of the role to delete
+      * @param {string} id Id of the role to retrieve
       * @returns {Promise<Object>} the retrieved Role object
       */
     static async GetRole(id) {
@@ -113,7 +113,7 @@ class RolesService {
             });
         } catch (err) {
             logger.error('Error while deleting role: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab deletion failed.');
+            throw new Errors.BadRequest('Invalid data. Role deletion failed.');
         }
     }
 

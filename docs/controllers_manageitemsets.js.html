@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>helpers/password.js</title>
+    <title>controllers/manageitemsets.js</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -47,7 +47,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">helpers/password.js</h1>
+    <h1 class="page-title">controllers/manageitemsets.js</h1>
     
 
     
@@ -57,26 +57,108 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const bcrypt = require('bcrypt');
-const config = require('../config');
+            <pre class="prettyprint source linenums"><code>const ItemsetsService = require('../services/itemsets');
+const ListService = require('../services/list');
+const { CreateItemset, ItemsetIdQuery, CreateItemsetQuery } = require('./validators/manageitemsets');
 
 /**
- * Hashes a password to make it secure.
- * @param  {string} password Real password to be hashed
- * @returns {Promise&lt;string>} Hashed password
+ * Controller which manages itemsets
+ * @abstract
+ * @category Controllers
  */
-const hashPassword = (password) => bcrypt.hash(password, config.saltRounds);
+class ManageItemsetsController {
+    /**
+     * Creates a new itemset.
+     *
+     * This creates a new itemset and returns details including ID.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async PostItemset(req, res, next) {
+        try {
+            const { value, error } = CreateItemset.validate(req.body);
+            if (error) throw error;
+            const itemset = await ItemsetsService.CreateItemset(value);
+            res.status(200).send(itemset);
+        } catch (err) {
+            next(err);
+        }
+    }
 
-/**
- * Checks if a password is correct.
- *
- * @param  {string} password Password that user gave
- * @param  {string} hashedPassword Hashed version of the real password
- * @returns {Promise&lt;boolean>} Whether or not the password is correct
- */
-const checkPassword = (password, hashedPassword) => bcrypt.compare(password, hashedPassword);
+    /**
+     * Gets an existing itemset with given id.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async GetItemset(req, res, next) {
+        try {
+            const { value, error } = ItemsetIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
+            const itemset = await ItemsetsService.GetItemset(value.id);
+            res.status(200).send(itemset);
+        } catch (err) {
+            next(err);
+        }
+    }
 
-module.exports = { hashPassword, checkPassword };
+    /**
+     * Deletes an existing itemset with given id.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async DeleteItemset(req, res, next) {
+        try {
+            const { value, error } = ItemsetIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
+
+            await ItemsetsService.DeleteItemset(value.id);
+            res.sendStatus(200);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Updates itemset details with given details and ID.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async UpdateItemset(req, res, next) {
+        try {
+            const { value, error } = CreateItemsetQuery.validate({
+                ...req.body,
+                id: req.params.id,
+            });
+            if (error) throw error;
+
+            const itemset = await ItemsetsService.UpdateItemset(value);
+            res.status(200).send(itemset);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Gets a list of itemsets available in the system
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListItemsets(req, res, next) {
+        try {
+            const itemsets = await ListService.ListItemsets();
+            res.status(200).send(itemsets);
+        } catch (err) {
+            next(err);
+        }
+    }
+}
+
+module.exports = ManageItemsetsController;
 </code></pre>
         </article>
     </section>
