@@ -60,6 +60,22 @@ class ListService {
     static async ListRolePermissions() {
         return { permissions };
     }
+
+    /**
+     * Lists the itemsets available.
+     * @returns {Promise<{itemsets: Object[]}>} List of itemsets available
+     */
+    static async ListItemsets() {
+        const database = await getDatabase();
+        const Itemsets = await database.ItemSet.findAll({
+            attributes: ['id', 'title', 'image'],
+            include: [{
+                model: database.Attribute,
+                attributes: ['key', 'defaultValue', 'editable'],
+            }],
+        });
+        return { Itemsets };
+    }
 }
 
 module.exports = ListService;
