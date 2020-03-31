@@ -2,6 +2,8 @@ const express = require('express');
 const socketIo = require('socket.io');
 const cors = require('cors');
 
+const config = require('./config');
+
 // Node express application
 const app = express();
 const { errorHandlerMiddleware } = require('./middlewares/error_handler');
@@ -22,6 +24,9 @@ const logger = require('./loaders/logger');
 // Connect to database
 require('./models').catch(() => logger.error('Application faced database connection issues'));
 
+// Create initial admin account - will happen iff env variable is set
+require('./services/registrar').CreateInitialAdministratorAccount();
+
 // Authentication Layer
 app.use(jwtAuthMiddleware);
 
@@ -35,8 +40,8 @@ require('./routes').defineEndPoints(app);
 app.use(errorHandlerMiddleware);
 
 // Listen to the indicated port
-const server = app.listen(process.env.PORT, () => {
-    logger.info(`Server started on port ${process.env.PORT}`);
+const server = app.listen(config.port, () => {
+    logger.info(`Server started on port ${config.port}`);
 });
 
 // Socket.io connection

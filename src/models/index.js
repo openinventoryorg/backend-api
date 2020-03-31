@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const logger = require('../loaders/logger');
+const config = require('../config');
 const Relations = require('./relations');
 const UserSchema = require('./schema/user');
 const RoleSchema = require('./schema/role');
@@ -15,6 +16,7 @@ const RegistrationTokenSchema = require('./schema/registration_token');
 const RolePermissionSchema = require('./schema/role_permission');
 const LabAssignSchema = require('./schema/lab_assign');
 const PermissionsSchema = require('./schema/permissions');
+const configureInitialDatabase = require('./config');
 
 /**
  * Database initialization function
@@ -59,8 +61,12 @@ async function initializeDatabase() {
     try {
         // Connect to database
         await sequelize.authenticate();
-        // Sync database schema - Set force: true to drop all tables and recreate
-        await sequelize.sync({ force: false });
+        if (config.initializeDatabase) {
+            await sequelize.sync({ force: true });
+            await configureInitialDatabase(db);
+        } else {
+            await sequelize.sync();
+        }
     } catch (err) {
         logger.error('Unable to connect to the database or create schema: ', err);
         throw err;
