@@ -134,7 +134,7 @@
                     this.message = '';
                 },
                 defineSocket: function (client, token) {
-                    this.socket = io('http://localhost:3000', {
+                    this.socket = io('/', {
                         query: {
                             client: client,
                             token: token
