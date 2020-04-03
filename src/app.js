@@ -45,7 +45,7 @@ const server = app.listen(config.port, () => {
 });
 
 // Socket.io connection
-const io = socketIo(server);
+const io = socketIo(server).of('/staff');
 const { jwtSocketAuthMiddleware } = require('./socket/auth_middleware');
 const onConnection = require('./socket/connection');
 
