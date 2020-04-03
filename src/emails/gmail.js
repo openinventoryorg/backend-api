@@ -23,6 +23,9 @@ const initializeGmailTransport = async () => {
                 user: config.mail.gmailUsername,
                 pass: config.mail.gmailPassword,
             },
+            tls: {
+                rejectUnauthorized: false,
+            },
         });
         logger.info('Logged into etheral account');
 
