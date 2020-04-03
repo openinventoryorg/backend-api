@@ -53,7 +53,7 @@ class ListService {
         return { labs };
     }
 
-<<<<<<< Updated upstream
+
     /**
      * Lists the permissions available.
      * @returns {Promise<{permissions: Object[]}>} List of permissions available
@@ -76,20 +76,20 @@ class ListService {
             }],
         });
         return { Itemsets };
-=======
+    }
+
     static async ListUsers() {
         const database = await getDatabase();
         const users = await database.User.findAll({
             include: {
                 model: database.Role,
                 on: {
-                    User: {$col: database.Role.id}
+                    User: { $col: database.Role.id },
                 },
-                attributes: ['id', 'firstName', 'lastName' , 'email' , 'name'],
-            }
+                attributes: ['id', 'firstName', 'lastName', 'email', 'name'],
+            },
         });
         return users;
->>>>>>> Stashed changes
     }
 }
 
