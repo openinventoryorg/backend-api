@@ -81,15 +81,13 @@ class ListService {
     static async ListUsers() {
         const database = await getDatabase();
         const users = await database.User.findAll({
-            include: {
+            attributes: ['firstName', 'lastName', 'email', 'roleId'],
+            include: [{
                 model: database.Role,
-                on: {
-                    User: { $col: database.Role.id },
-                },
-                attributes: ['id', 'firstName', 'lastName', 'email', 'name'],
-            },
+                attributes: ['name'],
+            }],
         });
-        return users;
+        return { users };
     }
 }
 
