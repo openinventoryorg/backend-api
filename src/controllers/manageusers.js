@@ -15,7 +15,6 @@ class ManageUserController {
     static async DeleteUsers(req, res, next) {
         try {
             const { value, error } = UserIdQuery.validate({ id: req.params.id });
-
             if (error) throw (error);
 
             await UserService.DeleteUsers(value.id);
@@ -29,7 +28,6 @@ class ManageUserController {
         try {
             const { value, error } = UpdateUserQuery.validate({
                 ...req.body,
-
             });
             if (error) throw (error);
 
