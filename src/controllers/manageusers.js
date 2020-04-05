@@ -3,6 +3,12 @@ const UserService = require('../services/users');
 const { UserIdQuery, UpdateUserQuery } = require('./validators/manageusers');
 
 class ManageUserController {
+    /**
+     * Lists users
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
     static async ListUsers(req, res, next) {
         try {
             const users = await ListService.ListUsers();
@@ -12,26 +18,36 @@ class ManageUserController {
         }
     }
 
-    static async DeleteUsers(req, res, next) {
+    /**
+     * Deletes a user with given ID
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async DeleteUser(req, res, next) {
         try {
             const { value, error } = UserIdQuery.validate({ id: req.params.id });
             if (error) throw (error);
 
-            await UserService.DeleteUsers(value.id);
+            await UserService.DeleteUser(value.id);
             res.sendStatus(200);
         } catch (error) {
             next(error);
         }
     }
 
-    static async UpdateUsers(req, res, next) {
+    /**
+     * Updates first name and last name of a user given with the id
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async UpdateUser(req, res, next) {
         try {
-            const { value, error } = UpdateUserQuery.validate({
-                ...req.body,
-            });
+            const { value, error } = UpdateUserQuery.validate({ ...req.body, id: req.params.id });
             if (error) throw (error);
 
-            await UserService.UpdateUsers(value);
+            await UserService.UpdateUser(value.id, value.firstName, value.lastName);
             res.sendStatus(200);
         } catch (error) {
             next(error);

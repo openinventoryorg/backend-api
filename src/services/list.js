@@ -119,10 +119,14 @@ class ListService {
         return { items };
     }
 
+    /**
+     * Lists the users available.
+     * @returns {Promise<{users: Object[]}>} List of users available
+     */
     static async ListUsers() {
         const database = await getDatabase();
         const users = await database.User.findAll({
-            attributes: ['firstName', 'lastName', 'email', 'roleId'],
+            attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
             include: [{
                 model: database.Role,
                 attributes: ['name'],

@@ -76,8 +76,8 @@ class ManageItemsController {
             });
             if (error) throw error;
 
-            const item = await ItemService.UpdateItem(value);
-            res.status(200).send(item);
+            await ItemService.UpdateItem(value);
+            res.sendStatus(200);
         } catch (err) {
             next(err);
         }
