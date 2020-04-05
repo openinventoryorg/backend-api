@@ -66,6 +66,7 @@ MAIL_SENDER=openinventory@gmail.com
 ETHEREAL_USERNAME=hazle.dickens@ethereal.email
 ETHEREAL_PASSWORD=29rrnccVqMvX4wWVNa
 SITE_API=https://openinventory.org/register
+DB_INIT=true
 ```
 
 Then use `nodemon` or `node` to serve the pages.
@@ -76,3 +77,5 @@ npm start   # otherwise
 ```
 
 Now visit <http://localhost:3000/> and confirm that site is running.
+
+After initial run, set DB_INIT as false in the `.env` file.

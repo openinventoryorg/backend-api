@@ -4,6 +4,7 @@ const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
 const { sendMail } = require('../emails');
 const config = require('../config');
+const ListService = require('./list');
 
 /**
  * Service associated with associating a registration token with users
@@ -171,6 +172,18 @@ class RegistrarService {
         } catch (err) {
             logger.error('Error while deleting registration token: ', err);
             throw new Errors.BadRequest('Invalid data. Token deletion failed.');
+        }
+    }
+
+    static async CreateInitialAdministratorAccount() {
+        try {
+            if (config.initializeDatabase) {
+                const { roles } = await ListService.ListRoles();
+                const adminRole = roles.find((v) => v.name === 'administrator');
+                await this.SendRegistrationToken(config.adminEmail, adminRole.id);
+            }
+        } catch (err) {
+            logger.error('Error while creating admin account: ', err);
         }
     }
 }
