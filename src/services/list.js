@@ -53,6 +53,25 @@ class ListService {
         return { labs };
     }
 
+    /**
+     * Lists the items available in the specified lab.
+     * @param {string} labId ID of lab
+     * @returns {Promise<{labs: Object[]}>} List of labs in the database
+     */
+    static async ListLabItems(labId) {
+        const database = await getDatabase();
+        const labItems = await database.Item.findAll({
+            where: { labId },
+            include: [
+                {
+                    model: database.ItemSet,
+                    attributes: ['id', 'title', 'image'],
+                },
+            ],
+        });
+        return { labItems };
+    }
+
 
     /**
      * Lists the permissions available.

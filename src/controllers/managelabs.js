@@ -102,6 +102,24 @@ class ManageLabsController {
             next(err);
         }
     }
+
+    /**
+     * Gets a lists of the items available in the specified lab
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListLabItems(req, res, next) {
+        try {
+            const { value, error } = LabIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
+
+            const labs = await ListService.ListLabItems(value.id);
+            res.status(200).send(labs);
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 module.exports = ManageLabsController;
