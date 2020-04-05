@@ -1,6 +1,6 @@
 const ListService = require('../services/list');
 const UserService = require('../services/users');
-const UserIdQuery = require('./validators/manageusers');
+const { UserIdQuery, UpdateUserQuery } = require('./validators/manageusers');
 
 class ManageUserController {
     static async ListUsers(req, res, next) {
@@ -19,6 +19,21 @@ class ManageUserController {
             if (error) throw (error);
 
             await UserService.DeleteUsers(value.id);
+            res.sendStatus(200);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async UpdateUsers(req, res, next) {
+        try {
+            const { value, error } = UpdateUserQuery.validate({
+                ...req.body,
+
+            });
+            if (error) throw (error);
+
+            await UserService.UpdateUsers(value);
             res.sendStatus(200);
         } catch (error) {
             next(error);

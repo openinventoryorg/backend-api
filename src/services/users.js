@@ -17,6 +17,26 @@ class UserService {
             throw new Errors.BadRequest('Invalid data. User deletion failed.');
         }
     }
+
+    static async UpdateUsers({
+        id, firstName, lastName,
+    }) {
+        const database = await getDatabase();
+
+        const existingUser = await database.User.findOne({ where: { id } });
+        if (!existingUser) {
+            throw new Errors.BadRequest(`User ${id} does not exist`);
+        }
+        try {
+            const User = await existingUser.update({
+                id, firstName, lastName,
+            });
+            return User;
+        } catch (error) {
+            logger.error('Error while updating User: ', error);
+            throw new Errors.BadRequest('Invalid data. User updating failed.');
+        }
+    }
 }
 
 
