@@ -78,6 +78,28 @@ class ListService {
         return { Itemsets };
     }
 
+    /**
+     * Lists the items available.
+     * @returns {Promise<{items: Object[]}>} List of items available
+     */
+    static async ListItems() {
+        const database = await getDatabase();
+        const items = await database.Item.findAll({
+            attributes: ['id', 'serialNumber'],
+            include: [
+                {
+                    model: database.ItemSet,
+                    attributes: ['id', 'title', 'image'],
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title', 'subtitle', 'image'],
+                },
+            ],
+        });
+        return { items };
+    }
+
     static async ListUsers() {
         const database = await getDatabase();
         const users = await database.User.findAll({
