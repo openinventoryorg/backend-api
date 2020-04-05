@@ -53,6 +53,7 @@ class ListService {
         return { labs };
     }
 
+
     /**
      * Lists the permissions available.
      * @returns {Promise<{permissions: Object[]}>} List of permissions available
@@ -75,6 +76,18 @@ class ListService {
             }],
         });
         return { Itemsets };
+    }
+
+    static async ListUsers() {
+        const database = await getDatabase();
+        const users = await database.User.findAll({
+            attributes: ['firstName', 'lastName', 'email', 'roleId'],
+            include: [{
+                model: database.Role,
+                attributes: ['name'],
+            }],
+        });
+        return { users };
     }
 }
 
