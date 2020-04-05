@@ -18,6 +18,7 @@ const LabAssignSchema = require('./schema/lab_assign');
 const PermissionsSchema = require('./schema/permissions');
 const configureInitialDatabase = require('./config');
 
+
 /**
  * Database initialization function
  * @returns {Promise<Models>} Database object promise
