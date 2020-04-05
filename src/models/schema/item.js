@@ -10,12 +10,6 @@ module.exports = (sequelize, DataTypes) => {
             unique: 'serial_number',
             allowNull: false,
         },
-        // Lab id can be null iff isDraft is true
-        isDraft: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: true,
-            allowNull: false,
-        },
         labId: {
             type: DataTypes.UUID,
             references: { model: 'Lab', key: 'id' },
@@ -29,5 +23,3 @@ module.exports = (sequelize, DataTypes) => {
 
     return Item;
 };
-
-// TODO: (Validation): Lab id can be null iff isDraft is true
