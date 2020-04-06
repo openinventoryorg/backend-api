@@ -7,7 +7,7 @@ const Attributes = Joi.array().min(1).items(
         editable: Joi.boolean().required(),
         defaultValue: Joi.string().required().when('editable', {
             is: true,
-            then: Joi.allow(null),
+            then: Joi.allow(''),
         }),
     }),
 ).required();

@@ -67,7 +67,7 @@ class ItemService {
 
         const item = database.Item.build({ serialNumber, itemSetId, labId });
         const attributeList = ItemService
-            .JoinItemSetAttributes(item.itemSet.Attributes, attributes, item.id);
+            .JoinItemSetAttributes(itemSet.Attributes, attributes, item.id);
 
         try {
             await database.sequelize.transaction(async (t) => {
@@ -160,7 +160,8 @@ class ItemService {
 
     /**
      * Updates item with given id.
-     * All fields will be overridden by new ones.
+     * All previous item attributes are removed and replaced
+     * The itemset attributes remain but editable ITset attribute values may get changed
      * @param {Object} item Item object to create
      * @param {string} item.id ID of Item
      * @param {array} item.attributes Attributes for the item
@@ -194,7 +195,7 @@ class ItemService {
         const attributeList = ItemService
             .JoinItemSetAttributes(
                 item.ItemSet.Attributes,
-                [...item.ItemAttributes, ...attributes],
+                attributes,
                 item.id,
             );
 
