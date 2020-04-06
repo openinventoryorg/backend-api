@@ -159,6 +159,11 @@ class LabsService {
         }
     }
 
+    /**
+     * unassigns a user with a given userId from a lab with a given labId
+     * @param {string} labId id of the lab
+     * @param {string} userId id of the user
+     */
     static async UnassignUsersFromLabs({ labId, userId }) {
         const database = await getDatabase();
 
