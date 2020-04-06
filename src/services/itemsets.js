@@ -14,7 +14,7 @@ class ItemsetsService {
      * @param {Object} itemset Itemset object to create
      * @param {string} itemset.title title of itemset
      * @param {string} itemset.image URI of the image
-     * @param {array} attributes Attributes for the itemset
+     * @param {array} itemset.attributes Attributes for the itemset
      * @returns {Promise<Object>} Created itemset object
      */
     static async CreateItemset({ title, image, attributes }) {
@@ -59,32 +59,27 @@ class ItemsetsService {
     static async GetItemset(id) {
         const database = await getDatabase();
 
-        const itemset = await database.ItemSet.findOne({ where: { id } });
+        const itemset = await database.ItemSet.findOne({
+            where: { id },
+            include: [
+                {
+                    model: database.Attribute,
+                    attributes: ['key', 'editable', 'defaultValue'],
+                },
+            ],
+        });
 
         // check if the itemset exist
         if (!itemset) {
             throw new Errors.BadRequest(`Itemset ${id} does not exist.`);
         }
 
-        try {
-            const attributeInstances = await database.Attribute.findAll({
-                where: { itemSetId: id },
-            });
-            const attributes = attributeInstances.map((attribute) => ({
-                key: attribute.key,
-                editable: attribute.editable,
-                defaultValue: attribute.defaultValue,
-            }));
-            return {
-                id: itemset.id,
-                title: itemset.title,
-                image: itemset.image,
-                attributes,
-            };
-        } catch (err) {
-            logger.error('Error while getting itemset attributes: ', err);
-            throw new Errors.BadRequest('Invalid data. Itemset retrieval failed.');
-        }
+        return {
+            id: itemset.id,
+            title: itemset.title,
+            image: itemset.image,
+            attributes: itemset.Attributes,
+        };
     }
 
     /**

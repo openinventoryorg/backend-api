@@ -14,7 +14,7 @@ const Attributes = Joi.array().min(1).items(
 
 const CreateItemset = Joi.object().keys({
     title: Joi.string().lowercase({ force: true }).required(),
-    image: Joi.string().max(1023).required().allow(null),
+    image: Joi.string().max(1023).allow(null),
     attributes: Attributes,
 });
 

@@ -1,11 +1,10 @@
-const nodemailer = require('nodemailer');
 const logger = require('../loaders/logger');
-const { initializeEtherealMailTransport } = require('./ethereal');
+const { initializeGmailTransport } = require('./gmail');
 
 /**
  * Promised future of transport to be used by sendmail method.
  */
-const emailTransportPromise = initializeEtherealMailTransport();
+const emailTransportPromise = initializeGmailTransport();
 
 /**
  * Sends an email to the given url using a given template
@@ -26,8 +25,8 @@ const sendMail = async (email) => {
             logger.error('Email account initiation has failed!');
             return;
         }
-        const info = await transport.sendMail(email);
-        logger.info('Email Sent [URL] %s', nodemailer.getTestMessageUrl(info));
+        await transport.sendMail(email);
+        logger.info(`Email sent to ${email.to}`);
     } catch (err) {
         logger.error('Email sending failure: ', err);
     }
