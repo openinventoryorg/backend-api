@@ -20,4 +20,11 @@ const LabIdQuery = Joi.object().keys({
     id: Joi.string().uuid().required(),
 });
 
-module.exports = { CreateLab, LabIdQuery, CreateLabQuery };
+const LabAndUserQuery = Joi.object().keys({
+    labId: Joi.string().uuid().required(),
+    userId: Joi.string().uuid().required(),
+});
+
+module.exports = {
+    CreateLab, LabIdQuery, CreateLabQuery, LabAndUserQuery,
+};

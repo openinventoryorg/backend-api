@@ -1,6 +1,8 @@
 const LabsService = require('../services/labs');
 const ListService = require('../services/list');
-const { CreateLab, LabIdQuery, CreateLabQuery } = require('./validators/managelabs');
+const {
+    CreateLab, LabIdQuery, CreateLabQuery, LabAndUserQuery,
+} = require('./validators/managelabs');
 
 /**
  * Controller which manages labs
@@ -116,6 +118,42 @@ class ManageLabsController {
 
             const labs = await ListService.ListLabItems(value.id);
             res.status(200).send(labs);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Assigns a user with a given userId to a lab with a given labId
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async AssignUserstoLabs(req, res, next) {
+        try {
+            const { value, error } = LabAndUserQuery.validate(req.body);
+            if (error) throw error;
+
+            await LabsService.AssignUserstoLabs(value);
+            res.sendStatus(200);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Assigns a user with a given userId to a lab with a given labId
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async UnassignUsersFromLabs(req, res, next) {
+        try {
+            const { value, error } = LabAndUserQuery.validate(req.body);
+            if (error) throw error;
+
+            await LabsService.UnassignUsersFromLabs(value);
+            res.sendStatus(200);
         } catch (err) {
             next(err);
         }

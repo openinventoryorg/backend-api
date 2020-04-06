@@ -8,5 +8,7 @@ router.delete('/:id', permissionMiddleware([]), ManageLabsController.DeleteLab);
 router.patch('/:id', permissionMiddleware([]), ManageLabsController.UpdateLab);
 router.get('/:id/items', ManageLabsController.ListLabItems);
 router.get('/list', ManageLabsController.ListLabs);
+router.post('/assign', ManageLabsController.AssignUserstoLabs);
+router.post('/unassign', ManageLabsController.UnassignUsersFromLabs);
 
 module.exports = router;
