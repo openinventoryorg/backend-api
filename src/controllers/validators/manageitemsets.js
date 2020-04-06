@@ -7,22 +7,21 @@ const Attributes = Joi.array().min(1).items(
         editable: Joi.boolean().required(),
         defaultValue: Joi.string().required().when('editable', {
             is: true,
-            then: Joi.allow(null),
+            then: Joi.allow(''),
         }),
     }),
 ).required();
 
 const CreateItemset = Joi.object().keys({
     title: Joi.string().lowercase({ force: true }).required(),
-    image: Joi.string().max(1023).required().allow(null),
+    image: Joi.string().max(1023).allow(null),
     attributes: Attributes,
 });
 
 const CreateItemsetQuery = Joi.object().keys({
     id: Joi.string().uuid().required(),
     title: Joi.string().lowercase({ force: true }).required(),
-    image: Joi.string().max(1023).uri().required()
-        .allow(null),
+    image: Joi.string().max(1023).uri().allow(null),
     attributes: Attributes,
 });
 

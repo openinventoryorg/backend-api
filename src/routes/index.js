@@ -5,7 +5,8 @@ const demoRoutes = require('./demo');
 const manageLabsRoutes = require('./managelabs');
 const manageRolesRoutes = require('./manageroles');
 const managePermissionsRoutes = require('./managepermissions');
-const manageItemsetsRoutes = require('./manageitemsets.js');
+const manageItemsRoutes = require('./manageitems');
+const manageItemsetsRoutes = require('./manageitemsets');
 const manageUsersRoutes = require('./manageusers');
 
 const defineEndPoints = (app) => {
@@ -16,6 +17,7 @@ const defineEndPoints = (app) => {
     app.use('/api/roles', manageRolesRoutes);
     app.use('/api/permissions', managePermissionsRoutes);
     app.use('/api/itemsets', manageItemsetsRoutes);
+    app.use('/api/items', manageItemsRoutes);
     app.use('/api/users', manageUsersRoutes);
     app.use('/api/demo', demoRoutes);
 };

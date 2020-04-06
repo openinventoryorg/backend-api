@@ -53,6 +53,25 @@ class ListService {
         return { labs };
     }
 
+    /**
+     * Lists the items available in the specified lab.
+     * @param {string} labId ID of lab
+     * @returns {Promise<{labs: Object[]}>} List of labs in the database
+     */
+    static async ListLabItems(labId) {
+        const database = await getDatabase();
+        const labItems = await database.Item.findAll({
+            where: { labId },
+            include: [
+                {
+                    model: database.ItemSet,
+                    attributes: ['id', 'title', 'image'],
+                },
+            ],
+        });
+        return { labItems };
+    }
+
 
     /**
      * Lists the permissions available.
@@ -78,10 +97,36 @@ class ListService {
         return { Itemsets };
     }
 
+    /**
+     * Lists the items available.
+     * @returns {Promise<{items: Object[]}>} List of items available
+     */
+    static async ListItems() {
+        const database = await getDatabase();
+        const items = await database.Item.findAll({
+            attributes: ['id', 'serialNumber'],
+            include: [
+                {
+                    model: database.ItemSet,
+                    attributes: ['id', 'title', 'image'],
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title', 'subtitle', 'image'],
+                },
+            ],
+        });
+        return { items };
+    }
+
+    /**
+     * Lists the users available.
+     * @returns {Promise<{users: Object[]}>} List of users available
+     */
     static async ListUsers() {
         const database = await getDatabase();
         const users = await database.User.findAll({
-            attributes: ['firstName', 'lastName', 'email', 'roleId'],
+            attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
             include: [{
                 model: database.Role,
                 attributes: ['name'],
