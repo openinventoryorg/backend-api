@@ -3,7 +3,11 @@ const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
 
 class UserService {
-    static async DeleteUsers(id) {
+    /**
+     * Deletes user with given ID.
+     * @param {string} id User id to delete
+     */
+    static async DeleteUser(id) {
         const database = await getDatabase();
 
         const existingUser = await database.User.findOne({ where: { id } });
@@ -18,9 +22,14 @@ class UserService {
         }
     }
 
-    static async UpdateUsers({
-        id, firstName, lastName,
-    }) {
+    /**
+     * Updates user with the given ID.
+     * @param {string} id ID of the user to update
+     * @param {string} firstName New first name
+     * @param {string} lastName New last name
+     * @returns {Promise<Object>} Created user object
+     */
+    static async UpdateUser(id, firstName, lastName) {
         const database = await getDatabase();
 
         const existingUser = await database.User.findOne({ where: { id } });

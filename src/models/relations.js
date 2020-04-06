@@ -12,4 +12,7 @@ module.exports = (database) => {
     database.User.hasMany(database.LabAssign, { foreignKey: 'userId' });
     database.Lab.hasMany(database.LabAssign, { foreignKey: 'labId' });
     database.ItemSet.hasMany(database.Attribute, { foreignKey: 'itemSetId' });
+    database.Item.hasMany(database.ItemAttribute, { foreignKey: 'itemId' });
+    database.Item.belongsTo(database.Lab, { foreignKey: 'labId' });
+    database.Item.belongsTo(database.ItemSet, { foreignKey: 'itemSetId' });
 };
