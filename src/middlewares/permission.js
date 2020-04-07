@@ -21,12 +21,6 @@ const permissionMiddleware = (allowedPermissions) => (req, res, next) => {
         if (req.authenticated) {
             const { permissions } = req.user;
 
-            // Administrator can do any task - always authenticated
-            if (permissions.includes(Administrator)) {
-                next();
-                return;
-            }
-
             // Check for common permissions between user and allowedPermissions
             const commonPermissions = allowedPermissions
                 .filter((v) => permissions.includes(v));
