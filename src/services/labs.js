@@ -21,6 +21,11 @@ class LabsService {
     static async CreateLab({ title, subtitle, image }) {
         const database = await getDatabase();
 
+        const sameTitleLabs = await database.Lab.findOne({ where: { title } });
+        if (sameTitleLabs) {
+            throw new Errors.BadRequest(`Lab with title ${title} already exists.`);
+        }
+
         const lab = database.Lab.build({ title, subtitle, image });
         try {
             await lab.save();
@@ -66,6 +71,7 @@ class LabsService {
 
     /**
      * Deletes lab with given id.
+     * Lab need to have no items in order to be eligible to be deleted.
      * @param {string} id Id of the lab to delete
      */
     static async DeleteLab(id) {
@@ -75,6 +81,12 @@ class LabsService {
 
         if (!existingLab) {
             throw new Errors.BadRequest(`Lab ${id} does not exist.`);
+        }
+
+        // lab deletion iff no items assigned
+        const labItems = await database.Item.findAll({ where: { labId: id } });
+        if (labItems.length > 0) {
+            throw new Errors.BadRequest('Lab contains items in it.');
         }
 
         try {
