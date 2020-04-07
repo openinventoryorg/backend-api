@@ -3,6 +3,9 @@ const logger = require('../loaders/logger');
 const configureInitialDatabase = async (database) => {
     try {
         await database.sequelize.transaction(async (t) => {
+            const permissionArray = database.Permission.permissions.map((permission) => (
+                { permissionId: permission }));
+
             const studentRole = database.Role.build({
                 name: 'student',
                 RolePermissions: [
@@ -11,9 +14,7 @@ const configureInitialDatabase = async (database) => {
             }, { include: database.RolePermission });
             const adminRole = database.Role.build({
                 name: 'administrator',
-                RolePermissions: [
-                    { permissionId: database.Permission.Administrator },
-                ],
+                RolePermissions: permissionArray,
             }, { include: database.RolePermission });
 
             await studentRole.save({ transaction: t });
