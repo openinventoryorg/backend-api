@@ -45,12 +45,18 @@ class ListService {
     }
 
     /**
-     * Lists the labs available.
+     * Lists the labs available and the assigned users.
      * @returns {Promise<{labs: Object[]}>} List of labs in the database
      */
     static async ListLabs() {
         const database = await getDatabase();
-        const labs = await database.Lab.findAll({ order: ['createdAt'] });
+        const labs = await database.Lab.findAll({
+            order: ['createdAt'],
+            include: [{
+                model: database.User,
+                attributes: ['id', 'firstName', 'lastName', 'email'],
+            }],
+        });
         return { labs };
     }
 
