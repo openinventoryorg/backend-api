@@ -15,4 +15,6 @@ module.exports = (database) => {
     database.Item.hasMany(database.ItemAttribute, { foreignKey: 'itemId' });
     database.Item.belongsTo(database.Lab, { foreignKey: 'labId' });
     database.Item.belongsTo(database.ItemSet, { foreignKey: 'itemSetId' });
+    database.Lab.belongsToMany(database.User, { through: database.LabAssign, foreignKey: 'labId' });
+    database.User.belongsToMany(database.Lab, { through: database.LabAssign, foreignKey: 'userId' });
 };

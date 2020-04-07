@@ -158,6 +158,24 @@ class ManageLabsController {
             next(err);
         }
     }
+
+    /**
+     * List all the users assigned to a given lab
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListAssignedUsers(req, res, next) {
+        try {
+            const { value, error } = LabIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
+
+            const users = await ListService.ListUsersAssignedToLab(value);
+            res.status(200).send(users);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = ManageLabsController;

@@ -1,6 +1,6 @@
 const { getDatabase } = require('../helpers/get_database');
 const { permissions } = require('../models/schema/permissions');
-
+const Errors = require('../helpers/errors');
 
 /**
  * Service which is associated with listing items.
@@ -15,6 +15,7 @@ class ListService {
     static async ListRoles() {
         const database = await getDatabase();
         const roles = await database.Role.findAll({
+            order: ['createdAt'],
             attributes: ['id', 'name'],
             include: [{
                 model: database.RolePermission,
@@ -49,7 +50,7 @@ class ListService {
      */
     static async ListLabs() {
         const database = await getDatabase();
-        const labs = await database.Lab.findAll();
+        const labs = await database.Lab.findAll({ order: ['createdAt'] });
         return { labs };
     }
 
@@ -62,6 +63,7 @@ class ListService {
         const database = await getDatabase();
         const labItems = await database.Item.findAll({
             where: { labId },
+            order: ['createdAt'],
             include: [
                 {
                     model: database.ItemSet,
@@ -88,6 +90,7 @@ class ListService {
     static async ListItemsets() {
         const database = await getDatabase();
         const Itemsets = await database.ItemSet.findAll({
+            order: ['createdAt'],
             attributes: ['id', 'title', 'image'],
             include: [{
                 model: database.Attribute,
@@ -104,6 +107,7 @@ class ListService {
     static async ListItems() {
         const database = await getDatabase();
         const items = await database.Item.findAll({
+            order: ['createdAt'],
             attributes: ['id', 'serialNumber'],
             include: [
                 {
@@ -132,6 +136,28 @@ class ListService {
                 attributes: ['name'],
             }],
         });
+        return { users };
+    }
+
+    /**
+     * Lists the users assigned to a lab with a given id.
+     * @returns {Promise<{users: Object[]}>} List of users assigned to the lab
+     */
+    static async ListUsersAssignedToLab({ id }) {
+        const database = await getDatabase();
+        const users = await database.Lab.findOne({
+            where: { id },
+            order: ['createdAt'],
+            attributes: ['id'],
+            include: [{
+                model: database.User,
+                attributes: ['id', 'firstName', 'lastName', 'email'],
+            }],
+        });
+
+        if (!users) {
+            throw new Errors.BadRequest(`Lab ${id} does not exist.`);
+        }
         return { users };
     }
 }
