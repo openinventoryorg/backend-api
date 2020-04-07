@@ -218,6 +218,31 @@ class ItemService {
             throw new Errors.BadRequest('Invalid data. Item update failed.');
         }
     }
+
+    /**
+     * Transfer an item from one lab to another
+     * @param {string} id ID of Item
+     * @param {array} labId ID of a lab
+     */
+    static async TransferItem({ id, labId }) {
+        const database = await getDatabase();
+
+        const item = await database.Item.findOne({ where: { id } });
+        const lab = await database.Lab.findOne({ where: { id: labId } });
+
+        if (!item) {
+            throw new Errors.BadRequest(`Item ${id} does not exist.`);
+        } else if (!lab) {
+            throw new Errors.BadRequest(`Lab ${labId} does not exist.`);
+        }
+
+        try {
+            await item.update({ labId });
+        } catch (err) {
+            logger.error('Error while transferring item: ', err);
+            throw new Errors.BadRequest('Invalid data. Item transfer failed.');
+        }
+    }
 }
 
 

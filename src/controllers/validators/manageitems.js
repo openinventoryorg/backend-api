@@ -23,4 +23,11 @@ const ItemIdQuery = Joi.object().keys({
     id: Joi.string().uuid().required(),
 });
 
-module.exports = { CreateItem, UpdateItem, ItemIdQuery };
+const ItemTransferQuery = Joi.object().keys({
+    id: Joi.string().uuid().required(),
+    labId: Joi.string().uuid().required(),
+});
+
+module.exports = {
+    CreateItem, UpdateItem, ItemIdQuery, ItemTransferQuery,
+};

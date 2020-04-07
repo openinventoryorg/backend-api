@@ -1,6 +1,8 @@
 const ItemService = require('../services/items');
 const ListService = require('../services/list');
-const { CreateItem, UpdateItem, ItemIdQuery } = require('./validators/manageitems');
+const {
+    CreateItem, UpdateItem, ItemIdQuery, ItemTransferQuery,
+} = require('./validators/manageitems');
 
 /**
  * Controller which manages items
@@ -93,6 +95,23 @@ class ManageItemsController {
         try {
             const items = await ListService.ListItems();
             res.status(200).send(items);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Transfers an item from one lab to another
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async TransferItem(req, res, next) {
+        try {
+            const { value, error } = ItemTransferQuery.validate(req.body);
+            if (error) throw error;
+            await ItemService.TransferItem(value);
+            res.sendStatus(200);
         } catch (err) {
             next(err);
         }
