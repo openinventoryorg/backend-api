@@ -1,4 +1,3 @@
-const { Administrator } = require('../models/schema/permissions');
 const Errors = require('../helpers/errors');
 
 /**

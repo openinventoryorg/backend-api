@@ -47,7 +47,7 @@ class ManageUserController {
             const { value, error } = UpdateUserQuery.validate({ ...req.body, id: req.params.id });
             if (error) throw (error);
 
-            await UserService.UpdateUser(value.id, value.firstName, value.lastName);
+            await UserService.UpdateUser(value);
             res.sendStatus(200);
         } catch (error) {
             next(error);

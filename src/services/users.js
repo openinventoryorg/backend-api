@@ -29,7 +29,7 @@ class UserService {
      * @param {string} lastName New last name
      * @returns {Promise<Object>} Created user object
      */
-    static async UpdateUser(id, firstName, lastName) {
+    static async UpdateUser({ id, firstName, lastName }) {
         const database = await getDatabase();
 
         const existingUser = await database.User.findOne({ where: { id } });
