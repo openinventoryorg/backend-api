@@ -53,6 +53,21 @@ class ManageUserController {
             next(error);
         }
     }
+
+    /**
+     * Lists users with the permission of inventory managers
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListInventoryManagers(req, res, next) {
+        try {
+            const inventoryManagers = await ListService.ListInventoryManagers();
+            res.status(200).send(inventoryManagers);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = ManageUserController;

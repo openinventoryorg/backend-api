@@ -166,6 +166,31 @@ class ListService {
         }
         return { users };
     }
+
+    /**
+     * Lists the users with INVENTORY_MANAGER permissions
+     * @returns {Promise<{users: Object[]}>} List of users assigned to the lab
+     */
+    static async ListInventoryManagers() {
+        const database = await getDatabase();
+        const inventoryManagers = await database.User.findAll({
+            attributes: ['id', 'firstName', 'lastName', 'email'],
+            order: ['createdAt'],
+            include: [{
+                model: database.Role,
+                attributes: [],
+                required: true,
+                include: [{
+                    model: database.RolePermission,
+                    attributes: [],
+                    where: {
+                        permissionId: database.Permission.InventoryManager,
+                    },
+                }],
+            }],
+        });
+        return { inventoryManagers };
+    }
 }
 
 module.exports = ListService;
