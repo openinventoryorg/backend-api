@@ -83,12 +83,6 @@ class LabsService {
             throw new Errors.BadRequest(`Lab ${id} does not exist.`);
         }
 
-        // lab deletion iff no items assigned
-        const labItems = await database.Item.findAll({ where: { labId: id } });
-        if (labItems.length > 0) {
-            throw new Errors.BadRequest('Lab contains items in it.');
-        }
-
         try {
             await existingLab.destroy();
         } catch (err) {

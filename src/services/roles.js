@@ -101,12 +101,6 @@ class RolesService {
             throw new Errors.BadRequest('Student/Administrator Roles cannot be deleted.');
         }
 
-        // delete roles iff no users of the given role
-        const roleUsers = await database.User.findAll({ where: { roleId: id } });
-        if (roleUsers.length > 0) {
-            throw new Errors.BadRequest('Role has users');
-        }
-
         // role,rolePermission deleted within a transaction
         try {
             await database.sequelize.transaction(async (t) => {
