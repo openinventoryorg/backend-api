@@ -124,6 +124,10 @@ class ListService {
                     model: database.Lab,
                     attributes: ['id', 'title', 'subtitle', 'image'],
                 },
+                {
+                    model: database.ItemAttribute,
+                    attributes: ['key', 'value'],
+                },
             ],
         });
         return { items };
