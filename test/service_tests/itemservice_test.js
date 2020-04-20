@@ -74,7 +74,8 @@ describe('ItemService', () => {
         //     }).catch(done);
         // });
 
-        // it('should throw an error if an itemset with the given itemsetid does not exist', (done) => {
+        // it('should throw an error if an itemset with the given itemsetid does not exist',
+        // (done) => {
         //     ItemService.CreateItem().then((item) => {
         //         done();
         //     }).catch(done);
@@ -92,7 +93,8 @@ describe('ItemService', () => {
         //     }).catch(done);
         // });
 
-        // it('should throw an error if attribute list has the correct format {key, value}[]', (done) => {
+        // it('should throw an error if attribute list has the correct format {key, value}[]',\
+        //  (done) => {
         //     ItemService.CreateItem().then((item) => {
         //         done();
         //     }).catch(done);
