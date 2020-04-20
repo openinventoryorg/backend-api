@@ -34,3 +34,14 @@ exports.ItemAttributeValueList = [{
     key: 'price',
     value: 'Rs10000',
 }];
+
+exports.ItemAttributeCreateValueList = [{
+    itemId: '00c44a93-429b-439d-8722-2e358f454a18',
+    key: 'voltage',
+    value: '500V',
+},
+{
+    itemId: '00c44a93-429b-439d-8722-2e358f454a18',
+    key: 'price',
+    value: 'Rs10000',
+}];

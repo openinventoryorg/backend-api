@@ -16,11 +16,9 @@ const Item = DBConnectionMock.define('Item', ItemValue);
 // eslint-disable-next-line consistent-return
 Item.$queryInterface.$useHandler(async (query, queryOptions) => {
     if (query === 'findOne') {
-        const itemInstance = Item.build({
-            itemId: '00c44a93-429b-439d-8722-2e358f454a18',
-            key: 'voltage',
-            value: '500V',
-        });
+        const itemInstance = Item.build().dataValues;
+        if (queryOptions[0].where.id !== itemInstance.id) return null;
+
         if (queryOptions[0].include && queryOptions[0].include.length > 0) {
             const associations = {};
             if (queryOptions[0].include.find((element) => element.model.name === 'ItemSet')) {
@@ -32,7 +30,7 @@ Item.$queryInterface.$useHandler(async (query, queryOptions) => {
                     ItemAttributeValueList,
                 ).map((attribute) => attribute.dataValues);
             }
-            return { ...itemInstance.dataValues, ...associations };
+            return { ...itemInstance, ...associations };
         }
         return itemInstance;
     }

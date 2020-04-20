@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
-
 const proxyquire = require('proxyquire');
 
 const { assert } = require('chai');
+// const Errors = require('../../src/helpers/errors');
 const { mockDatabase } = require('../mockdatabase/mockdatabase');
 const {
-    ItemSetValue, LabValue, ItemValue,
+    ItemSetValue, LabValue, ItemValue, ItemAttributeCreateValueList,
 } = require('../mockdatabase/schemavalues');
 
 const ItemService = proxyquire('../../src/services/items', {
@@ -14,11 +14,12 @@ const ItemService = proxyquire('../../src/services/items', {
     },
 });
 
-// const itemId = '00c44a93-429b-439d-8722-2e358f454a18';
-// const labId = '6ba84a97-ebca-4d44-8e6a-8e55905cafb6';
 
 describe('ItemService', () => {
     describe('GetItem', () => {
+        // it('GetItem should return an error if item id is not in the db', () => assert.throws(
+        //     () => ItemService.GetItem('00c44a93-429b-439d-8722-2e358f454a17'), Errors.BadRequest,
+        // ));
         it('GetItem should return an object', (done) => {
             ItemService.GetItem(ItemValue.id).then((item) => {
                 assert.isObject(item, 'item is an object');
@@ -49,5 +50,64 @@ describe('ItemService', () => {
                 done();
             }).catch(done);
         });
+    });
+
+    describe('CreateItem', () => {
+        // it('Should throw an error if there is a DB error', (done) => {
+        //     ItemService.CreateItem(ItemValue.serialNumber, ItemSetValue.id, ).then((item) => {
+        //         done();
+        //     }).catch(done);
+        // });
+
+        it('should create an item successfully and return an object', (done) => {
+            ItemService.CreateItem(
+                ItemValue.serialNumber, ItemSetValue.id, Lab.id, ItemAttributeCreateValueList,
+            ).then((item) => {
+                assert.isObject(item, 'item is an object');
+                done();
+            }).catch(done);
+        });
+
+        // it('should throw an error if an item with the given name exists', (done) => {
+        //     ItemService.CreateItem().then((item) => {
+        //         done();
+        //     }).catch(done);
+        // });
+
+        // it('should throw an error if an itemset with the given itemsetid does not exist', (done) => {
+        //     ItemService.CreateItem().then((item) => {
+        //         done();
+        //     }).catch(done);
+        // });
+
+        // it('should throw an error if an lab with the given labid does not exist', (done) => {
+        //     ItemService.CreateItem().then((item) => {
+        //         done();
+        //     }).catch(done);
+        // });
+
+        // it('should throw an error if a non editable itemset attribute is altered', (done) => {
+        //     ItemService.CreateItem().then((item) => {
+        //         done();
+        //     }).catch(done);
+        // });
+
+        // it('should throw an error if attribute list has the correct format {key, value}[]', (done) => {
+        //     ItemService.CreateItem().then((item) => {
+        //         done();
+        //     }).catch(done);
+        // });
+
+        // it('should return an id in the format UUID', (done) => {
+        //     ItemService.CreateItem().then((item) => {
+        //         done();
+        //     }).catch(done);
+        // });
+
+        // it('should return an attribute list with the correct format {key, value}[]', (done) => {
+        //     ItemService.CreateItem().then((item) => {
+        //         done();
+        //     }).catch(done);
+        // });
     });
 });

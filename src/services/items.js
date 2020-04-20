@@ -117,6 +117,7 @@ class ItemService {
 
         // check if the item exist
         if (!item) {
+            // console.log(item);
             throw new Errors.BadRequest('Item does not exist.');
         }
 
