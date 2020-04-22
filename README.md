@@ -1,5 +1,7 @@
 # Open Inventory
 
+> A liver version of the open inventory system server can be found in <https://open-inventory-system.herokuapp.com/>
+
 ![Open Inventory](https://github.com/openinventoryorg/backend-api/raw/master/assets/full_logo.png)
 
 ## Setup
@@ -56,17 +58,20 @@ Then create a `.env` file in the project directory with following content.
 You have to set the database user/password/secret as you wish.
 
 ```text
-PORT=3000
+PORT=8000
 NODE_ENV=development
-DATABASE_URL=postgres://openinventoryuser:password@localhost:5432/openinventorydatabase
+DATABASE_URL=postgres://smartlab:roJaGdNZgqNpLQcq@localhost:5432/smartlab
 SALT_ROUNDS=10
-JWT_SECRET=gpV3XgVPf3Nq26CRwtmVLGu2aQFgXyqPtWr8Yp4CNN675xEhqd3UGCWg2hDVpvDq
+JWT_SECRET=helloguys
 LOG_LEVEL=info
-MAIL_SENDER=openinventory@gmail.com
-ETHEREAL_USERNAME=hazle.dickens@ethereal.email
-ETHEREAL_PASSWORD=29rrnccVqMvX4wWVNa
-SITE_API=https://openinventory.org/register
-DB_INIT=true
+MAIL_SENDER=openinventorysystem@gmail.com
+ETHEREAL_USERNAME=maynard64@ethereal.email
+ETHEREAL_PASSWORD=E6NyGYDJCgrCr9QKYN
+GMAIL_USERNAME=openinventorysystem@gmail.com
+GMAIL_PASSWORD=jHm33JhqdhWKuknB
+SITE_API=http://localhost:3000/register
+DB_INIT=false
+ADMIN_EMAIL=admin@admin.com
 ```
 
 Then use `nodemon` or `node` to serve the pages.
