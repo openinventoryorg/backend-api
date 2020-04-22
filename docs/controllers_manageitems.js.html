@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>services/labs.js</title>
+    <title>controllers/manageitems.js</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -47,7 +47,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">services/labs.js</h1>
+    <h1 class="page-title">controllers/manageitems.js</h1>
     
 
     
@@ -57,197 +57,127 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const { getDatabase } = require('../helpers/get_database');
-const Errors = require('../helpers/errors');
-const logger = require('../loaders/logger');
-const { LabManager } = require('../models/schema/permissions');
+            <pre class="prettyprint source linenums"><code>const ItemService = require('../services/items');
+const ListService = require('../services/list');
+const {
+    CreateItem, UpdateItem, ItemIdQuery, ItemTransferQuery,
+} = require('./validators/manageitems');
 
 /**
- * Service that manages CUD of labs
+ * Controller which manages items
  * @abstract
- * @category Services
+ * @category Controllers
  */
-class LabsService {
+class ManageItemsController {
     /**
-     * Creates lab with given data.
-     * Id will be automatically generated.
-     * @param {Object} lab Lab object to create
-     * @param {string} lab.title Title of lab
-     * @param {string} lab.subtitle Subtitle of lab
-     * @param {string} lab.image Image of lab
-     * @returns {Promise&lt;Object>} Created lab object
+     * Creates a new item.
+     *
+     * This creates a new item and returns details including ID.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
-    static async CreateLab({ title, subtitle, image }) {
-        const database = await getDatabase();
-
-        const sameTitleLabs = await database.Lab.findOne({ where: { title } });
-        if (sameTitleLabs) {
-            throw new Errors.BadRequest(`Lab with title ${title} already exists.`);
-        }
-
-        const lab = database.Lab.build({ title, subtitle, image });
+    static async PostItem(req, res, next) {
         try {
-            await lab.save();
+            const { value, error } = CreateItem.validate(req.body);
+            if (error) throw error;
+            const item = await ItemService.CreateItem(value);
+            res.status(200).send(item);
         } catch (err) {
-            logger.error('Error while saving lab: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab creation failed.');
-        }
-        return lab;
-    }
-
-    /**
-     * Creates lab with given data and ID.
-     * @param {Object} lab Lab object to create
-     * @param {string} lab.id ID of lab to be created
-     * @param {string} lab.title Title of lab
-     * @param {string} lab.subtitle Subtitle of lab
-     * @param {string} lab.image Image of lab
-     * @returns {Promise&lt;Object>} Created lab object
-     */
-    static async PutLab({
-        id, title, subtitle, image,
-    }) {
-        const database = await getDatabase();
-
-        const existingLab = await database.Lab.findOne({ where: { id } });
-
-        if (existingLab) {
-            throw new Errors.BadRequest(`Lab ${id} already exists.`);
-        }
-
-        const lab = await database.Lab.build({
-            id, title, subtitle, image,
-        });
-
-        try {
-            lab.save();
-        } catch (err) {
-            logger.error('Error while updating lab: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab update failed.');
-        }
-        return lab;
-    }
-
-    /**
-     * Deletes lab with given id.
-     * Lab need to have no items in order to be eligible to be deleted.
-     * @param {string} id Id of the lab to delete
-     */
-    static async DeleteLab(id) {
-        const database = await getDatabase();
-
-        const existingLab = await database.Lab.findOne({ where: { id } });
-
-        if (!existingLab) {
-            throw new Errors.BadRequest(`Lab ${id} does not exist.`);
-        }
-
-        try {
-            await existingLab.destroy();
-        } catch (err) {
-            logger.error('Error while deleting lab: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab deletion failed.');
+            next(err);
         }
     }
 
     /**
-     * Updates lab with given id.
-     * All fields will be overridden by new ones.
-     * @param {Object} lab Lab object to create
-     * @param {string} lab.id ID of lab
-     * @param {string} lab.title Title of lab
-     * @param {string} lab.subtitle Subtitle of lab
-     * @param {string} lab.image Image of lab
-     * @returns {Promise&lt;Object>} Created lab object
+     * Gets an existing item with given id.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
-    static async UpdateLab({
-        id, title, subtitle, image,
-    }) {
-        const database = await getDatabase();
-
-        const existingLab = await database.Lab.findOne({ where: { id } });
-
-        if (!existingLab) {
-            throw new Errors.BadRequest(`Lab ${id} does not exist.`);
-        }
-
+    static async GetItem(req, res, next) {
         try {
-            const lab = await existingLab.update({
-                id, title, subtitle, image,
+            const { value, error } = ItemIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
+            const item = await ItemService.GetItem(value.id);
+            res.status(200).send(item);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Deletes an existing item with given id.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async DeleteItem(req, res, next) {
+        try {
+            const { value, error } = ItemIdQuery.validate({ id: req.params.id });
+            if (error) throw error;
+
+            await ItemService.DeleteItem(value.id);
+            res.sendStatus(200);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Updates item details with given details and ID.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async UpdateItem(req, res, next) {
+        try {
+            const { value, error } = UpdateItem.validate({
+                ...req.body,
+                id: req.params.id,
             });
-            return lab;
+            if (error) throw error;
+
+            const item = await ItemService.UpdateItem(value);
+            res.status(200).send(item);
         } catch (err) {
-            logger.error('Error while updating lab: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab update failed.');
+            next(err);
         }
     }
 
     /**
-     * Assigns a user with a given userId to a lab with a given labId
-     * @param {string} labId id of the lab
-     * @param {string} userId id of the user
+     * Gets a list of items available in the system
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
-    static async AssignUserstoLabs({ labId, userId }) {
-        const database = await getDatabase();
-
-        const user = await database.User.findOne({ where: { id: userId } });
-        const lab = await database.Lab.findOne({ where: { id: labId } });
-
-        if (!user) {
-            throw new Errors.BadRequest(`User ${userId} does not exist.`);
-        } else if (!lab) {
-            throw new Errors.BadRequest(`Lab ${labId} does not exist.`);
-        }
-
-        const isAPermittedUser = await database.RolePermission.findOne({
-            where: {
-                roleId: user.roleId,
-                permissionId: LabManager,
-            },
-        });
-        // checks for permissions to be assigned to a lab
-        if (!isAPermittedUser) {
-            throw new Errors.BadRequest(`User ${userId} has not enough permissions.`);
-        }
-
-        // create relation if its not prev. created
+    static async ListItems(req, res, next) {
         try {
-            const [, created] = await database.LabAssign.findOrCreate({
-                where: { labId, userId },
-            });
-            if (!created) {
-                throw new Errors.BadRequest('User is already assigned to the lab');
-            }
+            const items = await ListService.ListItems();
+            res.status(200).send(items);
         } catch (err) {
-            logger.error('Error while assigning the user to the lab: ', err);
-            throw new Errors.BadRequest('Lab assignment failed. Please try again');
+            next(err);
         }
     }
 
     /**
-     * unassigns a user with a given userId from a lab with a given labId
-     * @param {string} labId id of the lab
-     * @param {string} userId id of the user
+     * Transfers an item from one lab to another
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
      */
-    static async UnassignUsersFromLabs({ labId, userId }) {
-        const database = await getDatabase();
-
-        const assignedUser = await database.LabAssign.findOne({ where: { userId, labId } });
-
-        if (!assignedUser) {
-            throw new Errors.BadRequest(`User ${userId} assigned to Lab ${labId} relation does not exist.`);
-        }
+    static async TransferItem(req, res, next) {
         try {
-            await assignedUser.destroy();
+            const { value, error } = ItemTransferQuery.validate(req.body);
+            if (error) throw error;
+            await ItemService.TransferItem(value);
+            res.sendStatus(200);
         } catch (err) {
-            logger.error('Error while deleting the User assignment: ', err);
-            throw new Errors.BadRequest('Lab unassignment failed. Please try again');
+            next(err);
         }
     }
 }
 
-
-module.exports = LabsService;
+module.exports = ManageItemsController;
 </code></pre>
         </article>
     </section>

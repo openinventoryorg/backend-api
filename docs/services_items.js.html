@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>services/labs.js</title>
+    <title>services/items.js</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -47,7 +47,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">services/labs.js</h1>
+    <h1 class="page-title">services/items.js</h1>
     
 
     
@@ -60,194 +60,252 @@
             <pre class="prettyprint source linenums"><code>const { getDatabase } = require('../helpers/get_database');
 const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
-const { LabManager } = require('../models/schema/permissions');
 
 /**
- * Service that manages CUD of labs
+ * Service that manages CRUD of items
  * @abstract
  * @category Services
  */
-class LabsService {
-    /**
-     * Creates lab with given data.
-     * Id will be automatically generated.
-     * @param {Object} lab Lab object to create
-     * @param {string} lab.title Title of lab
-     * @param {string} lab.subtitle Subtitle of lab
-     * @param {string} lab.image Image of lab
-     * @returns {Promise&lt;Object>} Created lab object
-     */
-    static async CreateLab({ title, subtitle, image }) {
-        const database = await getDatabase();
-
-        const sameTitleLabs = await database.Lab.findOne({ where: { title } });
-        if (sameTitleLabs) {
-            throw new Errors.BadRequest(`Lab with title ${title} already exists.`);
-        }
-
-        const lab = database.Lab.build({ title, subtitle, image });
-        try {
-            await lab.save();
-        } catch (err) {
-            logger.error('Error while saving lab: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab creation failed.');
-        }
-        return lab;
-    }
-
-    /**
-     * Creates lab with given data and ID.
-     * @param {Object} lab Lab object to create
-     * @param {string} lab.id ID of lab to be created
-     * @param {string} lab.title Title of lab
-     * @param {string} lab.subtitle Subtitle of lab
-     * @param {string} lab.image Image of lab
-     * @returns {Promise&lt;Object>} Created lab object
-     */
-    static async PutLab({
-        id, title, subtitle, image,
-    }) {
-        const database = await getDatabase();
-
-        const existingLab = await database.Lab.findOne({ where: { id } });
-
-        if (existingLab) {
-            throw new Errors.BadRequest(`Lab ${id} already exists.`);
-        }
-
-        const lab = await database.Lab.build({
-            id, title, subtitle, image,
+class ItemService {
+    static JoinItemSetAttributes(itemSetAttribs, itemAttribs, itemId) {
+        const lockedAttribs = new Set();
+        const mappedParentAttribs = {};
+        itemSetAttribs.forEach(({ key, defaultValue, editable }) => {
+            if (!editable) lockedAttribs.add(key);
+            mappedParentAttribs[key] = defaultValue;
+        });
+        itemAttribs.forEach(({ key, value }) => {
+            if (lockedAttribs.has(key)) throw new Errors.BadRequest(`Cannot modify a locked attribute: ${key}`);
+            mappedParentAttribs[key] = value;
         });
 
-        try {
-            lab.save();
-        } catch (err) {
-            logger.error('Error while updating lab: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab update failed.');
-        }
-        return lab;
+        const attributeList = Object.entries(mappedParentAttribs)
+            .map(([key, value]) => ({ itemId, key, value }));
+
+        return attributeList;
     }
 
-    /**
-     * Deletes lab with given id.
-     * Lab need to have no items in order to be eligible to be deleted.
-     * @param {string} id Id of the lab to delete
-     */
-    static async DeleteLab(id) {
-        const database = await getDatabase();
-
-        const existingLab = await database.Lab.findOne({ where: { id } });
-
-        if (!existingLab) {
-            throw new Errors.BadRequest(`Lab ${id} does not exist.`);
-        }
-
-        try {
-            await existingLab.destroy();
-        } catch (err) {
-            logger.error('Error while deleting lab: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab deletion failed.');
-        }
-    }
 
     /**
-     * Updates lab with given id.
-     * All fields will be overridden by new ones.
-     * @param {Object} lab Lab object to create
-     * @param {string} lab.id ID of lab
-     * @param {string} lab.title Title of lab
-     * @param {string} lab.subtitle Subtitle of lab
-     * @param {string} lab.image Image of lab
-     * @returns {Promise&lt;Object>} Created lab object
+     * Creates an item with given data.
+     * Id will be automatically generated.
+     * Note: Attributes will be merged with item set attributes.
+     * @param {Object} item Item object to create
+     * @param {string} item.serialNumber serial number of item, must be unique
+     * @param {string} item.itemSetId ID of the item set this belongs to
+     * @param {string} item.labId ID of the lab this belongs to
+     * @param {array} item.attributes Attributes for the item
+     * @returns {Promise&lt;Object>} Created item object
      */
-    static async UpdateLab({
-        id, title, subtitle, image,
+    static async CreateItem({
+        serialNumber, itemSetId, labId, attributes,
     }) {
         const database = await getDatabase();
 
-        const existingLab = await database.Lab.findOne({ where: { id } });
-
-        if (!existingLab) {
-            throw new Errors.BadRequest(`Lab ${id} does not exist.`);
+        const sameSNItem = await database.Item.findOne({ where: { serialNumber } });
+        if (sameSNItem) {
+            throw new Errors
+                .BadRequest(`An item with the Serial Number ${serialNumber} is already created. Serial Number must be unique.`);
         }
 
+        const itemSet = await database.ItemSet.findOne({
+            where: { id: itemSetId },
+            include: [{
+                model: database.Attribute,
+                attributes: ['key', 'defaultValue', 'editable'],
+            }],
+        });
+        if (!itemSet) {
+            throw new Errors.BadRequest('Item set does not exist.');
+        }
+
+        const lab = await database.Lab.findOne({ where: { id: labId } });
+        if (!lab) {
+            throw new Errors.BadRequest('Lab does not exist.');
+        }
+
+        const item = database.Item.build({ serialNumber, itemSetId, labId });
+        const attributeList = ItemService
+            .JoinItemSetAttributes(itemSet.Attributes, attributes, item.id);
+
         try {
-            const lab = await existingLab.update({
-                id, title, subtitle, image,
+            await database.sequelize.transaction(async (t) => {
+                await item.save({ transaction: t });
+                await database.ItemAttribute.bulkCreate(attributeList, { transaction: t });
             });
-            return lab;
         } catch (err) {
-            logger.error('Error while updating lab: ', err);
-            throw new Errors.BadRequest('Invalid data. Lab update failed.');
+            logger.error('Error while saving item: ', err);
+            throw new Errors.BadRequest('Invalid data. item creation failed.');
+        }
+
+        return {
+            id: item.id,
+            serialNumber,
+            itemSetId,
+            labId,
+            attributes,
+        };
+    }
+
+    /**
+      * Gets an item with given id.
+      * @param {string} id Id of the item to retrieve
+      * @returns {Promise&lt;Object>} the retrieved item object
+      */
+    static async GetItem(id) {
+        const database = await getDatabase();
+
+        const item = await database.Item.findOne({
+            where: { id },
+            attributes: ['id', 'serialNumber'],
+            include: [
+                {
+                    model: database.ItemSet,
+                    attributes: ['id', 'title', 'image'],
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title', 'subtitle', 'image'],
+                },
+                {
+                    model: database.ItemAttribute,
+                    attributes: ['key', 'value'],
+                },
+            ],
+        });
+
+        // check if the item exist
+        if (!item) {
+            throw new Errors.BadRequest('Item does not exist.');
+        }
+
+        return {
+            id: item.id,
+            serialNumber: item.serialNumber,
+            ItemSet: item.ItemSet,
+            Lab: item.Lab,
+            ItemAttributes: item.ItemAttributes,
+        };
+    }
+
+    /**
+      * Deletes item with given id.
+      * @param {string} id Id of the item to delete
+      */
+    static async DeleteItem(id) {
+        const database = await getDatabase();
+
+        const existingItem = await database.Item.findOne({ where: { id } });
+
+        if (!existingItem) {
+            throw new Errors.BadRequest('Item does not exist.');
+        }
+
+        // item,attributes deleted within a transaction
+        try {
+            await database.sequelize.transaction(async (t) => {
+                await database.ItemAttribute.destroy({
+                    where: {
+                        itemId: id,
+                    },
+                }, { transaction: t });
+                await existingItem.destroy({}, { transaction: t });
+            });
+        } catch (err) {
+            logger.error('Error while deleting item: ', err);
+            throw new Errors.BadRequest('Invalid data. Item deletion failed.');
         }
     }
 
     /**
-     * Assigns a user with a given userId to a lab with a given labId
-     * @param {string} labId id of the lab
-     * @param {string} userId id of the user
+     * Updates item with given id.
+     * All previous item attributes are removed and replaced
+     * The itemset attributes remain but editable ITset attribute values may get changed
+     * @param {Object} item Item object to create
+     * @param {string} item.id ID of Item
+     * @param {array} item.attributes Attributes for the item
+     * @returns {Promise&lt;Object>} Created item object
      */
-    static async AssignUserstoLabs({ labId, userId }) {
+    static async UpdateItem({ id, attributes }) {
         const database = await getDatabase();
 
-        const user = await database.User.findOne({ where: { id: userId } });
+        const item = await database.Item.findOne({
+            where: { id },
+            include: [
+                {
+                    model: database.ItemAttribute,
+                    attributes: ['key', 'value'],
+                },
+                {
+                    model: database.ItemSet,
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: database.Attribute,
+                            attributes: ['key', 'defaultValue', 'editable'],
+                        },
+                    ],
+                },
+            ],
+        });
+        if (!item) {
+            throw new Errors.BadRequest(`Item ${id} does not exist.`);
+        }
+        const attributeList = ItemService
+            .JoinItemSetAttributes(
+                item.ItemSet.Attributes,
+                attributes,
+                item.id,
+            );
+
+        try {
+            await database.sequelize.transaction(async (t) => {
+                await database.ItemAttribute.destroy({
+                    where: { itemId: id },
+                    transaction: t,
+                });
+                await database.ItemAttribute.bulkCreate(attributeList, { transaction: t });
+            });
+
+            return {
+                id: item.id,
+                serialNumber: item.serialNumber,
+                attributes: attributeList,
+            };
+        } catch (err) {
+            logger.error('Error while updating item: ', err);
+            throw new Errors.BadRequest('Invalid data. Item update failed.');
+        }
+    }
+
+    /**
+     * Transfer an item from one lab to another
+     * @param {string} id ID of Item
+     * @param {array} labId ID of a lab
+     */
+    static async TransferItem({ id, labId }) {
+        const database = await getDatabase();
+
+        const item = await database.Item.findOne({ where: { id } });
         const lab = await database.Lab.findOne({ where: { id: labId } });
 
-        if (!user) {
-            throw new Errors.BadRequest(`User ${userId} does not exist.`);
+        if (!item) {
+            throw new Errors.BadRequest(`Item ${id} does not exist.`);
         } else if (!lab) {
             throw new Errors.BadRequest(`Lab ${labId} does not exist.`);
         }
 
-        const isAPermittedUser = await database.RolePermission.findOne({
-            where: {
-                roleId: user.roleId,
-                permissionId: LabManager,
-            },
-        });
-        // checks for permissions to be assigned to a lab
-        if (!isAPermittedUser) {
-            throw new Errors.BadRequest(`User ${userId} has not enough permissions.`);
-        }
-
-        // create relation if its not prev. created
         try {
-            const [, created] = await database.LabAssign.findOrCreate({
-                where: { labId, userId },
-            });
-            if (!created) {
-                throw new Errors.BadRequest('User is already assigned to the lab');
-            }
+            await item.update({ labId });
         } catch (err) {
-            logger.error('Error while assigning the user to the lab: ', err);
-            throw new Errors.BadRequest('Lab assignment failed. Please try again');
-        }
-    }
-
-    /**
-     * unassigns a user with a given userId from a lab with a given labId
-     * @param {string} labId id of the lab
-     * @param {string} userId id of the user
-     */
-    static async UnassignUsersFromLabs({ labId, userId }) {
-        const database = await getDatabase();
-
-        const assignedUser = await database.LabAssign.findOne({ where: { userId, labId } });
-
-        if (!assignedUser) {
-            throw new Errors.BadRequest(`User ${userId} assigned to Lab ${labId} relation does not exist.`);
-        }
-        try {
-            await assignedUser.destroy();
-        } catch (err) {
-            logger.error('Error while deleting the User assignment: ', err);
-            throw new Errors.BadRequest('Lab unassignment failed. Please try again');
+            logger.error('Error while transferring item: ', err);
+            throw new Errors.BadRequest('Invalid data. Item transfer failed.');
         }
     }
 }
 
 
-module.exports = LabsService;
+module.exports = ItemService;
 </code></pre>
         </article>
     </section>
