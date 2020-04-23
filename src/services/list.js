@@ -195,6 +195,19 @@ class ListService {
         });
         return { inventoryManagers };
     }
+
+    /**
+     * Lists the supervisors available.
+     * @returns {Promise<{supervisors: any[]}>} List of supervisors in the database
+     */
+    static async ListSupervisors() {
+        const database = await getDatabase();
+        const supervisors = await database.Supervisor.findAll({
+            order: ['createdAt'],
+            attributes: ['id', 'email', 'firstName', 'lastName', 'bio', 'createdAt', 'updatedAt'],
+        });
+        return { supervisors };
+    }
 }
 
 module.exports = ListService;

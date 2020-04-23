@@ -8,6 +8,8 @@ const managePermissionsRoutes = require('./managepermissions');
 const manageItemsRoutes = require('./manageitems');
 const manageItemsetsRoutes = require('./manageitemsets');
 const manageUsersRoutes = require('./manageusers');
+const manageSupervisorsRoutes = require('./managesupervisors');
+const lendRoutes = require('./lend');
 
 const defineEndPoints = (app) => {
     app.use('/api/registration', registrationRoutes);
@@ -20,6 +22,8 @@ const defineEndPoints = (app) => {
     app.use('/api/items', manageItemsRoutes);
     app.use('/api/users', manageUsersRoutes);
     app.use('/api/demo', demoRoutes);
+    app.use('/api/lend', lendRoutes);
+    app.use('/api/supervisors', manageSupervisorsRoutes);
 };
 
 module.exports = { defineEndPoints };
