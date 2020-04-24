@@ -5,9 +5,11 @@ const LendInformation = Joi.object().keys({
     supervisor: Joi.string().uuid().required(),
     title: Joi.string().required(),
     reason: Joi.string(),
-    items: Joi.array().items(
+    labId: Joi.string().uuid().required(),
+    items: Joi.array().min(1).max(4).items(
         Joi.string().required(),
-    ),
+    )
+        .required(),
 });
 
 
