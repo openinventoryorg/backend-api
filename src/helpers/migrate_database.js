@@ -1,4 +1,3 @@
-const path = require('path');
 const { spawn } = require('child-process-promise');
 
 const dotenv = require('dotenv');
@@ -16,7 +15,6 @@ const spawnOptions = { stdio: 'inherit' };
     try {
     // Migrate the DB
         await spawn('./node_modules/.bin/sequelize', ['db:migrate', `--url=${url}`], spawnOptions);
-        console.log();
         console.log('*************************');
         console.log('Migration successful');
     } catch (err) {

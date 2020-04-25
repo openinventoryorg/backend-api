@@ -1,4 +1,4 @@
-// test/factories/item.js
+// test/factories/itemset.js
 const faker = require('faker');
 
 const { getDatabase } = require('../../src/helpers/get_database');
@@ -12,9 +12,8 @@ const { getDatabase } = require('../../src/helpers/get_database');
  */
 const data = async (props = {}) => {
     const defaultProps = {
-        serialNumber: faker.random.alphaNumeric(10),
-        labId: faker.random.uuid(),
-        itemSetId: faker.random.uuid(),
+        title: faker.commerce.productName(),
+        image: faker.image.image(),
     };
     return { ...defaultProps, ...props };
 };
@@ -27,5 +26,5 @@ const data = async (props = {}) => {
  */
 module.exports = async (props = {}) => {
     const database = await getDatabase();
-    return database.Item.create(await data(props));
+    return database.ItemSet.create(await data(props));
 };
