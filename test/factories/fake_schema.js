@@ -27,3 +27,16 @@ exports.fakeItemAttributes = [
         value: faker.random.word(),
     },
 ];
+
+exports.fakeAttributes = [
+    {
+        key: faker.commerce.productAdjective(),
+        defaultValue: faker.random.word(),
+        editable: faker.random.boolean(),
+    },
+    {
+        key: faker.commerce.productAdjective(),
+        defaultValue: faker.random.word(),
+        editable: faker.random.boolean(),
+    },
+];
