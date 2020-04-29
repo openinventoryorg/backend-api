@@ -48,7 +48,6 @@ class ItemService {
             throw new Errors
                 .BadRequest(`An item with the Serial Number ${serialNumber} is already created. Serial Number must be unique.`);
         }
-
         const itemSet = await database.ItemSet.findOne({
             where: { id: itemSetId },
             include: [{
@@ -59,7 +58,6 @@ class ItemService {
         if (!itemSet) {
             throw new Errors.BadRequest('Item set does not exist.');
         }
-
         const lab = await database.Lab.findOne({ where: { id: labId } });
         if (!lab) {
             throw new Errors.BadRequest('Lab does not exist.');
