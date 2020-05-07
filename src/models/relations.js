@@ -19,4 +19,6 @@ module.exports = (database) => {
     database.ItemSet.hasMany(database.Item, { foreignKey: 'itemSetId', onDelete: 'RESTRICT' });
     database.Lab.belongsToMany(database.User, { through: database.LabAssign, foreignKey: 'labId' });
     database.User.belongsToMany(database.Lab, { through: database.LabAssign, foreignKey: 'userId' });
+    database.Request.hasMany(database.RequestItem, { foreignKey: 'requestId' });
+    database.RequestItem.belongsTo(database.Request, { foreignKey: 'requestId' });
 };
