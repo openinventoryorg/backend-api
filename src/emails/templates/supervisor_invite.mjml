@@ -1,0 +1,39 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+
+        <mj-text align="center" font-size="28px" color="#0192FF" font-family="helvetica" font-weight="bold">
+          Open Inventory
+        </mj-text>
+        <mj-text align="center" font-size="20px" color="#0192FF" font-family="helvetica" font-weight="bold">
+          Item Borrow Request Approval
+        </mj-text>
+
+        <mj-divider border-color="#0192FF"></mj-divider>
+
+        <mj-text font-size="16px" font-family="helvetica">Dear {{firstName}} {{lastName}} ({{email}}),</mj-text>
+
+        <mj-text font-size="16px" font-family="helvetica">
+          A request to borrow items from the lab {{labTitle}} has been made.
+        </mj-text>
+
+        <mj-button href="{{link}}"> View Request </mj-button>
+
+        <mj-text font-size="16px" font-family="helvetica">
+          Click above link in order to view the borrow request. If the button does not work, paste the follwing link in your
+          browser.
+        </mj-text>
+
+        <mj-text font-size="16px" font-family="helvetica">
+          {{link}}
+        </mj-text>
+
+        <mj-text font-size="16px" font-family="helvetica">
+          Thank You.
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

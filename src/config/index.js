@@ -33,6 +33,7 @@ const configurations = {
     site: {
         // Token verification url: [verifyToken]/TOKEN
         verifyToken: process.env.SITE_API || 'https://openinventory.org/register',
+        requestToken: process.env.REQUEST_API || 'https://openinventory.org/supervisor',
     },
     initializeDatabase: (process.env.DB_INIT === 'true') || false,
     adminEmail: process.env.ADMIN_EMAIL || 'admin@admin.com',
