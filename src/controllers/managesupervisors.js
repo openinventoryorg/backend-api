@@ -27,6 +27,21 @@ class ManageSupervisorsController {
             next(err);
         }
     }
+
+    /**
+     * Gets a list of suepervisors available in the system
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListSupervisors(req, res, next) {
+        try {
+            const supervisors = await ListService.ListSupervisors();
+            res.status(200).send(supervisors);
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 module.exports = ManageSupervisorsController;

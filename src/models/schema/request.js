@@ -5,6 +5,11 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4,
         },
+        labId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: { model: 'Lab', key: 'id' },
+        },
         userId: {
             type: DataTypes.UUID,
             allowNull: false,
@@ -13,12 +18,12 @@ module.exports = (sequelize, DataTypes) => {
         supervisorId: {
             type: DataTypes.UUID,
             allowNull: false,
-            // references: { model: 'Supervisor', key: 'id' },
+            references: { model: 'Supervisor', key: 'id' },
         },
         reason: { type: DataTypes.TEXT },
         declineReason: { type: DataTypes.TEXT },
         supervisorToken: {
-            type: DataTypes.UUID,
+            type: DataTypes.CHAR(96),
             unique: 'supervisor_token',
         },
         status: {

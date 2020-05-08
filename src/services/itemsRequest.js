@@ -1,8 +1,9 @@
 const { getDatabase } = require('../helpers/get_database');
 const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
-// const config = require('../config');
-// const { sendMail } = require('../emails');
+const config = require('../config');
+const { sendMail } = require('../emails');
+const { generateSecureToken } = require('../helpers/secure_token');
 
 
 /**
@@ -25,6 +26,7 @@ class ItemsRequestService {
         itemIds, labId, userId, supervisorId, reason,
     }) {
         const database = await getDatabase();
+        const supervisorToken = generateSecureToken(96);
 
         const lab = await database.Lab.findOne({ where: { id: labId } });
         if (!lab) {
@@ -36,10 +38,10 @@ class ItemsRequestService {
             throw new Errors.BadRequest('User does not exist.');
         }
 
-        // const supervisor = await database.Supervisor.findOne({ where: { id: supervisorId } });
-        // if (!supervisor) {
-        //     throw new Errors.BadRequest('Supervisor does not exist.');
-        // }
+        const supervisor = await database.Supervisor.findOne({ where: { id: supervisorId } });
+        if (!supervisor) {
+            throw new Errors.BadRequest('Supervisor does not exist.');
+        }
 
         const itemIdError = itemIds.every(async (id) => {
             const item = await database.User.findOne({ where: { id } });
@@ -52,7 +54,7 @@ class ItemsRequestService {
 
         const request = await database.Request.build(
             {
-                userId, supervisorId, reason, status: 'REQUESTED',
+                labId, userId, supervisorId, reason, supervisorToken, status: 'REQUESTED',
             },
         );
         let itemList;
@@ -63,19 +65,22 @@ class ItemsRequestService {
                 await database.RequestItem.bulkCreate(itemList, { transaction: t });
             });
 
-            // sendMail({
-            //     from: config.mail.sender,
-            //     to: email,
-            //     subject: 'Registration Link - Open Inventory',
-            //     template: 'registration_invite',
-            //     context: {
-            //         email,
-            //         link: `${config.site.verifyToken}/${token}`,
-            //     },
-            // });
+            sendMail({
+                from: config.mail.sender,
+                to: supervisor.email,
+                subject: 'Item Request Link - Open Inventory',
+                template: 'supervisor_invite',
+                context: {
+                    firstName: supervisor.firstName,
+                    lastName: supervisor.lastName,
+                    labTitle: lab.title,
+                    email: supervisor.email,
+                    link: `${config.site.verifyToken}/${supervisorToken}`,
+                },
+            });
 
-            // // Log the token for now
-            // logger.info(`Token generated for ${email} on role ${roleId} - ${token}`);
+            // Log the email for now
+            logger.info(`Request email sent to ${supervisor.email} for the request ${request.id}`);
         } catch (err) {
             logger.error('Error while saving request: ', err);
             throw new Errors.BadRequest('Invalid data. item request creation failed.');

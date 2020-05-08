@@ -195,6 +195,19 @@ class ListService {
         });
         return { inventoryManagers };
     }
+
+    /**
+     * Lists the supervisors
+     * @returns {Promise<{users: Object[]}>} List of users assigned to the lab
+     */
+    static async ListSupervisors() {
+        const database = await getDatabase();
+        const supervisors = await database.Supervisor.findAll({
+            attributes: ['id', 'firstName', 'lastName', 'bio', 'active', 'email'],
+            order: ['createdAt'],
+        });
+        return { supervisors };
+    }
 }
 
 module.exports = ListService;
