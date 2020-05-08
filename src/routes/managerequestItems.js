@@ -3,6 +3,6 @@ const { permissionMiddleware } = require('../middlewares/permission');
 const { Requester } = require('../models/schema/permissions');
 const ManageRequestItemsController = require('../controllers/managerequestitems');
 
-router.get('/create', permissionMiddleware([Requester]), ManageRequestItemsController.CreateItemsRequest);
+router.post('/create', permissionMiddleware([Requester]), ManageRequestItemsController.CreateItemsRequest);
 
 module.exports = router;

@@ -1,6 +1,9 @@
 const { getDatabase } = require('../helpers/get_database');
 const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
+// const config = require('../config');
+// const { sendMail } = require('../emails');
+
 
 /**
  * Service that manages CRUD of items request
@@ -19,34 +22,71 @@ class ItemsRequestService {
      * @returns {Promise<Object>} Created item object
      */
     static async createItemsRequest({
-        itemIds, title, supervisorId, reason, userId,
+        itemIds, labId, userId, supervisorId, reason,
     }) {
-        const itemTransactionPool = [];
-        let [requestId, status] = '';
         const database = await getDatabase();
-        const request = {
-            title, userId, supervisorId, reason,
-        };
-        itemIds.forEach(async (itemId) => {
-            const itemRequest = { itemId };
-            itemTransactionPool.push(itemRequest);
+
+        const lab = await database.Lab.findOne({ where: { id: labId } });
+        if (!lab) {
+            throw new Errors.BadRequest('Lab does not exist.');
+        }
+
+        const user = await database.User.findOne({ where: { id: userId } });
+        if (!user) {
+            throw new Errors.BadRequest('User does not exist.');
+        }
+
+        // const supervisor = await database.Supervisor.findOne({ where: { id: supervisorId } });
+        // if (!supervisor) {
+        //     throw new Errors.BadRequest('Supervisor does not exist.');
+        // }
+
+        const itemIdError = itemIds.every(async (id) => {
+            const item = await database.User.findOne({ where: { id } });
+            return (item != null);
         });
+        if (!itemIdError) {
+            console.log('hi');
+            throw new Errors.BadRequest('A requested item does not exist');
+        }
+
+        const request = await database.Request.build(
+            {
+                userId, supervisorId, reason, status: 'REQUESTED',
+            },
+        );
+        let itemList;
         try {
             await database.sequelize.transaction(async (t) => {
-                await database.Request.create(request);
-                await database.RequestItem.bulkCreate(itemTransactionPool, { transaction: t });
-                [requestId, status] = await database.Request.findAll({ limit: 1, attributes: ['id', 'status'], order: [['createdAt', 'DESC']] });
+                await request.save({ transaction: t });
+                itemList = itemIds.map((itemId) => ({ itemId, requestId: request.id, status: 'PENDING' }));
+                await database.RequestItem.bulkCreate(itemList, { transaction: t });
             });
+
+            // sendMail({
+            //     from: config.mail.sender,
+            //     to: email,
+            //     subject: 'Registration Link - Open Inventory',
+            //     template: 'registration_invite',
+            //     context: {
+            //         email,
+            //         link: `${config.site.verifyToken}/${token}`,
+            //     },
+            // });
+
+            // // Log the token for now
+            // logger.info(`Token generated for ${email} on role ${roleId} - ${token}`);
         } catch (err) {
-            logger.error('Error while saving item: ', err);
+            logger.error('Error while saving request: ', err);
             throw new Errors.BadRequest('Invalid data. item request creation failed.');
         }
         return {
-            itemIds,
-            requestId,
-            title,
-            supervisorId,
-            status,
+            id: request.id,
+            labId: request.labId,
+            userId: request.userId,
+            supervisorId: request.supervisorId,
+            reason: request.reason,
+            itemList,
         };
     }
 }
