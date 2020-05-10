@@ -67,7 +67,7 @@ class ListService {
      */
     static async ListLabItems(labId) {
         const database = await getDatabase();
-        const labItems = await database.Item.findAll({
+        const labItemList = await database.Item.findAll({
             where: { labId },
             order: ['createdAt'],
             include: [
@@ -77,6 +77,26 @@ class ListService {
                 },
             ],
         });
+        const promises = await labItemList.map(async (item) => {
+            const itemCopy = { ...item.dataValues };
+
+            let requestItem = await database.RequestItem.findOne({
+                where: {
+                    itemId: item.id,
+                    status: 'BORROWED',
+                },
+            });
+            if (requestItem) return { ...itemCopy, status: 'BORROWED' };
+            requestItem = await database.RequestItem.findOne({
+                where: {
+                    itemId: item.id,
+                    status: 'ACCEPTED',
+                },
+            });
+            if (requestItem) return { ...itemCopy, status: 'ACCEPTED' };
+            return { ...itemCopy, status: 'AVAILABLE' };
+        });
+        const labItems = await Promise.all(promises);
         return { labItems };
     }
 
