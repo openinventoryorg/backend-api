@@ -21,5 +21,12 @@ module.exports = (database) => {
     database.User.belongsToMany(database.Lab, { through: database.LabAssign, foreignKey: 'userId' });
     database.Request.hasMany(database.RequestItem, { foreignKey: 'requestId' });
     database.RequestItem.belongsTo(database.Request, { foreignKey: 'requestId' });
+    database.Request.belongsTo(database.Lab, { foreignKey: 'labId' });
+    database.Lab.hasMany(database.Request, { foreignKey: 'labId' });
+    database.Request.belongsTo(database.User, { foreignKey: 'userId' });
+    database.User.hasMany(database.Request, { foreignKey: 'userId' });
+    database.Request.belongsTo(database.Supervisor, { foreignKey: 'supervisorId' });
+    database.Supervisor.hasMany(database.Request, { foreignKey: 'supervisorId' });
     database.Item.hasMany(database.RequestItem, { foreignKey: 'itemId' });
+    database.RequestItem.belongsTo(database.Item, { foreignKey: 'itemId' });
 };

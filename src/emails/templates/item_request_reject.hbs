@@ -121,7 +121,7 @@
                     <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                       <div
                         style="font-family:helvetica;font-size:20px;font-weight:bold;line-height:1;text-align:center;color:#0192FF;">
-                        System Registration Invitation</div>
+                        {{subject}}</div>
                     </td>
                   </tr>
                   <tr>
@@ -134,44 +134,68 @@
                   <tr>
                     <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                       <div style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
-                        Hello {{email}},</div>
+                        Hello {{firstName}} {{lastName}} ({{email}}),</div>
                     </td>
                   </tr>
                   <tr>
                     <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                       <div style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
-                        Here is your registration link for open inventory laboratory system. Using this link you can now
-                        use the mobile client to borrow lab items easily.</div>
+                        Your request for borrowing following items from the lab {{labTitle}} has been
+                        declined. </div>
                     </td>
                   </tr>
                   <tr>
                     <td align="center" vertical-align="middle"
                       style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                      <table border="0" cellpadding="0" cellspacing="0" role="presentation"
-                        style="border-collapse:separate;line-height:100%;">
+                      <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;"
+                        width="100%">
                         <tr>
-                          <td align="center" bgcolor="#414141" role="presentation"
-                            style="border:none;border-radius:3px;cursor:auto;padding:10px 25px;background:#414141;"
-                            valign="middle"><a href="{{link}}"
-                              style="background:#414141;color:#ffffff;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;font-weight:normal;line-height:120%;Margin:0;text-decoration:none;text-transform:none;"
-                              target="_blank">Register</a></td>
+                          <th align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                            <div
+                              style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
+                              <b>item title</b>
+                            </div>
+                          </th>
+                          <th align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                            <div
+                              style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
+                              <b>serial number</b>
+                            </div>
+                          </th>
                         </tr>
+                        {{#each items}}
+                        <tr>
+                          <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                            <div
+                              style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
+                              {{title}}
+                            </div>
+                          </td>
+                          <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                            <div
+                              style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
+                              {{serialNumber}}
+                            </div>
+                          </td>
+                        </tr>
+                        {{/each}}
                       </table>
                     </td>
                   </tr>
+                  {{#if declineReason}}
                   <tr>
                     <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                       <div style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
-                        Click above link in order to register. If the button does not work, paste the follwing link in
-                        your browser.</div>
+                        <b>The Reason for Rejection</b></div>
                     </td>
                   </tr>
                   <tr>
                     <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                       <div style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
-                        {{link}}</div>
+                        {{declineReason}}</div>
                     </td>
                   </tr>
+                  {{/if}}
                   <tr>
                     <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                       <div style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">

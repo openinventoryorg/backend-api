@@ -25,7 +25,7 @@ class ManageSupervisorsService {
 
         const sameEmailSupervisor = await database.Supervisor.findOne({ where: { email } });
         if (sameEmailSupervisor) {
-            throw new Errors.BadRequest(`Lab with title ${email} already exists.`);
+            throw new Errors.BadRequest(`Supervisor with email ${email} already exists.`);
         }
 
         const supervisor = database.Supervisor.build({

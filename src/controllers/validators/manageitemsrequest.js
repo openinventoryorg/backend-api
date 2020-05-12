@@ -8,4 +8,14 @@ const createItemsRequest = Joi.object().keys({
     reason: Joi.string(),
 });
 
-module.exports = { createItemsRequest };
+const getItemsRequest = Joi.object().keys({
+    token: Joi.string().length(96).required(),
+});
+
+const getItemsRequestAction = Joi.object().keys({
+    token: Joi.string().length(96).required(),
+    value: Joi.boolean().valid(true, false).required(),
+    declineReason: Joi.string().allow(null, ''),
+});
+
+module.exports = { createItemsRequest, getItemsRequest, getItemsRequestAction };

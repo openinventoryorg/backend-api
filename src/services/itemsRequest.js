@@ -15,14 +15,15 @@ class ItemsRequestService {
     /**
      * Creates an items request with given data.
      * Id will be automatically generated.
-     * @param {Object} item Item object to create
-     * @param {string} item.serialNumber serial number of item, must be unique
-     * @param {string} item.itemSetId ID of the item set this belongs to
-     * @param {string} item.labId ID of the lab this belongs to
-     * @param {array} item.attributes Attributes for the item
-     * @returns {Promise<Object>} Created item object
+     * @param {Object} itemRequest ItemRequest object to create
+     * @param {array} itemRequest.itemlist List of items related to the request
+     * @param {string} itemRequest.labId ID of the lab this request belongs to
+     * @param {string} itemRequest.userId ID of the user this request belongs to
+     * @param {string} itemRequest.supervisorId ID of the supervisor this request belongs to
+     * @param {string} itemRequest.reason reason that the request is made for
+     * @returns {Promise<Object>} Created item-request object
      */
-    static async createItemsRequest({
+    static async CreateItemsRequest({
         itemIds, labId, userId, supervisorId, reason,
     }) {
         const database = await getDatabase();
@@ -48,7 +49,6 @@ class ItemsRequestService {
             return (item != null);
         });
         if (!itemIdError) {
-            console.log('hi');
             throw new Errors.BadRequest('A requested item does not exist');
         }
 
@@ -78,9 +78,6 @@ class ItemsRequestService {
                     link: `${config.site.verifyToken}/${supervisorToken}`,
                 },
             });
-
-            // Log the email for now
-            logger.info(`Request email sent to ${supervisor.email} for the request ${request.id}`);
         } catch (err) {
             logger.error('Error while saving request: ', err);
             throw new Errors.BadRequest('Invalid data. item request creation failed.');
@@ -93,6 +90,116 @@ class ItemsRequestService {
             reason: request.reason,
             itemList,
         };
+    }
+
+    /**
+     * Reads an item request using the request token
+     * @param {Object} {token} of the request
+     * @param {string} token of the request
+     * @returns {Promise<Object>}  item request object
+     */
+    static async GetItemsRequestByToken({ token }) {
+        const database = await getDatabase();
+
+        const itemRequest = await database.Request.findOne({
+            where: { supervisorToken: token },
+            include: [{
+                model: database.RequestItem,
+                include: [{
+                    model: database.Item,
+                    attributes: ['id', 'serialNumber'],
+                    include: [{
+                        model: database.ItemSet,
+                        attributes: ['id', 'title', 'image'],
+                    }],
+                }],
+            }],
+        });
+
+        if (!itemRequest) {
+            throw new Errors.BadRequest('Invalid token!');
+        }
+        return itemRequest;
+    }
+
+    /**
+     * Reads an item request using the request token
+     * @param {Object} review
+     * @param {string} token of the request
+     * @param {string} value of the request
+     * @param {string} declineReason of the request
+     */
+    static async AcceptOrDeclineRequest({ token, value, declineReason }) {
+        const database = await getDatabase();
+
+        const request = await database.Request.findOne({
+            where: { supervisorToken: token },
+            include: [
+                {
+                    model: database.User,
+                    attributes: ['firstName', 'lastName', 'email'],
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title'],
+                },
+            ],
+        });
+        if (!request) {
+            throw new Errors.BadRequest('Invalid token!');
+        }
+        if (request.status !== 'REQUESTED') {
+            throw new Errors.BadRequest('Expired request!');
+        }
+
+        request.status = value ? 'ACCEPTED' : 'DECLINED';
+        const status = value ? 'ACCEPTED' : 'REJECTED';
+        let items;
+        try {
+            await database.sequelize.transaction(async (t) => {
+                await request.save({ transaction: t });
+                await database.RequestItem.update(
+                    { status },
+                    {
+                        where: { requestId: request.id },
+                        transaction: t,
+                    },
+                );
+            });
+
+            items = (await database.RequestItem.findAll({
+                where: { requestId: request.id },
+                include: [{
+                    model: database.Item,
+                    attributes: ['serialNumber'],
+                    include: [{
+                        model: database.ItemSet,
+                        attributes: ['title'],
+                    }],
+                }],
+            })).map((item) => ({
+                serialNumber: item.Item.serialNumber,
+                title: item.Item.ItemSet.title,
+            }));
+
+            sendMail({
+                from: config.mail.sender,
+                to: request.User.email,
+                subject: `Item Lend Request ${value ? 'Acceptance' : 'Rejection'}`,
+                template: value ? 'item_request_accept' : 'item_request_reject',
+                context: {
+                    firstName: request.User.firstName,
+                    lastName: request.User.lastName,
+                    email: request.User.email,
+                    labTitle: request.Lab.title,
+                    declineReason,
+                    items,
+                },
+            });
+        } catch (err) {
+            logger.error('Error while updating request: ', err);
+            throw new Errors.BadRequest('Invalid data. item request update failed.');
+        }
     }
 }
 
