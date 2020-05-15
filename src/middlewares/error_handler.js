@@ -19,7 +19,7 @@ const Errors = require('../helpers/errors');
 // eslint-disable-next-line no-unused-vars
 const errorHandlerMiddleware = (err, req, res, next) => {
     if (err instanceof Errors.BadRequest) {
-        res.status(400).send({ message: err.message });
+        res.status(400).send(   );
     } else if (err instanceof Errors.Unauthorized) {
         res.status(401).send({ message: err.message });
     } else if (err instanceof Errors.Forbidden) {

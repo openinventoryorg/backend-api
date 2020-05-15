@@ -103,17 +103,29 @@ class ItemsRequestService {
 
         const itemRequest = await database.Request.findOne({
             where: { supervisorToken: token },
-            include: [{
-                model: database.RequestItem,
-                include: [{
-                    model: database.Item,
-                    attributes: ['id', 'serialNumber'],
+            include: [
+                {
+                    model: database.RequestItem,
                     include: [{
-                        model: database.ItemSet,
-                        attributes: ['id', 'title', 'image'],
+                        model: database.Item,
+                        attributes: ['id', 'serialNumber'],
+                        include: [
+                            {
+                                model: database.ItemSet,
+                                attributes: ['id', 'title', 'image'],
+                            },
+                        ],
                     }],
-                }],
-            }],
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title'],
+                },
+                {
+                    model: database.User,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+            ],
         });
 
         if (!itemRequest) {
