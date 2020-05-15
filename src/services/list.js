@@ -192,6 +192,52 @@ class ListService {
     }
 
     /**
+     * Lists the labs assigned to a user with a given id.
+     * @returns {Promise<{users: Object[]}>} List of labs assigned to the user
+     */
+    static async ListAssignedLabs({ id }) {
+        const database = await getDatabase();
+        const isInventoryManager = await database.User.findOne({
+            where: { id },
+            attributes: [],
+            order: ['createdAt'],
+            include: [
+                {
+                    model: database.Role,
+                    attributes: [],
+                    required: true,
+                    include: [{
+                        model: database.RolePermission,
+                        attributes: [],
+                        where: { permissionId: database.Permission.InventoryManager },
+                    }],
+                },
+            ],
+        });
+        if (!isInventoryManager) {
+            throw new Errors.BadRequest('User does not have inventory Manager permission.');
+        }
+
+        const labList = await database.User.findOne({
+            where: { id },
+            attributes: [],
+            order: ['createdAt'],
+            include: [
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title', 'subtitle', 'image'],
+                },
+            ],
+        });
+        const labs = labList.Labs.map((lab) => (
+            {
+                id: lab.id, title: lab.title, subtitle: lab.subtitle, image: lab.image,
+            }
+        ));
+        return { labs };
+    }
+
+    /**
      * Lists the users with INVENTORY_MANAGER permissions
      * @returns {Promise<{users: Object[]}>} List of users assigned to the lab
      */
@@ -227,41 +273,6 @@ class ListService {
             order: ['createdAt'],
         });
         return { supervisors };
-    }
-
-    /**
-     * Lists the item requests by a student
-     * @returns {Promise<{users: Object[]}>} List of item requests
-     */
-    static async ListItemsRequestsByStudent({ id }) {
-        const database = await getDatabase();
-        const requests = await database.Request.findAll({
-            where: { userId: id },
-            attributes: ['id', 'supervisorId', 'status'],
-            order: ['createdAt'],
-            include: [
-                {
-                    model: database.RequestItem,
-                    attributes: ['returnedDate', 'dueDate', 'borrowedDate', 'status'],
-                    include: [{
-                        model: database.Item,
-                        attributes: ['id', 'serialNumber'],
-                        include: [
-                            {
-                                model: database.ItemSet,
-                                attributes: ['id', 'title'],
-                            },
-                        ],
-                    }],
-                },
-                {
-                    model: database.Lab,
-                    attributes: ['id', 'title'],
-                },
-            ],
-        });
-
-        return requests;
     }
 }
 

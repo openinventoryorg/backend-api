@@ -1,4 +1,6 @@
 const Joi = require('@hapi/joi');
+const { permissions: listedPermissions } = require('../../models/schema/permissions');
+
 
 const createItemsRequest = Joi.object().keys({
     itemIds: Joi.array().items(Joi.string().uuid().required()).required(),
@@ -17,9 +19,21 @@ const getItemsRequestAction = Joi.object().keys({
     value: Joi.boolean().valid(true, false).required(),
     declineReason: Joi.string().allow(null, '').required(),
 });
+
 const ListItemsRequestsByStudent = Joi.object().keys({
     id: Joi.string().uuid().required(),
 });
+
+const ListItemsRequestsByLab = Joi.object().keys({
+    userId: Joi.string().uuid().required(),
+    userPermissions: Joi.array().min(1).items(Joi.string().valid(...listedPermissions)).required(),
+    labId: Joi.string().uuid().required(),
+});
+
 module.exports = {
-    createItemsRequest, getItemsRequest, getItemsRequestAction, ListItemsRequestsByStudent,
+    createItemsRequest,
+    getItemsRequest,
+    getItemsRequestAction,
+    ListItemsRequestsByStudent,
+    ListItemsRequestsByLab,
 };

@@ -4,7 +4,7 @@ const logger = require('../loaders/logger');
 const config = require('../config');
 const { sendMail } = require('../emails');
 const { generateSecureToken } = require('../helpers/secure_token');
-
+const { LabManager } = require('../models/schema/permissions');
 
 /**
  * Service that manages CRUD of items request
@@ -218,6 +218,85 @@ class ItemsRequestService {
             logger.error('Error while updating request: ', err);
             throw new Errors.BadRequest('Invalid data. item request update failed.');
         }
+    }
+
+    /**
+     * Lists the item requests by a student
+     * @returns {Promise<{request: Object[]}>} List of item requests
+     */
+    static async ListItemsRequestsByStudent({ id }) {
+        const database = await getDatabase();
+        const requests = await database.Request.findAll({
+            where: { userId: id },
+            attributes: ['id', 'supervisorId', 'status'],
+            order: ['createdAt'],
+            include: [
+                {
+                    model: database.RequestItem,
+                    attributes: ['returnedDate', 'dueDate', 'borrowedDate', 'status'],
+                    include: [{
+                        model: database.Item,
+                        attributes: ['id', 'serialNumber'],
+                        include: [
+                            {
+                                model: database.ItemSet,
+                                attributes: ['id', 'title'],
+                            },
+                        ],
+                    }],
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title'],
+                },
+            ],
+        });
+
+        return requests;
+    }
+
+    /**
+     * Lists the item requests in a lab
+     * @returns {Promise<{request: Object[]}>} List of item requests
+     */
+    static async ListItemsRequestsByLab({ userId, userPermissions, labId }) {
+        const database = await getDatabase();
+
+        if (!userPermissions.includes(LabManager)) {
+            const assignedUser = database.LabAssign.findOne({
+                where: { userId, labId },
+            });
+            if (!assignedUser) {
+                throw new Errors.BadRequest('Insufficient permissions.');
+            }
+        }
+
+        const requests = await database.Request.findAll({
+            where: { labId },
+            attributes: ['id', 'supervisorId', 'reason', 'status'],
+            order: ['createdAt'],
+            include: [
+                {
+                    model: database.RequestItem,
+                    attributes: ['returnedDate', 'dueDate', 'borrowedDate', 'status'],
+                    include: [{
+                        model: database.Item,
+                        attributes: ['id', 'serialNumber'],
+                        include: [
+                            {
+                                model: database.ItemSet,
+                                attributes: ['id', 'title'],
+                            },
+                        ],
+                    }],
+                },
+                {
+                    model: database.User,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+            ],
+        });
+        return requests;
     }
 }
 

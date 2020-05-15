@@ -68,6 +68,24 @@ class ManageUserController {
             next(error);
         }
     }
+
+    /**
+     * Lists labs assigned to the user
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListAssignedLabs(req, res, next) {
+        try {
+            const { value, error } = UserIdQuery.validate({ id: req.params.id });
+            if (error) throw (error);
+
+            const assignedLabs = await ListService.ListAssignedLabs(value);
+            res.status(200).send(assignedLabs);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = ManageUserController;
