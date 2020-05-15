@@ -98,7 +98,6 @@ class ManageLabsController {
      */
     static async ListLabs(req, res, next) {
         try {
-            console.log(req.user);
             const labs = await ListService.ListLabs();
             res.status(200).send(labs);
         } catch (err) {

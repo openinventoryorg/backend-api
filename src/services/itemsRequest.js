@@ -228,8 +228,8 @@ class ItemsRequestService {
         const database = await getDatabase();
         const requests = await database.Request.findAll({
             where: { userId: id },
-            attributes: ['id', 'supervisorId', 'status'],
-            order: ['createdAt'],
+            attributes: ['id', 'supervisorId', 'status', 'updatedAt'],
+            order: ['updatedAt'],
             include: [
                 {
                     model: database.RequestItem,
@@ -240,7 +240,7 @@ class ItemsRequestService {
                         include: [
                             {
                                 model: database.ItemSet,
-                                attributes: ['id', 'title'],
+                                attributes: ['id', 'title', 'image'],
                             },
                         ],
                     }],
@@ -252,7 +252,7 @@ class ItemsRequestService {
             ],
         });
 
-        return requests;
+        return { requests };
     }
 
     /**
