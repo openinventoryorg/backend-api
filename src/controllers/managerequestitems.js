@@ -67,7 +67,7 @@ class ManageRequestItemsController {
     }
 
     /**
-     * Lists an item request by its token
+     * Lists item requests by a student
      *
      * @param {Request} req Request
      * @param {Response} res Response

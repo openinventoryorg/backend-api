@@ -229,6 +229,10 @@ class ListService {
         return { supervisors };
     }
 
+    /**
+     * Lists the item requests by a student
+     * @returns {Promise<{users: Object[]}>} List of users assigned to the lab
+     */
     static async ListItemsRequestsByStudent({ id }) {
         const database = await getDatabase();
         const requests = await database.Request.findAll({
