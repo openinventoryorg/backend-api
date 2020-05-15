@@ -106,6 +106,7 @@ class ItemsRequestService {
             include: [
                 {
                     model: database.RequestItem,
+                    attributes: [],
                     include: [{
                         model: database.Item,
                         attributes: ['id', 'serialNumber'],
@@ -131,6 +132,11 @@ class ItemsRequestService {
         if (!itemRequest) {
             throw new Errors.BadRequest('Invalid token!');
         }
+
+        if (itemRequest.status !== 'REQUESTED') {
+            throw new Errors.BadRequest('Expired request!');
+        }
+
         return itemRequest;
     }
 

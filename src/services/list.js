@@ -228,6 +228,37 @@ class ListService {
         });
         return { supervisors };
     }
+
+    static async ListItemsRequestsByStudent({ id }) {
+        const database = await getDatabase();
+        const requests = await database.Request.findAll({
+            where: { userId: id },
+            attributes: ['id', 'supervisorId', 'status'],
+            order: ['createdAt'],
+            include: [
+                {
+                    model: database.RequestItem,
+                    attributes: ['returnedDate', 'dueDate', 'borrowedDate', 'status'],
+                    include: [{
+                        model: database.Item,
+                        attributes: ['id', 'serialNumber'],
+                        include: [
+                            {
+                                model: database.ItemSet,
+                                attributes: ['id', 'title'],
+                            },
+                        ],
+                    }],
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title'],
+                },
+            ],
+        });
+
+        return requests;
+    }
 }
 
 module.exports = ListService;

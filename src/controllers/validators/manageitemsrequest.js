@@ -17,5 +17,9 @@ const getItemsRequestAction = Joi.object().keys({
     value: Joi.boolean().valid(true, false).required(),
     declineReason: Joi.string().allow(null, '').required(),
 });
-
-module.exports = { createItemsRequest, getItemsRequest, getItemsRequestAction };
+const ListItemsRequestsByStudent = Joi.object().keys({
+    id: Joi.string().uuid().required(),
+});
+module.exports = {
+    createItemsRequest, getItemsRequest, getItemsRequestAction, ListItemsRequestsByStudent,
+};
