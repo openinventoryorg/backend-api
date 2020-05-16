@@ -11,8 +11,7 @@
     "lint": "./node_modules/.bin/eslint --ext .js config/ models/ routes/ seeders/ app.js",
     "lint-fix": "./node_modules/.bin/eslint --fix --ext .js config/ models/ routes/ seeders/ app.js",
     "db:migrate": "node src/helpers/migrate_database.js",
-    "pretest": "NODE_ENV=test npm run db:migrate",
-    "test": "mocha $(find test -name '*.js') || true",
+    "test": "true",
     "generate-docs": "jsdoc -c jsdoc.json",
     "manage": "node bin/manage.js"
   },
