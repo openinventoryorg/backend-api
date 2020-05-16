@@ -74,7 +74,6 @@ class ManageRequestItemsController {
      */
     static async ListItemsRequestsByStudent(req, res, next) {
         try {
-            console.log(req.user);
             const { value, error } = ListItemsRequestsByStudent.validate({ id: req.user.id });
             if (error) throw error;
             const requests = await ItemsRequestService.ListItemsRequestsByStudent(value);
