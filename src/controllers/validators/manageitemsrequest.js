@@ -30,10 +30,16 @@ const ListItemsRequestsByLab = Joi.object().keys({
     labId: Joi.string().uuid().required(),
 });
 
+const UpdateRequestLend = Joi.object().keys({
+    itemId: Joi.string().uuid().required(),
+    requestId: Joi.string().uuid().required(),
+});
+
 module.exports = {
     createItemsRequest,
     getItemsRequest,
     getItemsRequestAction,
     ListItemsRequestsByStudent,
     ListItemsRequestsByLab,
+    UpdateRequestLend,
 };

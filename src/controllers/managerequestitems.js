@@ -1,6 +1,6 @@
 const {
     createItemsRequest, getItemsRequest, getItemsRequestAction,
-    ListItemsRequestsByStudent, ListItemsRequestsByLab,
+    ListItemsRequestsByStudent, ListItemsRequestsByLab, UpdateRequestLend,
 } = require('./validators/manageitemsrequest');
 const ItemsRequestService = require('../services/itemsRequest');
 
@@ -98,6 +98,42 @@ class ManageRequestItemsController {
             if (error) throw error;
             const requests = await ItemsRequestService.ListItemsRequestsByLab(value);
             res.status(200).send(requests);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Changes requested item status into borrowed
+     *
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async UpdateRequestLend(req, res, next) {
+        try {
+            const { value, error } = UpdateRequestLend.validate(req.body);
+            if (error) throw error;
+            const item = await ItemsRequestService.LendItem(value);
+            res.status(200).send(item);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Changes requested item status into returned
+     *
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async UpdateRequestReturn(req, res, next) {
+        try {
+            const { value, error } = UpdateRequestLend.validate(req.body);
+            if (error) throw error;
+            const item = await ItemsRequestService.ReturnItem(value);
+            res.status(200).send(item);
         } catch (error) {
             next(error);
         }

@@ -44,12 +44,22 @@ class ItemsRequestService {
             throw new Errors.BadRequest('Supervisor does not exist.');
         }
 
-        const itemIdError = itemIds.every(async (id) => {
-            const item = await database.User.findOne({ where: { id } });
-            return (item != null);
+        const promise = itemIds.map(async (id) => {
+            const item = await database.Item.findOne({ where: { id } });
+            return !!item;
         });
-        if (!itemIdError) {
+        const itemIdsAvailability = await Promise.all(promise);
+        const itemIdError = itemIdsAvailability.includes(false);
+        if (itemIdError) {
             throw new Errors.BadRequest('A requested item does not exist');
+        }
+
+        const previousRequest = await database.Request.findOne({
+            where: { userId, labId, status: 'REQUESTED' },
+        });
+
+        if (previousRequest) {
+            throw new Errors.BadRequest('A pending request for the same lab already exists.');
         }
 
         const request = await database.Request.build(
@@ -106,10 +116,10 @@ class ItemsRequestService {
             include: [
                 {
                     model: database.RequestItem,
-                    attributes: [],
+                    attributes: ['itemId'],
                     include: [{
                         model: database.Item,
-                        attributes: ['id', 'serialNumber'],
+                        attributes: ['serialNumber'],
                         include: [
                             {
                                 model: database.ItemSet,
@@ -172,6 +182,11 @@ class ItemsRequestService {
 
         request.status = value ? 'ACCEPTED' : 'DECLINED';
         const status = value ? 'ACCEPTED' : 'REJECTED';
+
+        if (!value) {
+            request.declineReason = declineReason;
+        }
+
         let items;
         try {
             await database.sequelize.transaction(async (t) => {
@@ -297,6 +312,54 @@ class ItemsRequestService {
             ],
         });
         return requests;
+    }
+
+    /**
+     * Changes the requested item status into BORROWED in a lab
+     * @returns {Promise<{request: Object[]}>} List of item requests
+     */
+    static async LendItem({ itemId, requestId }) {
+        const database = await getDatabase();
+
+        const requestedItem = await database.RequestItem.findOne({
+            where: { itemId, requestId, status: 'ACCEPTED' },
+        });
+
+        if (!requestedItem) {
+            throw new Errors.BadRequest('Item Request does not exist');
+        }
+
+        requestedItem.status = 'BORROWED';
+        await requestedItem.save();
+        return {
+            itemId: requestedItem.itemId,
+            requestId: requestedItem.requestId,
+            status: requestedItem.status,
+        };
+    }
+
+    /**
+     * Changes the requested item status into BORROWED in a lab
+     * @returns {Promise<{request: Object[]}>} List of item requests
+     */
+    static async ReturnItem({ itemId, requestId }) {
+        const database = await getDatabase();
+
+        const requestedItem = await database.RequestItem.findOne({
+            where: { itemId, requestId, status: 'BORROWED' },
+        });
+
+        if (!requestedItem) {
+            throw new Errors.BadRequest('Item Request does not exist');
+        }
+
+        requestedItem.status = 'RETURNED';
+        await requestedItem.save();
+        return {
+            itemId: requestedItem.itemId,
+            requestId: requestedItem.requestId,
+            status: requestedItem.status,
+        };
     }
 }
 
