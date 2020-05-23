@@ -112,7 +112,9 @@ class ManageRequestItemsController {
      */
     static async UpdateRequestLend(req, res, next) {
         try {
-            const { value, error } = UpdateRequestLend.validate(req.body);
+            const { value, error } = UpdateRequestLend.validate({
+                userId: req.user.id, userPermissions: req.user.permissions, ...req.body,
+            });
             if (error) throw error;
             const item = await ItemsRequestService.LendItem(value);
             res.status(200).send(item);
@@ -130,7 +132,9 @@ class ManageRequestItemsController {
      */
     static async UpdateRequestReturn(req, res, next) {
         try {
-            const { value, error } = UpdateRequestLend.validate(req.body);
+            const { value, error } = UpdateRequestLend.validate({
+                userId: req.user.id, userPermissions: req.user.permissions, ...req.body,
+            });
             if (error) throw error;
             const item = await ItemsRequestService.ReturnItem(value);
             res.status(200).send(item);

@@ -29,4 +29,6 @@ module.exports = (database) => {
     database.Supervisor.hasMany(database.Request, { foreignKey: 'supervisorId' });
     database.Item.hasMany(database.RequestItem, { foreignKey: 'itemId' });
     database.RequestItem.belongsTo(database.Item, { foreignKey: 'itemId' });
+    database.Item.hasMany(database.TemporaryRequest, { foreignKey: 'itemId' });
+    database.TemporaryRequest.belongsTo(database.Item, { foreignKey: 'itemId' });
 };

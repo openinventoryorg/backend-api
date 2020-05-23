@@ -10,6 +10,7 @@ const manageItemsetsRoutes = require('./manageitemsets');
 const manageUsersRoutes = require('./manageusers');
 const manageRequestItemsRoutes = require('./managerequestItems');
 const manageSupervisorsRoutes = require('./managesupervisors');
+const manageTemporaryRequestsRoutes = require('./managetemporaryrequests');
 
 const defineEndPoints = (app) => {
     app.use('/api/registration', registrationRoutes);
@@ -22,6 +23,7 @@ const defineEndPoints = (app) => {
     app.use('/api/items', manageItemsRoutes);
     app.use('/api/supervisors', manageSupervisorsRoutes);
     app.use('/api/requestitems', manageRequestItemsRoutes);
+    app.use('/api/temporaryrequests', manageTemporaryRequestsRoutes);
     app.use('/api/users', manageUsersRoutes);
     app.use('/api/demo', demoRoutes);
 };

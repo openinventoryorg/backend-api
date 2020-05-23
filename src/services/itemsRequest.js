@@ -31,17 +31,17 @@ class ItemsRequestService {
 
         const lab = await database.Lab.findOne({ where: { id: labId } });
         if (!lab) {
-            throw new Errors.BadRequest('Lab does not exist.');
+            throw new Error('Lab does not exist.');
         }
 
         const user = await database.User.findOne({ where: { id: userId } });
         if (!user) {
-            throw new Errors.BadRequest('User does not exist.');
+            throw new Error('User does not exist.');
         }
 
         const supervisor = await database.Supervisor.findOne({ where: { id: supervisorId } });
         if (!supervisor) {
-            throw new Errors.BadRequest('Supervisor does not exist.');
+            throw new Error('Supervisor does not exist.');
         }
 
         const promise = itemIds.map(async (id) => {
@@ -51,7 +51,7 @@ class ItemsRequestService {
         const itemIdsAvailability = await Promise.all(promise);
         const itemIdError = itemIdsAvailability.includes(false);
         if (itemIdError) {
-            throw new Errors.BadRequest('A requested item does not exist');
+            throw new Error('A requested item does not exist');
         }
 
         const previousRequest = await database.Request.findOne({
@@ -59,7 +59,7 @@ class ItemsRequestService {
         });
 
         if (previousRequest) {
-            throw new Errors.BadRequest('A pending request for the same lab already exists.');
+            throw new Error('A pending request for the same lab already exists.');
         }
 
         const request = await database.Request.build(
@@ -68,6 +68,7 @@ class ItemsRequestService {
             },
         );
         let itemList;
+
         try {
             await database.sequelize.transaction(async (t) => {
                 await request.save({ transaction: t });
@@ -90,7 +91,7 @@ class ItemsRequestService {
             });
         } catch (err) {
             logger.error('Error while saving request: ', err);
-            throw new Errors.BadRequest('Invalid data. item request creation failed.');
+            throw new Error('Invalid data. item request creation failed.');
         }
         return {
             id: request.id,
@@ -318,18 +319,44 @@ class ItemsRequestService {
      * Changes the requested item status into BORROWED in a lab
      * @returns {Promise<{request: Object[]}>} List of item requests
      */
-    static async LendItem({ itemId, requestId }) {
+    static async LendItem({
+        itemId, requestId, userId, userPermissions,
+    }) {
         const database = await getDatabase();
 
         const requestedItem = await database.RequestItem.findOne({
             where: { itemId, requestId, status: 'ACCEPTED' },
+            include: [
+                {
+                    model: database.Item,
+                    attributes: ['labId'],
+                },
+            ],
         });
 
         if (!requestedItem) {
             throw new Errors.BadRequest('Item Request does not exist');
         }
 
+        if (!userPermissions.includes(LabManager)) {
+            const assignedUser = database.LabAssign.findOne({
+                where: { userId, labId: requestedItem.Item.labId },
+            });
+            if (!assignedUser) {
+                throw new Errors.BadRequest('Insufficient permissions.');
+            }
+        }
+
+        const borrowedDate = new Date();
+
+        const lendPeriod = 14;
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + lendPeriod);
+
         requestedItem.status = 'BORROWED';
+        requestedItem.borrowedDate = borrowedDate;
+        requestedItem.dueDate = dueDate;
+
         await requestedItem.save();
         return {
             itemId: requestedItem.itemId,
@@ -342,17 +369,36 @@ class ItemsRequestService {
      * Changes the requested item status into BORROWED in a lab
      * @returns {Promise<{request: Object[]}>} List of item requests
      */
-    static async ReturnItem({ itemId, requestId }) {
+    static async ReturnItem({
+        itemId, requestId, userId, userPermissions,
+    }) {
         const database = await getDatabase();
 
         const requestedItem = await database.RequestItem.findOne({
             where: { itemId, requestId, status: 'BORROWED' },
+            include: [
+                {
+                    model: database.Item,
+                    attributes: ['labId'],
+                },
+            ],
         });
 
         if (!requestedItem) {
             throw new Errors.BadRequest('Item Request does not exist');
         }
 
+        if (!userPermissions.includes(LabManager)) {
+            const assignedUser = database.LabAssign.findOne({
+                where: { userId, labId: requestedItem.Item.labId },
+            });
+            if (!assignedUser) {
+                throw new Errors.BadRequest('Insufficient permissions.');
+            }
+        }
+
+        const returnedDate = new Date();
+        requestedItem.returnedDate = returnedDate;
         requestedItem.status = 'RETURNED';
         await requestedItem.save();
         return {

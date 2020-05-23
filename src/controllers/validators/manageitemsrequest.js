@@ -33,6 +33,8 @@ const ListItemsRequestsByLab = Joi.object().keys({
 const UpdateRequestLend = Joi.object().keys({
     itemId: Joi.string().uuid().required(),
     requestId: Joi.string().uuid().required(),
+    userId: Joi.string().uuid().required(),
+    userPermissions: Joi.array().min(1).items(Joi.string().valid(...listedPermissions)).required(),
 });
 
 module.exports = {

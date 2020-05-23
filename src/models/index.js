@@ -12,6 +12,7 @@ const ItemAttributeSchema = require('./schema/item_attribute');
 const SupervisorSchema = require('./schema/supervisor');
 const RequestSchema = require('./schema/request');
 const RequestItemSchema = require('./schema/request_item');
+const TemporaryRequestSchema = require('./schema/temporary_request');
 const RegistrationTokenSchema = require('./schema/registration_token');
 const RolePermissionSchema = require('./schema/role_permission');
 const LabAssignSchema = require('./schema/lab_assign');
@@ -53,6 +54,7 @@ async function initializeDatabase() {
         RegistrationToken: RegistrationTokenSchema(sequelize, Sequelize),
         RolePermission: RolePermissionSchema(sequelize, Sequelize),
         LabAssign: LabAssignSchema(sequelize, Sequelize),
+        TemporaryRequest: TemporaryRequestSchema(sequelize, Sequelize),
         Permission: PermissionsSchema,
     };
 
