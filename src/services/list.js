@@ -195,43 +195,28 @@ class ListService {
      * Lists the labs assigned to a user with a given id.
      * @returns {Promise<{users: Object[]}>} List of labs assigned to the user
      */
-    static async ListAssignedLabs({ id }) {
+    static async ListAssignedLabs({ userId }) {
         const database = await getDatabase();
-        const isInventoryManager = await database.User.findOne({
-            where: { id },
-            attributes: [],
+
+        const labList = await database.Lab.findAll({
+            attributes: ['id', 'title', 'subtitle', 'image'],
             order: ['createdAt'],
-            include: [
-                {
-                    model: database.Role,
-                    attributes: [],
-                    required: true,
-                    include: [{
-                        model: database.RolePermission,
-                        attributes: [],
-                        where: { permissionId: database.Permission.InventoryManager },
-                    }],
-                },
-            ],
+            include: [{
+                model: database.User,
+                where: { id: userId },
+            }],
         });
-        if (!isInventoryManager) {
-            throw new Errors.BadRequest('User does not have inventory Manager permission.');
+
+        if (!labList) {
+            throw new Errors.BadRequest('You do not have assigned labs.');
         }
 
-        const labList = await database.User.findOne({
-            where: { id },
-            attributes: [],
-            order: ['createdAt'],
-            include: [
-                {
-                    model: database.Lab,
-                    attributes: ['id', 'title', 'subtitle', 'image'],
-                },
-            ],
-        });
-        const labs = labList.Labs.map((lab) => (
+        const labs = labList.map((lab) => (
             {
-                id: lab.id, title: lab.title, subtitle: lab.subtitle, image: lab.image,
+                id: lab.id,
+                title: lab.title,
+                subtitle: lab.subtitle,
+                image: lab.image,
             }
         ));
         return { labs };

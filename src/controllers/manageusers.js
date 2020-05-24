@@ -77,10 +77,10 @@ class ManageUserController {
      */
     static async ListAssignedLabs(req, res, next) {
         try {
-            const { value, error } = UserIdQuery.validate({ id: req.params.id });
+            const { value, error } = UserIdQuery.validate({ id: req.user.id });
             if (error) throw (error);
 
-            const assignedLabs = await ListService.ListAssignedLabs(value);
+            const assignedLabs = await ListService.ListAssignedLabs({ userId: value.id });
             res.status(200).send(assignedLabs);
         } catch (error) {
             next(error);
