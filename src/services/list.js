@@ -274,6 +274,49 @@ class ListService {
         });
         return { supervisors };
     }
+
+    /**
+     * Lists the temporary requests in a given lab
+     * @param {id} Id of the lab
+     * @returns {Promise<{users: Object[]}>} List of labs assigned to the user
+     */
+    static async ListTemporaryLendRequestsByLab({ id }) {
+        const database = await getDatabase();
+
+        const labAvailable = !!(await database.Lab.findOne({ where: { id } }));
+
+        if (!labAvailable) {
+            throw new Errors.BadRequest('A lab does not exist for the given ID');
+        }
+
+        const temporaryRequests = await database.TemporaryRequest.findOne({
+            attributes: ['id', 'borrowedTime', 'returnedTime', 'dueTime', 'status'],
+            include: [
+                {
+                    model: database.Item,
+                    attributes: ['id', 'serialNumber'],
+                    include: [
+                        {
+                            model: database.ItemSet,
+                            attributes: ['id', 'title'],
+                        },
+                        {
+                            model: database.Lab,
+                            attributes: [],
+                            required: true,
+                            where: { id },
+                        },
+                    ],
+                },
+                {
+                    model: database.User,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+            ],
+        });
+
+        return temporaryRequests;
+    }
 }
 
 module.exports = ListService;

@@ -279,7 +279,7 @@ class ItemsRequestService {
         const database = await getDatabase();
 
         if (!userPermissions.includes(LabManager)) {
-            const assignedUser = database.LabAssign.findOne({
+            const assignedUser = await database.LabAssign.findOne({
                 where: { userId, labId },
             });
             if (!assignedUser) {
@@ -339,7 +339,7 @@ class ItemsRequestService {
         }
 
         if (!userPermissions.includes(LabManager)) {
-            const assignedUser = database.LabAssign.findOne({
+            const assignedUser = await database.LabAssign.findOne({
                 where: { userId, labId: requestedItem.Item.labId },
             });
             if (!assignedUser) {
@@ -385,15 +385,15 @@ class ItemsRequestService {
         });
 
         if (!requestedItem) {
-            throw new Errors.BadRequest('Item Request does not exist');
+            throw new Error('Item Request does not exist');
         }
 
         if (!userPermissions.includes(LabManager)) {
-            const assignedUser = database.LabAssign.findOne({
+            const assignedUser = await database.LabAssign.findOne({
                 where: { userId, labId: requestedItem.Item.labId },
             });
             if (!assignedUser) {
-                throw new Errors.BadRequest('Insufficient permissions.');
+                throw new Error('Insufficient permissions.');
             }
         }
 
@@ -401,6 +401,7 @@ class ItemsRequestService {
         requestedItem.returnedDate = returnedDate;
         requestedItem.status = 'RETURNED';
         await requestedItem.save();
+
         return {
             itemId: requestedItem.itemId,
             requestId: requestedItem.requestId,

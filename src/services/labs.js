@@ -1,7 +1,7 @@
 const { getDatabase } = require('../helpers/get_database');
 const Errors = require('../helpers/errors');
 const logger = require('../loaders/logger');
-const { LabManager } = require('../models/schema/permissions');
+const { InventoryManager } = require('../models/schema/permissions');
 
 /**
  * Service that manages CUD of labs
@@ -143,7 +143,7 @@ class LabsService {
         const isAPermittedUser = await database.RolePermission.findOne({
             where: {
                 roleId: user.roleId,
-                permissionId: LabManager,
+                permissionId: InventoryManager,
             },
         });
         // checks for permissions to be assigned to a lab

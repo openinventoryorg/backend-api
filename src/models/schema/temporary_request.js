@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const TemporaryRequest = sequelize.define('RequestItem', {
+    const TemporaryRequest = sequelize.define('TemporaryRequest', {
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
         itemId: {
             type: DataTypes.UUID,
             references: { model: 'Item', key: 'id' },
+        },
+        userId: {
+            type: DataTypes.UUID,
+            references: { model: 'User', key: 'id' },
         },
         returnedTime: { type: DataTypes.DATE },
         dueTime: { type: DataTypes.DATE },
