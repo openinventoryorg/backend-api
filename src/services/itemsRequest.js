@@ -144,10 +144,6 @@ class ItemsRequestService {
             throw new Errors.BadRequest('Invalid token!');
         }
 
-        if (itemRequest.status !== 'REQUESTED') {
-            throw new Errors.BadRequest('Expired request!');
-        }
-
         return itemRequest;
     }
 
@@ -208,7 +204,7 @@ class ItemsRequestService {
                     attributes: ['serialNumber'],
                     include: [{
                         model: database.ItemSet,
-                        attributes: ['title'],
+                        attributes: ['title', 'image'],
                     }],
                 }],
             })).map((item) => ({
