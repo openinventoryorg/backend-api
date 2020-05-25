@@ -299,8 +299,13 @@ class ItemsRequestService {
                                 model: database.ItemSet,
                                 attributes: ['id', 'title'],
                             },
+                            {
+                                model: database.Lab,
+                                attributes: ['title'],
+                            },
                         ],
-                    }],
+                    },
+                    ],
                 },
                 {
                     model: database.User,
