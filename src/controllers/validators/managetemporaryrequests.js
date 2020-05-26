@@ -4,8 +4,8 @@ const { permissions: listedPermissions } = require('../../models/schema/permissi
 const CreateTemporaryLendRequests = Joi.object().keys({
     userId: Joi.string().uuid().required(),
     userPermissions: Joi.array().min(1).items(Joi.string().valid(...listedPermissions)).required(),
-    itemId: Joi.string().uuid().required(),
-    studentId: Joi.string().uuid().required(),
+    serialNumber: Joi.string().lowercase({ force: true }).required(),
+    studentId: Joi.string().lowercase({ force: true }).required(),
 });
 
 const ListRequestsUsingLab = Joi.object().keys({

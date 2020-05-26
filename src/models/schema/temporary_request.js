@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             references: { model: 'Item', key: 'id' },
         },
-        userId: {
-            type: DataTypes.UUID,
-            references: { model: 'User', key: 'id' },
+        studentId: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
         },
         returnedTime: { type: DataTypes.DATE },
         dueTime: { type: DataTypes.DATE },

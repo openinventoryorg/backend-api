@@ -285,7 +285,7 @@ class ItemsRequestService {
 
         const requests = await database.Request.findAll({
             where: { labId },
-            attributes: ['id', 'supervisorId', 'reason', 'status'],
+            attributes: ['id', 'reason', 'status'],
             order: ['createdAt'],
             include: [
                 {
@@ -309,6 +309,10 @@ class ItemsRequestService {
                 },
                 {
                     model: database.User,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+                {
+                    model: database.Supervisor,
                     attributes: ['id', 'firstName', 'lastName', 'email'],
                 },
             ],
