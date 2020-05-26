@@ -29,6 +29,7 @@ const configurations = {
         etherealPassword: process.env.ETHEREAL_PASSWORD || 'password',
         gmailUsername: process.env.GMAIL_USERNAME || '',
         gmailPassword: process.env.GMAIL_PASSWORD || '',
+        sendGridApiKey: process.env.SENDGRID_API_KEY || '',
     },
     site: {
         // Token verification url: [verifyToken]/TOKEN
