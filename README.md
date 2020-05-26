@@ -72,6 +72,7 @@ GMAIL_PASSWORD=jHm33JhqdhWKuknB
 SITE_API=http://localhost:3000/register
 DB_INIT=false
 ADMIN_EMAIL=admin@admin.com
+SENDGRID_API_KEY=key
 ```
 
 Then use `nodemon` or `node` to serve the pages.

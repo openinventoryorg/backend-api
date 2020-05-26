@@ -1,10 +1,10 @@
 const logger = require('../loaders/logger');
-const { initializeGmailTransport } = require('./gmail');
+const { initializeSendgridTransport } = require('./sendgrid');
 
 /**
  * Promised future of transport to be used by sendmail method.
  */
-const emailTransportPromise = initializeGmailTransport();
+const emailTransportPromise = initializeSendgridTransport();
 
 /**
  * Sends an email to the given url using a given template
