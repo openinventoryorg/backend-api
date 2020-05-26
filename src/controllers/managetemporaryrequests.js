@@ -52,7 +52,7 @@ class ManageTemporaryRequestsController {
     }
 
     /**
-   * Lists all the temporary requests of a given lab
+   * Lists all the temporary requests of a given inventory manager
    *
    * @param {Request} req Request
    * @param {Response} res Response

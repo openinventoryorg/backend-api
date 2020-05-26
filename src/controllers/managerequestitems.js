@@ -1,8 +1,10 @@
 const {
     createItemsRequest, getItemsRequest, getItemsRequestAction,
     ListItemsRequestsByStudent, ListItemsRequestsByLab, UpdateRequestLend,
+    ListItemsRequestsByInventManager,
 } = require('./validators/manageitemsrequest');
 const ItemsRequestService = require('../services/itemsRequest');
+const ListService = require('../services/list');
 
 /**
  * Controller which manages request items
@@ -142,6 +144,27 @@ class ManageRequestItemsController {
             next(error);
         }
     }
+
+    /**
+     * Lists all the item requests of all labs assigned to an invent manager
+     *
+     * @param {Request} req Request
+     * @param {Response} res Response
+     * @param {NextFunction} next Next callback
+     */
+    static async ListItemsRequestsByInventoryManager(req, res, next) {
+        try {
+            const { value, error } = ListItemsRequestsByInventManager.validate(
+                { userId: req.user.id },
+            );
+            if (error) throw error;
+            const item = await ListService.ListItemsRequestsByInventoryManager(value);
+            res.status(200).send(item);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
+
 
 module.exports = ManageRequestItemsController;

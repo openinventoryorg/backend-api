@@ -261,7 +261,7 @@ class ListService {
     }
 
     /**
-     * Lists the temporary requests in a given lab
+     * Lists the temporary requests of all labs assigned to given inventory manager
      * @param {id} Id of the lab
      * @returns {Promise<{users: Object[]}>} List of labs assigned to the user
      */
@@ -306,6 +306,54 @@ class ListService {
         const temporaryRequests = Promise.all(promises);
 
         return temporaryRequests;
+    }
+
+    /**
+     * Lists the requests of all labs assigned to given inventory manager
+     * @param {id} Id of the lab
+     * @returns {Promise<{users: Object[]}>} List of labs assigned to the user
+     */
+    static async ListItemsRequestsByInventoryManager({ userId }) {
+        const database = await getDatabase();
+
+        const requests = await database.Request.findAll({
+            attributes: ['reason', 'declineReason', 'status'],
+            include: [
+                {
+                    model: database.RequestItem,
+                    attributes: ['returnedDate', 'dueDate', 'borrowedDate', 'status'],
+                    include: {
+                        model: database.Item,
+                        attributes: ['id', 'serialNumber'],
+                        include: {
+                            model: database.ItemSet,
+                            attributes: ['title', 'image'],
+                        },
+                    },
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title', 'image'],
+                    required: true,
+                    include: {
+                        model: database.User,
+                        attributes: [],
+                        where: { id: userId },
+                        required: true,
+                    },
+                },
+                {
+                    model: database.User,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+                {
+                    model: database.Supervisor,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+            ],
+        });
+
+        return requests;
     }
 }
 

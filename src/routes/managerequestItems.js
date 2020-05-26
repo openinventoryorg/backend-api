@@ -5,6 +5,7 @@ const ManageRequestItemsController = require('../controllers/managerequestitems'
 
 router.post('/create', permissionMiddleware([Requester]), ManageRequestItemsController.CreateItemsRequest);
 router.post('/review', ManageRequestItemsController.GetRequestAction);
+router.get('/list', permissionMiddleware([InventoryManager]), ManageRequestItemsController.ListItemsRequestsByInventoryManager);
 router.get('/:token', ManageRequestItemsController.GetItemsRequestByToken);
 router.get('/requester/list', permissionMiddleware([Requester]), ManageRequestItemsController.ListItemsRequestsByStudent);
 router.get('/lab/list/:labId', permissionMiddleware([LabManager, InventoryManager]), ManageRequestItemsController.ListItemsRequestsByLab);

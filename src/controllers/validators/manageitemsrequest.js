@@ -37,6 +37,11 @@ const UpdateRequestLend = Joi.object().keys({
     userPermissions: Joi.array().min(1).items(Joi.string().valid(...listedPermissions)).required(),
 });
 
+const ListItemsRequestsByInventManager = Joi.object().keys({
+    userId: Joi.string().uuid().required(),
+});
+
+
 module.exports = {
     createItemsRequest,
     getItemsRequest,
@@ -44,4 +49,5 @@ module.exports = {
     ListItemsRequestsByStudent,
     ListItemsRequestsByLab,
     UpdateRequestLend,
+    ListItemsRequestsByInventManager,
 };
