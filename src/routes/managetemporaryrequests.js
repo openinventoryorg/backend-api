@@ -5,7 +5,7 @@ const ManageTemporaryRequestsController = require('../controllers/managetemporar
 
 router.post('/lend', permissionMiddleware([LabManager, InventoryManager]), ManageTemporaryRequestsController.CreateTemporaryLendRequest);
 router.post('/return', permissionMiddleware([LabManager, InventoryManager]), ManageTemporaryRequestsController.UpdateTemporaryLendRequest);
-router.get('/list/:id', permissionMiddleware([LabManager, InventoryManager]), ManageTemporaryRequestsController.ListTemporaryLendRequests);
+router.get('/list', permissionMiddleware([InventoryManager]), ManageTemporaryRequestsController.ListTemporaryLendRequests);
 
 
 module.exports = router;

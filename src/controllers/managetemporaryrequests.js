@@ -60,7 +60,7 @@ class ManageTemporaryRequestsController {
    */
     static async ListTemporaryLendRequests(req, res, next) {
         try {
-            const { value, error } = ListRequestsUsingLab.validate({ id: req.params.id });
+            const { value, error } = ListRequestsUsingLab.validate({ userId: req.user.id });
             if (error) throw error;
             const temporaryRequests = await ListService.ListTemporaryLendRequestsByLab(value);
             res.status(200).send(temporaryRequests);

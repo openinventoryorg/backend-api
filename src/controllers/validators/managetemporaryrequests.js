@@ -9,7 +9,7 @@ const CreateTemporaryLendRequests = Joi.object().keys({
 });
 
 const ListRequestsUsingLab = Joi.object().keys({
-    id: Joi.string().uuid().required(),
+    userId: Joi.string().uuid().required(),
 });
 
 module.exports = { CreateTemporaryLendRequests, ListRequestsUsingLab };
