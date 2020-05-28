@@ -63,7 +63,7 @@ class ManageTemporaryRequestsController {
             const { value, error } = ListRequestsUsingLab.validate({ userId: req.user.id });
             if (error) throw error;
             const temporaryRequests = await ListService.ListTemporaryLendRequestsByLab(value);
-            res.status(200).send(temporaryRequests);
+            res.status(200).send({ lentItems: temporaryRequests });
         } catch (error) {
             next(error);
         }
