@@ -413,32 +413,6 @@ class ItemsRequestService {
             status: requestedItem.status,
         };
     }
-
-    /**
-     * Finds all borrowed items where the due date is close
-     * @returns {Promise<{request: Object[]}>} List of item requests
-     */
-    static async RemindItemRequests() {
-        const database = await getDatabase();
-
-        const currentDate = new Date();
-
-        const nextDate = new Date();
-        nextDate.setDate(nextDate.getDate() + 1);
-
-        const thirdDate = new Date();
-        thirdDate.setDate(thirdDate.getDate() + 3);
-
-        const onDateRequests = await database.RequestItem.findAll({
-            where: { dueDate: currentDate, status: 'BORROWED' },
-            attributes: ['borrowedDate', 'dueDate'],
-            include: [
-                {
-                    model:data
-                }
-            ],
-        });
-    }
 }
 
 module.exports = ItemsRequestService;
