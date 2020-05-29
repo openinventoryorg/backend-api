@@ -1,7 +1,6 @@
 const RolesService = require('../services/roles');
 const ListService = require('../services/list');
 const { CreateRole, RoleIdQuery, CreateRoleQuery } = require('./validators/manageroles');
-
 /**
  * Controller which manages roles
  * @abstract

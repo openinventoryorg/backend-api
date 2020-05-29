@@ -415,29 +415,79 @@ class ItemsRequestService {
     }
 
     /**
+     * Helper function for RemindItemRequests
+     * @param {Date} dueDate
+     */
+    static async getRequestsBasedonDueDate(dueDate) {
+        const database = await getDatabase();
+        const { Op } = database.Sequelize;
+
+        const dueDateEnd = new Date(dueDate);
+        dueDateEnd.setDate(dueDate.getDate() + 1);
+
+        const requests = await database.RequestItem.findAll({
+            where: {
+                dueDate: {
+                    [Op.and]: [
+                        { [Op.lte]: dueDateEnd },
+                        { [Op.gt]: dueDate },
+                    ],
+                    status: 'BORROWED',
+                },
+            },
+            raw: true,
+            attributes: ['borrowedDate', 'dueDate'],
+            include: [
+                {
+                    model: database.Request,
+                    attributes: [],
+                    include: [
+                        {
+                            model: database.Lab,
+                            attributes: ['title'],
+                        },
+                        {
+                            model: database.User,
+                            attributes: ['firstName', 'lastName', 'email'],
+                        },
+                    ],
+
+                },
+                {
+                    model: database.Item,
+                    attributes: ['serialNumber'],
+                    include: {
+                        model: database.ItemSet,
+                        attributes: ['title'],
+                    },
+                },
+            ],
+        });
+
+        return requests;
+    }
+
+    /**
      * Finds all borrowed items where the due date is close
      * @returns {Promise<{request: Object[]}>} List of item requests
      */
     static async RemindItemRequests() {
-        const database = await getDatabase();
-
         const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
 
         const nextDate = new Date();
         nextDate.setDate(nextDate.getDate() + 1);
+        nextDate.setHours(0, 0, 0, 0);
 
         const thirdDate = new Date();
         thirdDate.setDate(thirdDate.getDate() + 3);
+        thirdDate.setHours(0, 0, 0, 0);
 
-        const onDateRequests = await database.RequestItem.findAll({
-            where: { dueDate: currentDate, status: 'BORROWED' },
-            attributes: ['borrowedDate', 'dueDate'],
-            include: [
-                {
-                    model:data
-                }
-            ],
-        });
+        const zeroDateRequests = await ItemsRequestService.getRequestsBasedonDueDate(currentDate);
+        const oneDateRequests = await ItemsRequestService.getRequestsBasedonDueDate(nextDate);
+        const threeDateRequests = await ItemsRequestService.getRequestsBasedonDueDate(thirdDate);
+
+        return { zeroDateRequests, oneDateRequests, threeDateRequests };
     }
 }
 
