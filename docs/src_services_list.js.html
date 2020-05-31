@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>src/services/list.js</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/search.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.4.5/fuse.min.js"></script> -->
+    <script src="scripts/fuse.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/clean-jsdoc-theme.css">
+    
+    
+    
+<svg aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display:none">
+    <defs>
+        <symbol id="copy-icon" viewbox="0 0 488.3 488.3">
+            <g>
+                <path d="M314.25,85.4h-227c-21.3,0-38.6,17.3-38.6,38.6v325.7c0,21.3,17.3,38.6,38.6,38.6h227c21.3,0,38.6-17.3,38.6-38.6V124    C352.75,102.7,335.45,85.4,314.25,85.4z M325.75,449.6c0,6.4-5.2,11.6-11.6,11.6h-227c-6.4,0-11.6-5.2-11.6-11.6V124    c0-6.4,5.2-11.6,11.6-11.6h227c6.4,0,11.6,5.2,11.6,11.6V449.6z"/>
+                <path d="M401.05,0h-227c-21.3,0-38.6,17.3-38.6,38.6c0,7.5,6,13.5,13.5,13.5s13.5-6,13.5-13.5c0-6.4,5.2-11.6,11.6-11.6h227    c6.4,0,11.6,5.2,11.6,11.6v325.7c0,6.4-5.2,11.6-11.6,11.6c-7.5,0-13.5,6-13.5,13.5s6,13.5,13.5,13.5c21.3,0,38.6-17.3,38.6-38.6    V38.6C439.65,17.3,422.35,0,401.05,0z"/>
+            </g>
+        </symbol>
+    </defs>
+</svg>
+
+</head>
+<body>
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html"><div class="text">Home</div></a></h2><div class="search-box"><input type="text" placeholder="Search..." id="search-box" /><div class="search-item-container" id="search-item-container"><ul class="search-item-ul" id="search-item-ul"></ul></div></div><div class="sidebar-list-div"><h3>Classes</h3><ul><li><a href="BadRequest.html">BadRequest</a></li><li><a href="Conflict.html">Conflict</a></li><li><a href="DemoController.html">DemoController</a><ul class='methods'><li data-type='method'><a href="DemoController.html#.DemoNodeMailer">DemoNodeMailer</a></li></ul></li><li><a href="ExtendableError.html">ExtendableError</a></li><li><a href="Forbidden.html">Forbidden</a></li><li><a href="InternalServerError.html">InternalServerError</a></li><li><a href="ItemService.html">ItemService</a><ul class='methods'><li data-type='method'><a href="ItemService.html#.CreateItem">CreateItem</a></li><li data-type='method'><a href="ItemService.html#.DeleteItem">DeleteItem</a></li><li data-type='method'><a href="ItemService.html#.GetItem">GetItem</a></li><li data-type='method'><a href="ItemService.html#.TransferItem">TransferItem</a></li><li data-type='method'><a href="ItemService.html#.UpdateItem">UpdateItem</a></li></ul></li><li><a href="ItemsetsService.html">ItemsetsService</a><ul class='methods'><li data-type='method'><a href="ItemsetsService.html#.CreateItemset">CreateItemset</a></li><li data-type='method'><a href="ItemsetsService.html#.DeleteItemset">DeleteItemset</a></li><li data-type='method'><a href="ItemsetsService.html#.GetItemset">GetItemset</a></li><li data-type='method'><a href="ItemsetsService.html#.UpdateItemset">UpdateItemset</a></li></ul></li><li><a href="ItemsRequestService.html">ItemsRequestService</a><ul class='methods'><li data-type='method'><a href="ItemsRequestService.html#.AcceptOrDeclineRequest">AcceptOrDeclineRequest</a></li><li data-type='method'><a href="ItemsRequestService.html#.CreateItemsRequest">CreateItemsRequest</a></li><li data-type='method'><a href="ItemsRequestService.html#.GetItemsRequestByToken">GetItemsRequestByToken</a></li><li data-type='method'><a href="ItemsRequestService.html#.getRequestsBasedonDueDate">getRequestsBasedonDueDate</a></li><li data-type='method'><a href="ItemsRequestService.html#.LendItem">LendItem</a></li><li data-type='method'><a href="ItemsRequestService.html#.ListItemsRequestsByLab">ListItemsRequestsByLab</a></li><li data-type='method'><a href="ItemsRequestService.html#.ListItemsRequestsByStudent">ListItemsRequestsByStudent</a></li><li data-type='method'><a href="ItemsRequestService.html#.RemindItemRequests">RemindItemRequests</a></li><li data-type='method'><a href="ItemsRequestService.html#.ReturnItem">ReturnItem</a></li></ul></li><li><a href="LabsService.html">LabsService</a><ul class='methods'><li data-type='method'><a href="LabsService.html#.AssignUserstoLabs">AssignUserstoLabs</a></li><li data-type='method'><a href="LabsService.html#.CreateLab">CreateLab</a></li><li data-type='method'><a href="LabsService.html#.DeleteLab">DeleteLab</a></li><li data-type='method'><a href="LabsService.html#.PutLab">PutLab</a></li><li data-type='method'><a href="LabsService.html#.UnassignUsersFromLabs">UnassignUsersFromLabs</a></li><li data-type='method'><a href="LabsService.html#.UpdateLab">UpdateLab</a></li></ul></li><li><a href="ListService.html">ListService</a><ul class='methods'><li data-type='method'><a href="ListService.html#.ListAssignedLabs">ListAssignedLabs</a></li><li data-type='method'><a href="ListService.html#.ListInventoryManagers">ListInventoryManagers</a></li><li data-type='method'><a href="ListService.html#.ListItems">ListItems</a></li><li data-type='method'><a href="ListService.html#.ListItemsets">ListItemsets</a></li><li data-type='method'><a href="ListService.html#.ListItemsRequestsByInventoryManager">ListItemsRequestsByInventoryManager</a></li><li data-type='method'><a href="ListService.html#.ListLabItems">ListLabItems</a></li><li data-type='method'><a href="ListService.html#.ListLabs">ListLabs</a></li><li data-type='method'><a href="ListService.html#.ListRolePermissions">ListRolePermissions</a></li><li data-type='method'><a href="ListService.html#.ListRoles">ListRoles</a></li><li data-type='method'><a href="ListService.html#.ListSupervisors">ListSupervisors</a></li><li data-type='method'><a href="ListService.html#.ListTemporaryLendRequestsByLab">ListTemporaryLendRequestsByLab</a></li><li data-type='method'><a href="ListService.html#.ListTokens">ListTokens</a></li><li data-type='method'><a href="ListService.html#.ListUsers">ListUsers</a></li><li data-type='method'><a href="ListService.html#.ListUsersAssignedToLab">ListUsersAssignedToLab</a></li></ul></li><li><a href="LoginController.html">LoginController</a><ul class='methods'><li data-type='method'><a href="LoginController.html#.Login">Login</a></li><li data-type='method'><a href="LoginController.html#.Verify">Verify</a></li></ul></li><li><a href="LoginService.html">LoginService</a><ul class='methods'><li data-type='method'><a href="LoginService.html#.Login">Login</a></li></ul></li><li><a href="ManageItemsController.html">ManageItemsController</a><ul class='methods'><li data-type='method'><a href="ManageItemsController.html#.DeleteItem">DeleteItem</a></li><li data-type='method'><a href="ManageItemsController.html#.GetItem">GetItem</a></li><li data-type='method'><a href="ManageItemsController.html#.ListItems">ListItems</a></li><li data-type='method'><a href="ManageItemsController.html#.PostItem">PostItem</a></li><li data-type='method'><a href="ManageItemsController.html#.TransferItem">TransferItem</a></li><li data-type='method'><a href="ManageItemsController.html#.UpdateItem">UpdateItem</a></li></ul></li><li><a href="ManageItemsetsController.html">ManageItemsetsController</a><ul class='methods'><li data-type='method'><a href="ManageItemsetsController.html#.DeleteItemset">DeleteItemset</a></li><li data-type='method'><a href="ManageItemsetsController.html#.GetItemset">GetItemset</a></li><li data-type='method'><a href="ManageItemsetsController.html#.ListItemsets">ListItemsets</a></li><li data-type='method'><a href="ManageItemsetsController.html#.PostItemset">PostItemset</a></li><li data-type='method'><a href="ManageItemsetsController.html#.UpdateItemset">UpdateItemset</a></li></ul></li><li><a href="ManageLabsController.html">ManageLabsController</a><ul class='methods'><li data-type='method'><a href="ManageLabsController.html#.AssignUserstoLabs">AssignUserstoLabs</a></li><li data-type='method'><a href="ManageLabsController.html#.DeleteLab">DeleteLab</a></li><li data-type='method'><a href="ManageLabsController.html#.ListAssignedUsers">ListAssignedUsers</a></li><li data-type='method'><a href="ManageLabsController.html#.ListLabItems">ListLabItems</a></li><li data-type='method'><a href="ManageLabsController.html#.ListLabs">ListLabs</a></li><li data-type='method'><a href="ManageLabsController.html#.PostLab">PostLab</a></li><li data-type='method'><a href="ManageLabsController.html#.PutLab">PutLab</a></li><li data-type='method'><a href="ManageLabsController.html#.UnassignUsersFromLabs">UnassignUsersFromLabs</a></li><li data-type='method'><a href="ManageLabsController.html#.UpdateLab">UpdateLab</a></li></ul></li><li><a href="ManagePermissionsController.html">ManagePermissionsController</a><ul class='methods'><li data-type='method'><a href="ManagePermissionsController.html#.ListRolePermissions">ListRolePermissions</a></li></ul></li><li><a href="ManageRequestItemsController.html">ManageRequestItemsController</a><ul class='methods'><li data-type='method'><a href="ManageRequestItemsController.html#.CreateItemsRequest">CreateItemsRequest</a></li><li data-type='method'><a href="ManageRequestItemsController.html#.GetItemsRequestByToken">GetItemsRequestByToken</a></li><li data-type='method'><a href="ManageRequestItemsController.html#.GetRequestAction">GetRequestAction</a></li><li data-type='method'><a href="ManageRequestItemsController.html#.ListItemsRequestsByInventoryManager">ListItemsRequestsByInventoryManager</a></li><li data-type='method'><a href="ManageRequestItemsController.html#.ListItemsRequestsByLab">ListItemsRequestsByLab</a></li><li data-type='method'><a href="ManageRequestItemsController.html#.ListItemsRequestsByStudent">ListItemsRequestsByStudent</a></li><li data-type='method'><a href="ManageRequestItemsController.html#.UpdateRequestLend">UpdateRequestLend</a></li><li data-type='method'><a href="ManageRequestItemsController.html#.UpdateRequestReturn">UpdateRequestReturn</a></li></ul></li><li><a href="ManageRolesController.html">ManageRolesController</a><ul class='methods'><li data-type='method'><a href="ManageRolesController.html#.DeleteRole">DeleteRole</a></li><li data-type='method'><a href="ManageRolesController.html#.GetRole">GetRole</a></li><li data-type='method'><a href="ManageRolesController.html#.ListRoles">ListRoles</a></li><li data-type='method'><a href="ManageRolesController.html#.PostRole">PostRole</a></li><li data-type='method'><a href="ManageRolesController.html#.UpdateRole">UpdateRole</a></li></ul></li><li><a href="ManageSupervisorsController.html">ManageSupervisorsController</a><ul class='methods'><li data-type='method'><a href="ManageSupervisorsController.html#.CreateSupervisor">CreateSupervisor</a></li><li data-type='method'><a href="ManageSupervisorsController.html#.ListSupervisors">ListSupervisors</a></li></ul></li><li><a href="ManageSupervisorsService.html">ManageSupervisorsService</a><ul class='methods'><li data-type='method'><a href="ManageSupervisorsService.html#.CreateSupervisor">CreateSupervisor</a></li></ul></li><li><a href="ManageTemporaryRequestsController.html">ManageTemporaryRequestsController</a><ul class='methods'><li data-type='method'><a href="ManageTemporaryRequestsController.html#.CreateTemporaryLendRequest">CreateTemporaryLendRequest</a></li><li data-type='method'><a href="ManageTemporaryRequestsController.html#.ListTemporaryLendRequests">ListTemporaryLendRequests</a></li><li data-type='method'><a href="ManageTemporaryRequestsController.html#.UpdateTemporaryLendRequest">UpdateTemporaryLendRequest</a></li></ul></li><li><a href="NotFound.html">NotFound</a></li><li><a href="RegistrarController.html">RegistrarController</a><ul class='methods'><li data-type='method'><a href="RegistrarController.html#.DeleteToken">DeleteToken</a></li><li data-type='method'><a href="RegistrarController.html#.GetTokens">GetTokens</a></li><li data-type='method'><a href="RegistrarController.html#.ListRoles">ListRoles</a></li><li data-type='method'><a href="RegistrarController.html#.PostTokens">PostTokens</a></li><li data-type='method'><a href="RegistrarController.html#.PutToken">PutToken</a></li></ul></li><li><a href="RegistrarService.html">RegistrarService</a><ul class='methods'><li data-type='method'><a href="RegistrarService.html#.DeleteRegistrationToken">DeleteRegistrationToken</a></li><li data-type='method'><a href="RegistrarService.html#.SendRegistrationToken">SendRegistrationToken</a></li><li data-type='method'><a href="RegistrarService.html#.SendRegistrationTokenList">SendRegistrationTokenList</a></li></ul></li><li><a href="RegistrationController.html">RegistrationController</a><ul class='methods'><li data-type='method'><a href="RegistrationController.html#.Register">Register</a></li><li data-type='method'><a href="RegistrationController.html#.Verify">Verify</a></li></ul></li><li><a href="RegistrationService.html">RegistrationService</a><ul class='methods'><li data-type='method'><a href="RegistrationService.html#.Register">Register</a></li><li data-type='method'><a href="RegistrationService.html#.VerifyRegistrationToken">VerifyRegistrationToken</a></li></ul></li><li><a href="RolesService.html">RolesService</a><ul class='methods'><li data-type='method'><a href="RolesService.html#.CreateRole">CreateRole</a></li><li data-type='method'><a href="RolesService.html#.DeleteRole">DeleteRole</a></li><li data-type='method'><a href="RolesService.html#.GetRole">GetRole</a></li><li data-type='method'><a href="RolesService.html#.UpdateRole">UpdateRole</a></li></ul></li><li><a href="TemporaryRequestsService.html">TemporaryRequestsService</a><ul class='methods'><li data-type='method'><a href="TemporaryRequestsService.html#.CreateTemporaryRequest">CreateTemporaryRequest</a></li><li data-type='method'><a href="TemporaryRequestsService.html#.UpdateTemporaryRequest">UpdateTemporaryRequest</a></li></ul></li><li><a href="Unauthorized.html">Unauthorized</a></li><li><a href="UnprocessableEntity.html">UnprocessableEntity</a></li></ul><h3><a href="global.html">Global</a></h3><ul><li><a href="global.html#attributes">attributes</a></li><li><a href="global.html#checkPassword">checkPassword</a></li><li><a href="global.html#configurations">configurations</a></li><li><a href="global.html#corsErrorHandlerMiddleware">corsErrorHandlerMiddleware</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#emailTransportPromise">emailTransportPromise</a></li><li><a href="global.html#encapsulateSocketMessage">encapsulateSocketMessage</a></li><li><a href="global.html#errorHandlerMiddleware">errorHandlerMiddleware</a></li><li><a href="global.html#generateSecureToken">generateSecureToken</a></li><li><a href="global.html#getDatabase">getDatabase</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#initializeDatabase">initializeDatabase</a></li><li><a href="global.html#initializeEtherealMailTransport">initializeEtherealMailTransport</a></li><li><a href="global.html#initializeGmailTransport">initializeGmailTransport</a></li><li><a href="global.html#jwtAuthMiddleware">jwtAuthMiddleware</a></li><li><a href="global.html#jwtSign">jwtSign</a></li><li><a href="global.html#jwtSocketAuthMiddleware">jwtSocketAuthMiddleware</a></li><li><a href="global.html#jwtVerify">jwtVerify</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#onSocketConnection">onSocketConnection</a></li><li><a href="global.html#permissionMiddleware">permissionMiddleware</a></li><li><a href="global.html#sendMail">sendMail</a></li></ul></div>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">src/services/list.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { getDatabase } = require('../helpers/get_database');
+const { permissions } = require('../models/schema/permissions');
+const Errors = require('../helpers/errors');
+
+/**
+ * Service which is associated with listing items.
+ * @abstract
+ * @category Services
+ */
+class ListService {
+    /**
+     * Lists the roles available.
+     * @returns {Promise&lt;{roles: any[]}>} List of roles in the database
+     */
+    static async ListRoles() {
+        const database = await getDatabase();
+        const roles = await database.Role.findAll({
+            order: ['createdAt'],
+            attributes: ['id', 'name'],
+            include: [{
+                model: database.RolePermission,
+                attributes: [['permissionId', 'name']],
+            }],
+        });
+        return { roles };
+    }
+
+    /**
+     * Lists the tokens available.
+     * Only 20 most recent entries are given.
+     * @returns {Promise&lt;{tokens: any[]}>} List of tokens in the database
+     */
+    static async ListTokens() {
+        const database = await getDatabase();
+        const tokens = await database.RegistrationToken.findAll({
+            attributes: ['email', 'valid', 'updatedAt'],
+            include: [{
+                model: database.Role,
+                attributes: ['id', 'name'],
+            }],
+            order: [['updatedAt', 'DESC']],
+            limit: 20,
+        });
+        return { tokens };
+    }
+
+    /**
+     * Lists the labs available and the assigned users.
+     * @returns {Promise&lt;{labs: Object[]}>} List of labs in the database
+     */
+    static async ListLabs() {
+        const database = await getDatabase();
+        const labs = await database.Lab.findAll({
+            order: ['createdAt'],
+            include: [{
+                model: database.User,
+                attributes: ['id', 'firstName', 'lastName', 'email'],
+            }],
+        });
+        return { labs };
+    }
+
+    /**
+     * Lists the items available in the specified lab.
+     * @param {string} labId ID of lab
+     * @returns {Promise&lt;{labs: Object[]}>} List of labs in the database
+     */
+    static async ListLabItems(labId) {
+        const database = await getDatabase();
+        const labItemList = await database.Item.findAll({
+            where: { labId },
+            order: ['createdAt'],
+            include: [
+                {
+                    model: database.ItemSet,
+                    attributes: ['id', 'title', 'image'],
+                },
+            ],
+        });
+        const promises = await labItemList.map(async (item) => {
+            const itemCopy = { ...item.dataValues };
+
+            let requestItem = await database.RequestItem.findOne({
+                where: {
+                    itemId: item.id,
+                    status: 'BORROWED',
+                },
+            });
+            if (requestItem) return { ...itemCopy, status: 'BORROWED' };
+            requestItem = await database.RequestItem.findOne({
+                where: {
+                    itemId: item.id,
+                    status: 'ACCEPTED',
+                },
+            });
+            if (requestItem) return { ...itemCopy, status: 'ACCEPTED' };
+            return { ...itemCopy, status: 'AVAILABLE' };
+        });
+        const labItems = await Promise.all(promises);
+        return { labItems };
+    }
+
+
+    /**
+     * Lists the permissions available.
+     * @returns {Promise&lt;{permissions: Object[]}>} List of permissions available
+     */
+    static async ListRolePermissions() {
+        return { permissions };
+    }
+
+    /**
+     * Lists the itemsets available.
+     * @returns {Promise&lt;{itemsets: Object[]}>} List of itemsets available
+     */
+    static async ListItemsets() {
+        const database = await getDatabase();
+        const Itemsets = await database.ItemSet.findAll({
+            order: ['createdAt'],
+            attributes: ['id', 'title', 'image'],
+            include: [{
+                model: database.Attribute,
+                attributes: ['key', 'defaultValue', 'editable'],
+            }],
+        });
+        return { Itemsets };
+    }
+
+    /**
+     * Lists the items available.
+     * @returns {Promise&lt;{items: Object[]}>} List of items available
+     */
+    static async ListItems() {
+        const database = await getDatabase();
+        const items = await database.Item.findAll({
+            order: ['createdAt'],
+            attributes: ['id', 'serialNumber'],
+            include: [
+                {
+                    model: database.ItemSet,
+                    attributes: ['id', 'title', 'image'],
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title', 'subtitle', 'image'],
+                },
+                {
+                    model: database.ItemAttribute,
+                    attributes: ['key', 'value'],
+                },
+            ],
+        });
+        return { items };
+    }
+
+    /**
+     * Lists the users available.
+     * @returns {Promise&lt;{users: Object[]}>} List of users available
+     */
+    static async ListUsers() {
+        const database = await getDatabase();
+        const users = await database.User.findAll({
+            attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
+            include: [{
+                model: database.Role,
+                attributes: ['name'],
+            }],
+        });
+        return { users };
+    }
+
+    /**
+     * Lists the users assigned to a lab with a given id.
+     * @returns {Promise&lt;{users: Object[]}>} List of users assigned to the lab
+     */
+    static async ListUsersAssignedToLab({ id }) {
+        const database = await getDatabase();
+        const users = await database.Lab.findOne({
+            where: { id },
+            order: ['createdAt'],
+            attributes: ['id'],
+            include: [{
+                model: database.User,
+                attributes: ['id', 'firstName', 'lastName', 'email'],
+            }],
+        });
+
+        if (!users) {
+            throw new Errors.BadRequest(`Lab ${id} does not exist.`);
+        }
+        return { users };
+    }
+
+    /**
+     * Lists the labs assigned to a user with a given id.
+     * @returns {Promise&lt;{users: Object[]}>} List of labs assigned to the user
+     */
+    static async ListAssignedLabs({ userId }) {
+        const database = await getDatabase();
+
+        const labList = await database.Lab.findAll({
+            attributes: ['id', 'title', 'subtitle', 'image'],
+            order: ['createdAt'],
+            include: [{
+                model: database.User,
+                where: { id: userId },
+            }],
+        });
+
+        if (!labList) {
+            throw new Errors.BadRequest('You do not have assigned labs.');
+        }
+
+        const labs = labList.map((lab) => (
+            {
+                id: lab.id,
+                title: lab.title,
+                subtitle: lab.subtitle,
+                image: lab.image,
+            }
+        ));
+        return { labs };
+    }
+
+    /**
+     * Lists the users with INVENTORY_MANAGER permissions
+     * @returns {Promise&lt;{users: Object[]}>} List of users assigned to the lab
+     */
+    static async ListInventoryManagers() {
+        const database = await getDatabase();
+        const inventoryManagers = await database.User.findAll({
+            attributes: ['id', 'firstName', 'lastName', 'email'],
+            order: ['createdAt'],
+            include: [{
+                model: database.Role,
+                attributes: [],
+                required: true,
+                include: [{
+                    model: database.RolePermission,
+                    attributes: [],
+                    where: {
+                        permissionId: database.Permission.InventoryManager,
+                    },
+                }],
+            }],
+        });
+        return { inventoryManagers };
+    }
+
+    /**
+     * Lists the supervisors
+     * @returns {Promise&lt;{users: Object[]}>} List of users assigned to the lab
+     */
+    static async ListSupervisors() {
+        const database = await getDatabase();
+        const supervisors = await database.Supervisor.findAll({
+            attributes: ['id', 'firstName', 'lastName', 'bio', 'active', 'email'],
+            order: ['createdAt'],
+        });
+        return { supervisors };
+    }
+
+    /**
+     * Lists the temporary requests of all labs assigned to given inventory manager
+     * @param {id} Id of the lab
+     * @returns {Promise&lt;{users: Object[]}>} List of labs assigned to the user
+     */
+    static async ListTemporaryLendRequestsByLab({ userId }) {
+        const database = await getDatabase();
+
+        const assignedLabs = await database.Lab.findAll({
+            attributes: ['id', 'title', 'image'],
+            include:
+                {
+                    model: database.LabAssign,
+                    attributes: [],
+                    where: { userId },
+                },
+        });
+
+        if (!assignedLabs) {
+            throw new Errors.BadRequest('User has no assigned labs');
+        }
+
+        const promises = assignedLabs.map(async (lab) => {
+            const requests = await database.TemporaryRequest.findAll({
+                attributes: ['id', 'itemId', 'studentId', 'returnedTime', 'dueTime', 'borrowedTime', 'status'],
+                include:
+                    {
+                        model: database.Item,
+                        attributes: ['serialNumber'],
+                        where: { labId: lab.id },
+                        required: true,
+                        include: {
+                            model: database.ItemSet,
+                            attributes: ['title', 'image'],
+                        },
+                    },
+            });
+
+            return {
+                id: lab.id, title: lab.title, image: lab.image, requests,
+            };
+        });
+
+        const temporaryRequests = Promise.all(promises);
+
+        return temporaryRequests;
+    }
+
+    /**
+     * Lists the requests of all labs assigned to given inventory manager
+     * @param {id} Id of the lab
+     * @returns {Promise&lt;{users: Object[]}>} List of labs assigned to the user
+     */
+    static async ListItemsRequestsByInventoryManager({ userId }) {
+        const database = await getDatabase();
+
+        const requests = await database.Request.findAll({
+            attributes: ['reason', 'declineReason', 'status'],
+            include: [
+                {
+                    model: database.RequestItem,
+                    attributes: ['returnedDate', 'dueDate', 'borrowedDate', 'status'],
+                    include: {
+                        model: database.Item,
+                        attributes: ['id', 'serialNumber'],
+                        include: {
+                            model: database.ItemSet,
+                            attributes: ['title', 'image'],
+                        },
+                    },
+                },
+                {
+                    model: database.Lab,
+                    attributes: ['id', 'title', 'image'],
+                    required: true,
+                    include: {
+                        model: database.User,
+                        attributes: [],
+                        where: { id: userId },
+                        required: true,
+                    },
+                },
+                {
+                    model: database.User,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+                {
+                    model: database.Supervisor,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+            ],
+        });
+
+        return requests;
+    }
+}
+
+module.exports = ListService;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+  
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script>
+var list = [{"title":"BadRequest","link":"<a href=\"BadRequest.html\">BadRequest</a>"},{"title":"Conflict","link":"<a href=\"Conflict.html\">Conflict</a>"},{"title":"DemoController","link":"<a href=\"DemoController.html\">DemoController</a>"},{"title":"DemoController.DemoNodeMailer","link":"<a href=\"DemoController.html#.DemoNodeMailer\">DemoController.DemoNodeMailer &rtrif; undefined</a>"},{"title":"ExtendableError","link":"<a href=\"ExtendableError.html\">ExtendableError</a>"},{"title":"Forbidden","link":"<a href=\"Forbidden.html\">Forbidden</a>"},{"title":"InternalServerError","link":"<a href=\"InternalServerError.html\">InternalServerError</a>"},{"title":"ItemService","link":"<a href=\"ItemService.html\">ItemService</a>"},{"title":"ItemService.CreateItem","link":"<a href=\"ItemService.html#.CreateItem\">ItemService.CreateItem &rtrif; undefined</a>"},{"title":"ItemService.DeleteItem","link":"<a href=\"ItemService.html#.DeleteItem\">ItemService.DeleteItem &rtrif; undefined</a>"},{"title":"ItemService.GetItem","link":"<a href=\"ItemService.html#.GetItem\">ItemService.GetItem &rtrif; undefined</a>"},{"title":"ItemService.TransferItem","link":"<a href=\"ItemService.html#.TransferItem\">ItemService.TransferItem &rtrif; undefined</a>"},{"title":"ItemService.UpdateItem","link":"<a href=\"ItemService.html#.UpdateItem\">ItemService.UpdateItem &rtrif; undefined</a>"},{"title":"ItemsetsService","link":"<a href=\"ItemsetsService.html\">ItemsetsService</a>"},{"title":"ItemsetsService.CreateItemset","link":"<a href=\"ItemsetsService.html#.CreateItemset\">ItemsetsService.CreateItemset &rtrif; undefined</a>"},{"title":"ItemsetsService.DeleteItemset","link":"<a href=\"ItemsetsService.html#.DeleteItemset\">ItemsetsService.DeleteItemset &rtrif; undefined</a>"},{"title":"ItemsetsService.GetItemset","link":"<a href=\"ItemsetsService.html#.GetItemset\">ItemsetsService.GetItemset &rtrif; undefined</a>"},{"title":"ItemsetsService.UpdateItemset","link":"<a href=\"ItemsetsService.html#.UpdateItemset\">ItemsetsService.UpdateItemset &rtrif; undefined</a>"},{"title":"ItemsRequestService","link":"<a href=\"ItemsRequestService.html\">ItemsRequestService</a>"},{"title":"ItemsRequestService.AcceptOrDeclineRequest","link":"<a href=\"ItemsRequestService.html#.AcceptOrDeclineRequest\">ItemsRequestService.AcceptOrDeclineRequest &rtrif; undefined</a>"},{"title":"ItemsRequestService.CreateItemsRequest","link":"<a href=\"ItemsRequestService.html#.CreateItemsRequest\">ItemsRequestService.CreateItemsRequest &rtrif; undefined</a>"},{"title":"ItemsRequestService.GetItemsRequestByToken","link":"<a href=\"ItemsRequestService.html#.GetItemsRequestByToken\">ItemsRequestService.GetItemsRequestByToken &rtrif; undefined</a>"},{"title":"ItemsRequestService.getRequestsBasedonDueDate","link":"<a href=\"ItemsRequestService.html#.getRequestsBasedonDueDate\">ItemsRequestService.getRequestsBasedonDueDate &rtrif; undefined</a>"},{"title":"ItemsRequestService.LendItem","link":"<a href=\"ItemsRequestService.html#.LendItem\">ItemsRequestService.LendItem &rtrif; undefined</a>"},{"title":"ItemsRequestService.ListItemsRequestsByLab","link":"<a href=\"ItemsRequestService.html#.ListItemsRequestsByLab\">ItemsRequestService.ListItemsRequestsByLab &rtrif; undefined</a>"},{"title":"ItemsRequestService.ListItemsRequestsByStudent","link":"<a href=\"ItemsRequestService.html#.ListItemsRequestsByStudent\">ItemsRequestService.ListItemsRequestsByStudent &rtrif; undefined</a>"},{"title":"ItemsRequestService.RemindItemRequests","link":"<a href=\"ItemsRequestService.html#.RemindItemRequests\">ItemsRequestService.RemindItemRequests &rtrif; undefined</a>"},{"title":"ItemsRequestService.ReturnItem","link":"<a href=\"ItemsRequestService.html#.ReturnItem\">ItemsRequestService.ReturnItem &rtrif; undefined</a>"},{"title":"LabsService","link":"<a href=\"LabsService.html\">LabsService</a>"},{"title":"LabsService.AssignUserstoLabs","link":"<a href=\"LabsService.html#.AssignUserstoLabs\">LabsService.AssignUserstoLabs &rtrif; undefined</a>"},{"title":"LabsService.CreateLab","link":"<a href=\"LabsService.html#.CreateLab\">LabsService.CreateLab &rtrif; undefined</a>"},{"title":"LabsService.DeleteLab","link":"<a href=\"LabsService.html#.DeleteLab\">LabsService.DeleteLab &rtrif; undefined</a>"},{"title":"LabsService.PutLab","link":"<a href=\"LabsService.html#.PutLab\">LabsService.PutLab &rtrif; undefined</a>"},{"title":"LabsService.UnassignUsersFromLabs","link":"<a href=\"LabsService.html#.UnassignUsersFromLabs\">LabsService.UnassignUsersFromLabs &rtrif; undefined</a>"},{"title":"LabsService.UpdateLab","link":"<a href=\"LabsService.html#.UpdateLab\">LabsService.UpdateLab &rtrif; undefined</a>"},{"title":"ListService","link":"<a href=\"ListService.html\">ListService</a>"},{"title":"ListService.ListAssignedLabs","link":"<a href=\"ListService.html#.ListAssignedLabs\">ListService.ListAssignedLabs &rtrif; undefined</a>"},{"title":"ListService.ListInventoryManagers","link":"<a href=\"ListService.html#.ListInventoryManagers\">ListService.ListInventoryManagers &rtrif; undefined</a>"},{"title":"ListService.ListItems","link":"<a href=\"ListService.html#.ListItems\">ListService.ListItems &rtrif; undefined</a>"},{"title":"ListService.ListItemsets","link":"<a href=\"ListService.html#.ListItemsets\">ListService.ListItemsets &rtrif; undefined</a>"},{"title":"ListService.ListItemsRequestsByInventoryManager","link":"<a href=\"ListService.html#.ListItemsRequestsByInventoryManager\">ListService.ListItemsRequestsByInventoryManager &rtrif; undefined</a>"},{"title":"ListService.ListLabItems","link":"<a href=\"ListService.html#.ListLabItems\">ListService.ListLabItems &rtrif; undefined</a>"},{"title":"ListService.ListLabs","link":"<a href=\"ListService.html#.ListLabs\">ListService.ListLabs &rtrif; undefined</a>"},{"title":"ListService.ListRolePermissions","link":"<a href=\"ListService.html#.ListRolePermissions\">ListService.ListRolePermissions &rtrif; undefined</a>"},{"title":"ListService.ListRoles","link":"<a href=\"ListService.html#.ListRoles\">ListService.ListRoles &rtrif; undefined</a>"},{"title":"ListService.ListSupervisors","link":"<a href=\"ListService.html#.ListSupervisors\">ListService.ListSupervisors &rtrif; undefined</a>"},{"title":"ListService.ListTemporaryLendRequestsByLab","link":"<a href=\"ListService.html#.ListTemporaryLendRequestsByLab\">ListService.ListTemporaryLendRequestsByLab &rtrif; undefined</a>"},{"title":"ListService.ListTokens","link":"<a href=\"ListService.html#.ListTokens\">ListService.ListTokens &rtrif; undefined</a>"},{"title":"ListService.ListUsers","link":"<a href=\"ListService.html#.ListUsers\">ListService.ListUsers &rtrif; undefined</a>"},{"title":"ListService.ListUsersAssignedToLab","link":"<a href=\"ListService.html#.ListUsersAssignedToLab\">ListService.ListUsersAssignedToLab &rtrif; undefined</a>"},{"title":"LoginController","link":"<a href=\"LoginController.html\">LoginController</a>"},{"title":"LoginController.Login","link":"<a href=\"LoginController.html#.Login\">LoginController.Login &rtrif; undefined</a>"},{"title":"LoginController.Verify","link":"<a href=\"LoginController.html#.Verify\">LoginController.Verify &rtrif; undefined</a>"},{"title":"LoginService","link":"<a href=\"LoginService.html\">LoginService</a>"},{"title":"LoginService.Login","link":"<a href=\"LoginService.html#.Login\">LoginService.Login &rtrif; undefined</a>"},{"title":"ManageItemsController","link":"<a href=\"ManageItemsController.html\">ManageItemsController</a>"},{"title":"ManageItemsController.DeleteItem","link":"<a href=\"ManageItemsController.html#.DeleteItem\">ManageItemsController.DeleteItem &rtrif; undefined</a>"},{"title":"ManageItemsController.GetItem","link":"<a href=\"ManageItemsController.html#.GetItem\">ManageItemsController.GetItem &rtrif; undefined</a>"},{"title":"ManageItemsController.ListItems","link":"<a href=\"ManageItemsController.html#.ListItems\">ManageItemsController.ListItems &rtrif; undefined</a>"},{"title":"ManageItemsController.PostItem","link":"<a href=\"ManageItemsController.html#.PostItem\">ManageItemsController.PostItem &rtrif; undefined</a>"},{"title":"ManageItemsController.TransferItem","link":"<a href=\"ManageItemsController.html#.TransferItem\">ManageItemsController.TransferItem &rtrif; undefined</a>"},{"title":"ManageItemsController.UpdateItem","link":"<a href=\"ManageItemsController.html#.UpdateItem\">ManageItemsController.UpdateItem &rtrif; undefined</a>"},{"title":"ManageItemsetsController","link":"<a href=\"ManageItemsetsController.html\">ManageItemsetsController</a>"},{"title":"ManageItemsetsController.DeleteItemset","link":"<a href=\"ManageItemsetsController.html#.DeleteItemset\">ManageItemsetsController.DeleteItemset &rtrif; undefined</a>"},{"title":"ManageItemsetsController.GetItemset","link":"<a href=\"ManageItemsetsController.html#.GetItemset\">ManageItemsetsController.GetItemset &rtrif; undefined</a>"},{"title":"ManageItemsetsController.ListItemsets","link":"<a href=\"ManageItemsetsController.html#.ListItemsets\">ManageItemsetsController.ListItemsets &rtrif; undefined</a>"},{"title":"ManageItemsetsController.PostItemset","link":"<a href=\"ManageItemsetsController.html#.PostItemset\">ManageItemsetsController.PostItemset &rtrif; undefined</a>"},{"title":"ManageItemsetsController.UpdateItemset","link":"<a href=\"ManageItemsetsController.html#.UpdateItemset\">ManageItemsetsController.UpdateItemset &rtrif; undefined</a>"},{"title":"ManageLabsController","link":"<a href=\"ManageLabsController.html\">ManageLabsController</a>"},{"title":"ManageLabsController.AssignUserstoLabs","link":"<a href=\"ManageLabsController.html#.AssignUserstoLabs\">ManageLabsController.AssignUserstoLabs &rtrif; undefined</a>"},{"title":"ManageLabsController.DeleteLab","link":"<a href=\"ManageLabsController.html#.DeleteLab\">ManageLabsController.DeleteLab &rtrif; undefined</a>"},{"title":"ManageLabsController.ListAssignedUsers","link":"<a href=\"ManageLabsController.html#.ListAssignedUsers\">ManageLabsController.ListAssignedUsers &rtrif; undefined</a>"},{"title":"ManageLabsController.ListLabItems","link":"<a href=\"ManageLabsController.html#.ListLabItems\">ManageLabsController.ListLabItems &rtrif; undefined</a>"},{"title":"ManageLabsController.ListLabs","link":"<a href=\"ManageLabsController.html#.ListLabs\">ManageLabsController.ListLabs &rtrif; undefined</a>"},{"title":"ManageLabsController.PostLab","link":"<a href=\"ManageLabsController.html#.PostLab\">ManageLabsController.PostLab &rtrif; undefined</a>"},{"title":"ManageLabsController.PutLab","link":"<a href=\"ManageLabsController.html#.PutLab\">ManageLabsController.PutLab &rtrif; undefined</a>"},{"title":"ManageLabsController.UnassignUsersFromLabs","link":"<a href=\"ManageLabsController.html#.UnassignUsersFromLabs\">ManageLabsController.UnassignUsersFromLabs &rtrif; undefined</a>"},{"title":"ManageLabsController.UpdateLab","link":"<a href=\"ManageLabsController.html#.UpdateLab\">ManageLabsController.UpdateLab &rtrif; undefined</a>"},{"title":"ManagePermissionsController","link":"<a href=\"ManagePermissionsController.html\">ManagePermissionsController</a>"},{"title":"ManagePermissionsController.ListRolePermissions","link":"<a href=\"ManagePermissionsController.html#.ListRolePermissions\">ManagePermissionsController.ListRolePermissions &rtrif; undefined</a>"},{"title":"ManageRequestItemsController","link":"<a href=\"ManageRequestItemsController.html\">ManageRequestItemsController</a>"},{"title":"ManageRequestItemsController.CreateItemsRequest","link":"<a href=\"ManageRequestItemsController.html#.CreateItemsRequest\">ManageRequestItemsController.CreateItemsRequest &rtrif; undefined</a>"},{"title":"ManageRequestItemsController.GetItemsRequestByToken","link":"<a href=\"ManageRequestItemsController.html#.GetItemsRequestByToken\">ManageRequestItemsController.GetItemsRequestByToken &rtrif; undefined</a>"},{"title":"ManageRequestItemsController.GetRequestAction","link":"<a href=\"ManageRequestItemsController.html#.GetRequestAction\">ManageRequestItemsController.GetRequestAction &rtrif; undefined</a>"},{"title":"ManageRequestItemsController.ListItemsRequestsByInventoryManager","link":"<a href=\"ManageRequestItemsController.html#.ListItemsRequestsByInventoryManager\">ManageRequestItemsController.ListItemsRequestsByInventoryManager &rtrif; undefined</a>"},{"title":"ManageRequestItemsController.ListItemsRequestsByLab","link":"<a href=\"ManageRequestItemsController.html#.ListItemsRequestsByLab\">ManageRequestItemsController.ListItemsRequestsByLab &rtrif; undefined</a>"},{"title":"ManageRequestItemsController.ListItemsRequestsByStudent","link":"<a href=\"ManageRequestItemsController.html#.ListItemsRequestsByStudent\">ManageRequestItemsController.ListItemsRequestsByStudent &rtrif; undefined</a>"},{"title":"ManageRequestItemsController.UpdateRequestLend","link":"<a href=\"ManageRequestItemsController.html#.UpdateRequestLend\">ManageRequestItemsController.UpdateRequestLend &rtrif; undefined</a>"},{"title":"ManageRequestItemsController.UpdateRequestReturn","link":"<a href=\"ManageRequestItemsController.html#.UpdateRequestReturn\">ManageRequestItemsController.UpdateRequestReturn &rtrif; undefined</a>"},{"title":"ManageRolesController","link":"<a href=\"ManageRolesController.html\">ManageRolesController</a>"},{"title":"ManageRolesController.DeleteRole","link":"<a href=\"ManageRolesController.html#.DeleteRole\">ManageRolesController.DeleteRole &rtrif; undefined</a>"},{"title":"ManageRolesController.GetRole","link":"<a href=\"ManageRolesController.html#.GetRole\">ManageRolesController.GetRole &rtrif; undefined</a>"},{"title":"ManageRolesController.ListRoles","link":"<a href=\"ManageRolesController.html#.ListRoles\">ManageRolesController.ListRoles &rtrif; undefined</a>"},{"title":"ManageRolesController.PostRole","link":"<a href=\"ManageRolesController.html#.PostRole\">ManageRolesController.PostRole &rtrif; undefined</a>"},{"title":"ManageRolesController.UpdateRole","link":"<a href=\"ManageRolesController.html#.UpdateRole\">ManageRolesController.UpdateRole &rtrif; undefined</a>"},{"title":"ManageSupervisorsController","link":"<a href=\"ManageSupervisorsController.html\">ManageSupervisorsController</a>"},{"title":"ManageSupervisorsController.CreateSupervisor","link":"<a href=\"ManageSupervisorsController.html#.CreateSupervisor\">ManageSupervisorsController.CreateSupervisor &rtrif; undefined</a>"},{"title":"ManageSupervisorsController.ListSupervisors","link":"<a href=\"ManageSupervisorsController.html#.ListSupervisors\">ManageSupervisorsController.ListSupervisors &rtrif; undefined</a>"},{"title":"ManageSupervisorsService","link":"<a href=\"ManageSupervisorsService.html\">ManageSupervisorsService</a>"},{"title":"ManageSupervisorsService.CreateSupervisor","link":"<a href=\"ManageSupervisorsService.html#.CreateSupervisor\">ManageSupervisorsService.CreateSupervisor &rtrif; undefined</a>"},{"title":"ManageTemporaryRequestsController","link":"<a href=\"ManageTemporaryRequestsController.html\">ManageTemporaryRequestsController</a>"},{"title":"ManageTemporaryRequestsController.CreateTemporaryLendRequest","link":"<a href=\"ManageTemporaryRequestsController.html#.CreateTemporaryLendRequest\">ManageTemporaryRequestsController.CreateTemporaryLendRequest &rtrif; undefined</a>"},{"title":"ManageTemporaryRequestsController.ListTemporaryLendRequests","link":"<a href=\"ManageTemporaryRequestsController.html#.ListTemporaryLendRequests\">ManageTemporaryRequestsController.ListTemporaryLendRequests &rtrif; undefined</a>"},{"title":"ManageTemporaryRequestsController.UpdateTemporaryLendRequest","link":"<a href=\"ManageTemporaryRequestsController.html#.UpdateTemporaryLendRequest\">ManageTemporaryRequestsController.UpdateTemporaryLendRequest &rtrif; undefined</a>"},{"title":"NotFound","link":"<a href=\"NotFound.html\">NotFound</a>"},{"title":"RegistrarController","link":"<a href=\"RegistrarController.html\">RegistrarController</a>"},{"title":"RegistrarController.DeleteToken","link":"<a href=\"RegistrarController.html#.DeleteToken\">RegistrarController.DeleteToken &rtrif; undefined</a>"},{"title":"RegistrarController.GetTokens","link":"<a href=\"RegistrarController.html#.GetTokens\">RegistrarController.GetTokens &rtrif; undefined</a>"},{"title":"RegistrarController.ListRoles","link":"<a href=\"RegistrarController.html#.ListRoles\">RegistrarController.ListRoles &rtrif; undefined</a>"},{"title":"RegistrarController.PostTokens","link":"<a href=\"RegistrarController.html#.PostTokens\">RegistrarController.PostTokens &rtrif; undefined</a>"},{"title":"RegistrarController.PutToken","link":"<a href=\"RegistrarController.html#.PutToken\">RegistrarController.PutToken &rtrif; undefined</a>"},{"title":"RegistrarService","link":"<a href=\"RegistrarService.html\">RegistrarService</a>"},{"title":"RegistrarService.DeleteRegistrationToken","link":"<a href=\"RegistrarService.html#.DeleteRegistrationToken\">RegistrarService.DeleteRegistrationToken &rtrif; undefined</a>"},{"title":"RegistrarService.SendRegistrationToken","link":"<a href=\"RegistrarService.html#.SendRegistrationToken\">RegistrarService.SendRegistrationToken &rtrif; undefined</a>"},{"title":"RegistrarService.SendRegistrationTokenList","link":"<a href=\"RegistrarService.html#.SendRegistrationTokenList\">RegistrarService.SendRegistrationTokenList &rtrif; undefined</a>"},{"title":"RegistrationController","link":"<a href=\"RegistrationController.html\">RegistrationController</a>"},{"title":"RegistrationController.Register","link":"<a href=\"RegistrationController.html#.Register\">RegistrationController.Register &rtrif; undefined</a>"},{"title":"RegistrationController.Verify","link":"<a href=\"RegistrationController.html#.Verify\">RegistrationController.Verify &rtrif; undefined</a>"},{"title":"RegistrationService","link":"<a href=\"RegistrationService.html\">RegistrationService</a>"},{"title":"RegistrationService.Register","link":"<a href=\"RegistrationService.html#.Register\">RegistrationService.Register &rtrif; undefined</a>"},{"title":"RegistrationService.VerifyRegistrationToken","link":"<a href=\"RegistrationService.html#.VerifyRegistrationToken\">RegistrationService.VerifyRegistrationToken &rtrif; undefined</a>"},{"title":"RolesService","link":"<a href=\"RolesService.html\">RolesService</a>"},{"title":"RolesService.CreateRole","link":"<a href=\"RolesService.html#.CreateRole\">RolesService.CreateRole &rtrif; undefined</a>"},{"title":"RolesService.DeleteRole","link":"<a href=\"RolesService.html#.DeleteRole\">RolesService.DeleteRole &rtrif; undefined</a>"},{"title":"RolesService.GetRole","link":"<a href=\"RolesService.html#.GetRole\">RolesService.GetRole &rtrif; undefined</a>"},{"title":"RolesService.UpdateRole","link":"<a href=\"RolesService.html#.UpdateRole\">RolesService.UpdateRole &rtrif; undefined</a>"},{"title":"TemporaryRequestsService","link":"<a href=\"TemporaryRequestsService.html\">TemporaryRequestsService</a>"},{"title":"TemporaryRequestsService.CreateTemporaryRequest","link":"<a href=\"TemporaryRequestsService.html#.CreateTemporaryRequest\">TemporaryRequestsService.CreateTemporaryRequest &rtrif; undefined</a>"},{"title":"TemporaryRequestsService.UpdateTemporaryRequest","link":"<a href=\"TemporaryRequestsService.html#.UpdateTemporaryRequest\">TemporaryRequestsService.UpdateTemporaryRequest &rtrif; undefined</a>"},{"title":"Unauthorized","link":"<a href=\"Unauthorized.html\">Unauthorized</a>"},{"title":"UnprocessableEntity","link":"<a href=\"UnprocessableEntity.html\">UnprocessableEntity</a>"},{"title":"attributes","link":"<a href=\"global.html#attributes\">Global &rtrif; attributes</a>"},{"title":"checkPassword","link":"<a href=\"global.html#checkPassword\">Global &rtrif; checkPassword</a>"},{"title":"configurations","link":"<a href=\"global.html#configurations\">Global &rtrif; configurations</a>"},{"title":"corsErrorHandlerMiddleware","link":"<a href=\"global.html#corsErrorHandlerMiddleware\">Global &rtrif; corsErrorHandlerMiddleware</a>"},{"title":"data","link":"<a href=\"global.html#data\">Global &rtrif; data</a>"},{"title":"emailTransportPromise","link":"<a href=\"global.html#emailTransportPromise\">Global &rtrif; emailTransportPromise</a>"},{"title":"encapsulateSocketMessage","link":"<a href=\"global.html#encapsulateSocketMessage\">Global &rtrif; encapsulateSocketMessage</a>"},{"title":"errorHandlerMiddleware","link":"<a href=\"global.html#errorHandlerMiddleware\">Global &rtrif; errorHandlerMiddleware</a>"},{"title":"generateSecureToken","link":"<a href=\"global.html#generateSecureToken\">Global &rtrif; generateSecureToken</a>"},{"title":"getDatabase","link":"<a href=\"global.html#getDatabase\">Global &rtrif; getDatabase</a>"},{"title":"hashPassword","link":"<a href=\"global.html#hashPassword\">Global &rtrif; hashPassword</a>"},{"title":"initializeDatabase","link":"<a href=\"global.html#initializeDatabase\">Global &rtrif; initializeDatabase</a>"},{"title":"initializeEtherealMailTransport","link":"<a href=\"global.html#initializeEtherealMailTransport\">Global &rtrif; initializeEtherealMailTransport</a>"},{"title":"initializeGmailTransport","link":"<a href=\"global.html#initializeGmailTransport\">Global &rtrif; initializeGmailTransport</a>"},{"title":"jwtAuthMiddleware","link":"<a href=\"global.html#jwtAuthMiddleware\">Global &rtrif; jwtAuthMiddleware</a>"},{"title":"jwtSign","link":"<a href=\"global.html#jwtSign\">Global &rtrif; jwtSign</a>"},{"title":"jwtSocketAuthMiddleware","link":"<a href=\"global.html#jwtSocketAuthMiddleware\">Global &rtrif; jwtSocketAuthMiddleware</a>"},{"title":"jwtVerify","link":"<a href=\"global.html#jwtVerify\">Global &rtrif; jwtVerify</a>"},{"title":"logger","link":"<a href=\"global.html#logger\">Global &rtrif; logger</a>"},{"title":"onSocketConnection","link":"<a href=\"global.html#onSocketConnection\">Global &rtrif; onSocketConnection</a>"},{"title":"permissionMiddleware","link":"<a href=\"global.html#permissionMiddleware\">Global &rtrif; permissionMiddleware</a>"},{"title":"sendMail","link":"<a href=\"global.html#sendMail\">Global &rtrif; sendMail</a>"}];
+setupSearch(list)
+</script>
+
+ 
+<script type="text/javascript" src="scripts/misc.js"></script>
+</body>
+</html>
