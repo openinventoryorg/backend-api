@@ -13,7 +13,8 @@
     "db:migrate": "node src/helpers/migrate_database.js",
     "test": "true",
     "generate-docs": "jsdoc -c jsdoc.json",
-    "manage": "node bin/manage.js"
+    "manage": "node bin/manage.js",
+    "jobs": "node bin/jobs.js"
   },
   "author": "kdsuneraavinash",
   "license": "MIT",
