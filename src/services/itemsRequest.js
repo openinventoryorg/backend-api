@@ -86,7 +86,7 @@ class ItemsRequestService {
                     lastName: supervisor.lastName,
                     labTitle: lab.title,
                     email: supervisor.email,
-                    link: `${config.site.site}/supervisor/${supervisorToken}`,
+                    link: `${config.site}/supervisor/${supervisorToken}`,
                 },
             });
         } catch (err) {
