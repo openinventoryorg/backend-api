@@ -5,9 +5,11 @@ chai.use(require('chai-uuid'));
 
 const truncate = require('../truncate');
 const ItemsRequestService = require('../../src/services/itemsRequest');
+const { generateSecureToken } = require('../../src/helpers/secure_token');
+
 const {
     itemsetFactory, labFactory, itemFactory, roleFactory,
-    supervisorFactory, userFactory,
+    supervisorFactory, userFactory, requestFactory, requestitemFactory,
 } = require('../factories');
 
 describe('ItemRequestService', () => {
@@ -119,6 +121,121 @@ describe('ItemRequestService', () => {
             }).catch((error) => {
                 assert.equal(error.message, 'A pending request for the same lab already exists.');
             });
+        });
+    });
+
+    describe('GetItemsRequestByToken', () => {
+        let role;
+        let user;
+        let supervisor;
+        let itemset;
+        let lab;
+        let item1;
+        let item2;
+        let request;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest1;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest2;
+        beforeEach(async () => {
+            await truncate();
+            itemset = await itemsetFactory();
+            lab = await labFactory();
+            item1 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            item2 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            role = await roleFactory();
+            user = await userFactory({ roleId: role.id });
+            supervisor = await supervisorFactory();
+            request = await requestFactory({
+                labId: lab.id, userId: user.id, supervisorId: supervisor.id,
+            });
+            itemRequest1 = await requestitemFactory({ itemId: item1.id, requestId: request.id });
+            itemRequest2 = await requestitemFactory({ itemId: item2.id, requestId: request.id });
+        });
+        it('1. should return an request when a valid token is provided', (done) => {
+            ItemsRequestService.GetItemsRequestByToken({ token: request.supervisorToken }).then(
+                (itemRequest) => {
+                    assert.isObject(itemRequest, 'item request is an object');
+                    done();
+                },
+            ).catch(done);
+        });
+        it('2. should throw error an request when a valid token is provided', async () => {
+            await ItemsRequestService.GetItemsRequestByToken(
+                { token: generateSecureToken(96) },
+            ).catch((error) => { assert.equal(error.message, 'Invalid token!'); });
+        });
+    });
+
+    describe('AcceptOrDeclineRequest', () => {
+        let role;
+        let user;
+        let supervisor;
+        let itemset;
+        let lab;
+        let item1;
+        let item2;
+        let request;
+        let request2;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest1;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest2;
+        beforeEach(async () => {
+            await truncate();
+            itemset = await itemsetFactory();
+            lab = await labFactory();
+            item1 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            item2 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            role = await roleFactory();
+            user = await userFactory({ roleId: role.id });
+            supervisor = await supervisorFactory();
+            request = await requestFactory({
+                labId: lab.id, userId: user.id, supervisorId: supervisor.id,
+            });
+            request2 = await requestFactory({
+                labId: lab.id, userId: user.id, supervisorId: supervisor.id, status: 'ACCEPTED',
+            });
+            itemRequest1 = await requestitemFactory({ itemId: item1.id, requestId: request.id });
+            itemRequest2 = await requestitemFactory({ itemId: item2.id, requestId: request.id });
+        });
+        it('1. should return undefined when a valid token is accepted', (done) => {
+            ItemsRequestService.AcceptOrDeclineRequest({
+                token: request.supervisorToken,
+                value: true,
+                declineReason: null,
+            }).then(
+                (response) => {
+                    assert.isUndefined(response);
+                    done();
+                },
+            ).catch(done);
+        });
+        it('2. should return undefined when a valid token is rejected', (done) => {
+            ItemsRequestService.AcceptOrDeclineRequest({
+                token: request.supervisorToken,
+                value: false,
+                declineReason: 'some reason',
+            }).then(
+                (response) => {
+                    assert.isUndefined(response);
+                    done();
+                },
+            ).catch(done);
+        });
+        it('3. should throw error when an invalid token is provided', async () => {
+            await ItemsRequestService.AcceptOrDeclineRequest({
+                token: generateSecureToken(96),
+                value: false,
+                declineReason: 'some reason',
+            }).catch((error) => { assert.equal(error.message, 'Invalid token!'); });
+        });
+        it('4. should throw error when an expired token is provided', async () => {
+            await ItemsRequestService.AcceptOrDeclineRequest({
+                token: request2.supervisorToken,
+                value: true,
+                declineReason: null,
+            }).catch((error) => { assert.equal(error.message, 'Expired request!'); });
         });
     });
 });
