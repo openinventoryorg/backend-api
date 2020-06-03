@@ -234,6 +234,7 @@ class ItemsRequestService {
 
     /**
      * Lists the item requests by a student
+     * @param {String} id of the student
      * @returns {Promise<{request: Object[]}>} List of item requests
      */
     static async ListItemsRequestsByStudent({ id }) {
