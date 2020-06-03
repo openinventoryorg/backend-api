@@ -238,4 +238,187 @@ describe('ItemRequestService', () => {
             }).catch((error) => { assert.equal(error.message, 'Expired request!'); });
         });
     });
+
+    describe('ListItemsRequestsByStudent', () => {
+        let role;
+        let user;
+        let supervisor;
+        let itemset;
+        let lab;
+        let item1;
+        let item2;
+        let request;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest1;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest2;
+        beforeEach(async () => {
+            await truncate();
+            itemset = await itemsetFactory();
+            lab = await labFactory();
+            item1 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            item2 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            role = await roleFactory();
+            user = await userFactory({ roleId: role.id });
+            supervisor = await supervisorFactory();
+            request = await requestFactory({
+                labId: lab.id, userId: user.id, supervisorId: supervisor.id,
+            });
+            request2 = await requestFactory({
+                labId: lab.id, userId: user.id, supervisorId: supervisor.id, status: 'ACCEPTED',
+            });
+            itemRequest1 = await requestitemFactory({ itemId: item1.id, requestId: request.id });
+            itemRequest2 = await requestitemFactory({ itemId: item2.id, requestId: request.id });
+        });
+        it('1. should return requests of a student', (done) => {
+            ItemsRequestService.ListItemsRequestsByStudent({ id: user.id }).then(
+                (response) => {
+                    assert.isObject(response);
+                    done();
+                },
+            ).catch(done);
+        });
+    });
+
+    describe('ListItemsRequestsByLab', () => {
+        let role;
+        let user;
+        let supervisor;
+        let itemset;
+        let lab;
+        let item1;
+        let item2;
+        let request;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest1;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest2;
+        beforeEach(async () => {
+            await truncate();
+            itemset = await itemsetFactory();
+            lab = await labFactory();
+            item1 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            item2 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            role = await roleFactory();
+            user = await userFactory({ roleId: role.id });
+            supervisor = await supervisorFactory();
+            request = await requestFactory({
+                labId: lab.id, userId: user.id, supervisorId: supervisor.id,
+            });
+            itemRequest1 = await requestitemFactory({ itemId: item1.id, requestId: request.id });
+            itemRequest2 = await requestitemFactory({ itemId: item2.id, requestId: request.id });
+        });
+        it('1. should throw an error if insufficient permissions', async () => {
+            await ItemsRequestService.ListItemsRequestsByLab({
+                userId: user.id, userPermissions: ['INVENTORY_MANAGER'], labId: lab.id,
+            }).catch((error) => { assert.equal(error.message, 'Insufficient permissions.'); });
+        });
+        it('2. should return an array of objects if success', (done) => {
+            ItemsRequestService.ListItemsRequestsByLab({
+                userId: user.id, userPermissions: ['LAB_MANAGER'], labId: lab.id,
+            }).then((result) => {
+                assert.isArray(result);
+                result.forEach((each) => {
+                    assert.isObject(each);
+                });
+                done();
+            }).catch(done);
+        });
+    });
+
+    describe('LendItem', () => {
+        let role;
+        let user;
+        let supervisor;
+        let itemset;
+        let lab;
+        let item1;
+        let item2;
+        let request;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest1;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest2;
+        beforeEach(async () => {
+            await truncate();
+            itemset = await itemsetFactory();
+            lab = await labFactory();
+            item1 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            item2 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            role = await roleFactory();
+            user = await userFactory({ roleId: role.id });
+            supervisor = await supervisorFactory();
+            request = await requestFactory({
+                labId: lab.id, userId: user.id, supervisorId: supervisor.id, status: 'ACCEPTED',
+            });
+            itemRequest1 = await requestitemFactory({ itemId: item1.id, requestId: request.id, status: 'ACCEPTED' });
+            itemRequest2 = await requestitemFactory({ itemId: item2.id, requestId: request.id, status: 'ACCEPTED' });
+        });
+        it('1. should throw an error if insufficient permissions', async () => {
+            await ItemsRequestService.LendItem({
+                itemId: item1.id, requestId: request.id, userId: user.id, userPermissions: ['INVENTORY_MANAGER'],
+            }).catch((error) => { assert.equal(error.message, 'Insufficient permissions.'); });
+        });
+        it('2. should throw an error if requested item does not exist', async () => {
+            await ItemsRequestService.LendItem({
+                itemId: '35c420be-05d8-4beb-b4e5-c76c03c3c0d9', requestId: request.id, userId: user.id, userPermissions: ['LAB_MANAGER'],
+            }).catch((error) => { assert.equal(error.message, 'Item Request does not exist'); });
+        });
+        it('3. should return an array of objects if success', (done) => {
+            ItemsRequestService.LendItem({
+                itemId: item1.id, requestId: request.id, userId: user.id, userPermissions: ['LAB_MANAGER'],
+            }).then((result) => {
+                assert.isObject(result);
+                done();
+            }).catch(done);
+        });
+    });
+
+    describe('ReturnItem', () => {
+        let role;
+        let user;
+        let supervisor;
+        let itemset;
+        let lab;
+        let item1;
+        let item2;
+        let request;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest1;
+        // eslint-disable-next-line no-unused-vars
+        let itemRequest2;
+        beforeEach(async () => {
+            await truncate();
+            itemset = await itemsetFactory();
+            lab = await labFactory();
+            item1 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            item2 = await itemFactory({ itemSetId: itemset.id, labId: lab.id });
+            role = await roleFactory();
+            user = await userFactory({ roleId: role.id });
+            supervisor = await supervisorFactory();
+            request = await requestFactory({
+                labId: lab.id, userId: user.id, supervisorId: supervisor.id, status: 'ACCEPTED',
+            });
+            itemRequest1 = await requestitemFactory({ itemId: item1.id, requestId: request.id, status: 'BORROWED' });
+            itemRequest2 = await requestitemFactory({ itemId: item2.id, requestId: request.id, status: 'ACCEPTED' });
+        });
+        it('1. should throw an error if insufficient permissions', async () => {
+            await ItemsRequestService.ReturnItem({
+                itemId: item1.id, requestId: request.id, userId: user.id, userPermissions: ['INVENTORY_MANAGER'],
+            }).catch((error) => { assert.equal(error.message, 'Insufficient permissions.'); });
+        });
+        it('2. should throw an error if requested item does not exist', async () => {
+            await ItemsRequestService.ReturnItem({
+                itemId: '35c420be-05d8-4beb-b4e5-c76c03c3c0d9', requestId: request.id, userId: user.id, userPermissions: ['LAB_MANAGER'],
+            }).catch((error) => { assert.equal(error.message, 'Item Request does not exist'); });
+        });
+        it('3. should return an array of objects if success', (done) => {
+            ItemsRequestService.ReturnItem({
+                itemId: item1.id, requestId: request.id, userId: user.id, userPermissions: ['LAB_MANAGER'],
+            }).then((result) => {
+                assert.isObject(result);
+                done();
+            }).catch(done);
+        });
+    });
 });
