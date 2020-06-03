@@ -86,7 +86,7 @@ class ItemsRequestService {
                     lastName: supervisor.lastName,
                     labTitle: lab.title,
                     email: supervisor.email,
-                    link: `${config.site.verifyToken}/${supervisorToken}`,
+                    link: `${config.site}/supervisor/${supervisorToken}`,
                 },
             });
         } catch (err) {
@@ -412,6 +412,82 @@ class ItemsRequestService {
             requestId: requestedItem.requestId,
             status: requestedItem.status,
         };
+    }
+
+    /**
+     * Helper function for RemindItemRequests
+     * @param {Date} dueDate
+     */
+    static async getRequestsBasedonDueDate(dueDate) {
+        const database = await getDatabase();
+        const { Op } = database.Sequelize;
+
+        const dueDateEnd = new Date(dueDate);
+        dueDateEnd.setDate(dueDate.getDate() + 1);
+
+        const requests = await database.RequestItem.findAll({
+            where: {
+                dueDate: {
+                    [Op.and]: [
+                        { [Op.lte]: dueDateEnd },
+                        { [Op.gt]: dueDate },
+                    ],
+                    status: 'BORROWED',
+                },
+            },
+            raw: true,
+            attributes: ['borrowedDate', 'dueDate'],
+            include: [
+                {
+                    model: database.Request,
+                    attributes: [],
+                    include: [
+                        {
+                            model: database.Lab,
+                            attributes: ['title'],
+                        },
+                        {
+                            model: database.User,
+                            attributes: ['firstName', 'lastName', 'email'],
+                        },
+                    ],
+
+                },
+                {
+                    model: database.Item,
+                    attributes: ['serialNumber'],
+                    include: {
+                        model: database.ItemSet,
+                        attributes: ['title'],
+                    },
+                },
+            ],
+        });
+
+        return requests;
+    }
+
+    /**
+     * Finds all borrowed items where the due date is close
+     * @returns {Promise<{request: Object[]}>} List of item requests
+     */
+    static async RemindItemRequests() {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+
+        const nextDate = new Date();
+        nextDate.setDate(nextDate.getDate() + 1);
+        nextDate.setHours(0, 0, 0, 0);
+
+        const thirdDate = new Date();
+        thirdDate.setDate(thirdDate.getDate() + 3);
+        thirdDate.setHours(0, 0, 0, 0);
+
+        const zeroDateRequests = await ItemsRequestService.getRequestsBasedonDueDate(currentDate);
+        const oneDateRequests = await ItemsRequestService.getRequestsBasedonDueDate(nextDate);
+        const threeDateRequests = await ItemsRequestService.getRequestsBasedonDueDate(thirdDate);
+
+        return { zeroDateRequests, oneDateRequests, threeDateRequests };
     }
 }
 

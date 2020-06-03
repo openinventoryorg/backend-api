@@ -59,7 +59,7 @@ class RegistrarService {
                 template: 'registration_invite',
                 context: {
                     email,
-                    link: `${config.site.verifyToken}/${token}`,
+                    link: `${config.site}/register/${token}`,
                 },
             });
 
@@ -135,7 +135,7 @@ class RegistrarService {
                     template: 'registration_invite',
                     context: {
                         email,
-                        link: `${config.site.verifyToken}/${token}`,
+                        link: `${config.site}/register/${token}`,
                     },
                 });
                 logger.info(`Token generated for ${email} on role ${roleId} - ${token}`);

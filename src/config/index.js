@@ -31,11 +31,7 @@ const configurations = {
         gmailPassword: process.env.GMAIL_PASSWORD || '',
         sendGridApiKey: process.env.SENDGRID_API_KEY || '',
     },
-    site: {
-        // Token verification url: [verifyToken]/TOKEN
-        verifyToken: process.env.SITE_API || 'https://openinventory.org/register',
-        requestToken: process.env.REQUEST_API || 'https://openinventory.org/supervisor',
-    },
+    site: process.env.SITE_API || 'https://openinventoryorg.github.io/web-frontend/#',
     initializeDatabase: (process.env.DB_INIT === 'true') || false,
     adminEmail: process.env.ADMIN_EMAIL || 'admin@admin.com',
 };
