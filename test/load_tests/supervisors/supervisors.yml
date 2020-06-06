@@ -1,0 +1,28 @@
+config:
+  target: 'https://open-inventory-system.herokuapp.com/api/supervisors'    
+  phases:
+    - duration: 30
+      arrivalRate: 20
+      rampTo: 50
+    - duration: 30
+      arrivalRate: 50
+  processor: '../helpers.js'
+  defaults:
+    headers:
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImIwOWNkNmI3LWRlYTEtNDBmOC1hZWU4LWY4OGRmOTJkNTNiZSIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJVc2VyIiwiZW1haWwiOiJvcGVuaW52ZW50b3J5c3lzdGVtQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbIkFETUlOSVNUUkFUT1IiLCJMQUJfTUFOQUdFUiIsIlJFUVVFU1RFUiIsIlJFR0lTVFJBUiIsIklOVkVOVE9SWV9NQU5BR0VSIl0sInJvbGUiOiJhZG1pbmlzdHJhdG9yIiwicm9sZUlkIjoiM2EwYzkxNDgtMzJhYy00Mzg1LThkZDQtMDE3ODlhN2NlZmFlIiwiaWF0IjoxNTkxMzcxMzk2fQ.Z1nT2bD9TW4eKh11eddp-bl1ppYA7xrgvn2K37WPB8s'
+scenarios:
+  - name: "Supervisors"
+    flow:
+    - function: "generateSupervisorsData"
+    - post:
+        url: "/"
+        name: "create supervisor"
+        json:
+          fistName: "{{ firstName }}"
+          lastName: "{{ lastName }}"
+          bio: "{{ bio }}"
+          email: "{{ email }}"
+    - get:
+        url: "/"
+        name: "list supervisors"
+    
