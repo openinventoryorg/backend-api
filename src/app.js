@@ -1,6 +1,5 @@
 const express = require('express');
 const socketIo = require('socket.io');
-const cors = require('cors');
 const helmet = require('helmet');
 
 const config = require('./config');
@@ -17,6 +16,7 @@ app.use(helmet());
 app.use(require('body-parser').json());
 
 // Avoid CORS same origin error in development. Remove in production
+// const cors = require('cors');
 // const { corsErrorHandlerMiddleware } = require('./middlewares/cors_error_handler');
 // app.use(cors());
 // app.use(corsErrorHandlerMiddleware);
