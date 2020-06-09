@@ -1,7 +1,7 @@
 const express = require('express');
 const socketIo = require('socket.io');
 const cors = require('cors');
-// const helmet = require('helmet');
+const helmet = require('helmet');
 
 const config = require('./config');
 
@@ -11,7 +11,7 @@ const { errorHandlerMiddleware } = require('./middlewares/error_handler');
 const { jwtAuthMiddleware } = require('./middlewares/jwt_auth');
 
 // use helmet to increase http header security
-// app.use(helmet());
+app.use(helmet());
 
 // Add body json parsing middleware
 app.use(require('body-parser').json());
