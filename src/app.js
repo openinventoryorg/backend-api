@@ -1,6 +1,9 @@
 const express = require('express');
 const socketIo = require('socket.io');
 const cors = require('cors');
+const helmet = require('helmet');
+const AdminBro = require('admin-bro');
+AdminBro.registerAdapter(require('admin-bro-sequelizejs'));
 
 const config = require('./config');
 
@@ -8,15 +11,21 @@ const config = require('./config');
 const app = express();
 const { errorHandlerMiddleware } = require('./middlewares/error_handler');
 const { jwtAuthMiddleware } = require('./middlewares/jwt_auth');
-const { corsErrorHandlerMiddleware } = require('./middlewares/cors_error_handler');
 
+// use helmet to increase http header security
+app.use(helmet());
+
+// Static assets
+app.use(express.static('assets'));
 
 // Add body json parsing middleware
 app.use(require('body-parser').json());
 
-// Avoid CORS same origin error in development. Remove in production
+// Avoid CORS same origin error.
+// const { corsErrorHandlerMiddleware } = require('./middlewares/cors_error_handler');
+
 app.use(cors());
-app.use(corsErrorHandlerMiddleware);
+// app.use(corsErrorHandlerMiddleware);
 
 // Enable logging service
 const logger = require('./loaders/logger');
@@ -39,28 +48,42 @@ require('./routes').defineEndPoints(app);
 // Error handling middleware
 app.use(errorHandlerMiddleware);
 
-// Listen to the indicated port
-const server = app.listen(config.port, () => {
-    logger.info(`Server started on port ${config.port}`);
-});
-
-// Socket.io connection
-const io = socketIo(server).of('/staff');
 const { jwtSocketAuthMiddleware } = require('./socket/auth_middleware');
 const onConnection = require('./socket/connection');
+const { getDatabase } = require('./helpers/get_database');
+const { adminDashboard } = require('./adminbro');
 
-// Socket authentication Layer
-io.use(jwtSocketAuthMiddleware);
+const startServer = async () => {
+    if (config.enableAdminPanel) {
+        // Initialize admin dashboard
+        const db = await getDatabase();
+        const { adminBro, adminRouter } = adminDashboard(db);
+        app.use(adminBro.options.rootPath, adminRouter);
+    }
 
-// Listen to socket connections
-io.on('connection', onConnection(io));
+    // Listen to the indicated port
+    const server = app.listen(config.port, () => {
+        logger.info(`Server started on port ${config.port}`);
+    });
 
-// Demo Page for socket connection testing
-app.get('/socket/demo', (req, res) => {
-    res.sendFile(`${__dirname}/socket/demo.html`);
-});
+    // Socket.io connection
+    const io = socketIo(server).of('/staff');
 
-// 404 error handler
-app.use((req, res) => {
-    res.status(404).send({ message: '404 route not found' });
-});
+    // Socket authentication Layer
+    io.use(jwtSocketAuthMiddleware);
+
+    // Listen to socket connections
+    io.on('connection', onConnection(io));
+
+    // Demo Page for socket connection testing
+    app.get('/socket/demo', (req, res) => {
+        res.sendFile(`${__dirname}/socket/demo.html`);
+    });
+
+    // 404 error handler
+    app.use((req, res) => {
+        res.status(404).send({ message: '404 route not found' });
+    });
+};
+
+startServer();

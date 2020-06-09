@@ -34,6 +34,7 @@ const configurations = {
     site: process.env.SITE_API || 'https://openinventoryorg.github.io/web-frontend/#',
     initializeDatabase: (process.env.DB_INIT === 'true') || false,
     adminEmail: process.env.ADMIN_EMAIL || 'admin@admin.com',
+    enableAdminPanel: (process.env.ENABLE_ADMINPANEL === 'true') || true,
 };
 
 module.exports = configurations;

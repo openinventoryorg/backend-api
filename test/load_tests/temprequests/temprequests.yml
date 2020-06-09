@@ -1,0 +1,59 @@
+config:
+  target: "https://open-inventory-system.herokuapp.com/api"
+  phases:
+    - duration: 30
+      arrivalRate: 20
+      rampTo: 50
+    - duration: 30
+      arrivalRate: 50
+  processor: '../helpers.js'
+  defaults:
+    headers:
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImIwOWNkNmI3LWRlYTEtNDBmOC1hZWU4LWY4OGRmOTJkNTNiZSIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJVc2VyIiwiZW1haWwiOiJvcGVuaW52ZW50b3J5c3lzdGVtQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbIkFETUlOSVNUUkFUT1IiLCJMQUJfTUFOQUdFUiIsIlJFUVVFU1RFUiIsIlJFR0lTVFJBUiIsIklOVkVOVE9SWV9NQU5BR0VSIl0sInJvbGUiOiJhZG1pbmlzdHJhdG9yIiwicm9sZUlkIjoiM2EwYzkxNDgtMzJhYy00Mzg1LThkZDQtMDE3ODlhN2NlZmFlIiwiaWF0IjoxNTkxMzcxMzk2fQ.Z1nT2bD9TW4eKh11eddp-bl1ppYA7xrgvn2K37WPB8s"
+scenarios:
+  - name: "Temporary requests"
+    flow:
+      - function: "generateItemrequestData"
+      - post:
+          url: "/labs/create"
+          name: "create lab"
+          json:
+            title: "{{ title }}"
+            subtitle: "{{ subtitle }}"
+            image: "{{ image }}"
+          capture:
+            json: "$.id"
+            as: "labId"
+      - post:
+          url: "/itemsets/create"
+          name: "create itemset"
+          json:
+            title: "{{ title }}"
+            image: "{{ image }}"
+            attributes: '[{"key": "height","editable": true,"defaultValue": ""}]'
+          capture:
+            json: "$.id"
+            as: "itemSetId"
+      - post:
+          url: "/items/create"
+          name: "create item"
+          json:
+            serialNumber: "{{ serialNumber }}"
+            itemSetId: "{{ itemSetId }}"
+            labId: "{{ labId }}"
+            attributes: '[{"key": "height","editable": true,"defaultValue": ""}]'
+          capture:
+            json: "$.id"
+            as: "itemId"
+      - post:
+          url: "/temporaryrequests/lend"
+          name: "create temp request"
+          json:
+            studentId: "b09cd6b7-dea1-40f8-aee8-f88df92d53be"
+            itemId: "{{itemId}}"
+      - post:
+          url: "/temporaryrequests/return"
+          name: "return temp request"
+          json:
+            studentId: "b09cd6b7-dea1-40f8-aee8-f88df92d53be"
+            itemId: "{{itemId}}"
