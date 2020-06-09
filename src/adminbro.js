@@ -3,10 +3,30 @@ const AdminBro = require('admin-bro');
 const LoginService = require('./services/login');
 const config = require('./config');
 
+const userContent = { name: 'Manage Users', icon: 'User' };
+const itemContent = { name: 'Manage Items', icon: 'Catalog' };
+const requestContent = { name: 'Manage Requests', icon: 'ArrowsHorizontal' };
+const labContent = { name: 'Manage Labs', icon: 'Screen' };
+
 const adminDashboard = (database) => {
     // Admin dashboard configuration
     const adminBro = new AdminBro({
-        databases: [database.sequelize],
+        resources: [
+            { resource: database.User, options: { parent: userContent } },
+            { resource: database.Role, options: { parent: userContent } },
+            { resource: database.Item, options: { parent: itemContent } },
+            { resource: database.Lab, options: { parent: labContent } },
+            { resource: database.ItemSet, options: { parent: itemContent } },
+            { resource: database.Attribute, options: { parent: itemContent } },
+            { resource: database.ItemAttribute, options: { parent: itemContent } },
+            { resource: database.Supervisor, options: { parent: userContent } },
+            { resource: database.Request, options: { parent: requestContent } },
+            { resource: database.RequestItem, options: { parent: requestContent } },
+            { resource: database.RegistrationToken, options: { parent: userContent } },
+            { resource: database.RolePermission, options: { parent: userContent } },
+            { resource: database.LabAssign, options: { parent: labContent } },
+            { resource: database.TemporaryRequest, options: { parent: requestContent } },
+        ],
         rootPath: '/admin',
         branding: {
             companyName: 'Open Inventory System',
@@ -15,12 +35,13 @@ const adminDashboard = (database) => {
             theme: {
                 colors:
                 {
-                    primary100: '#23395B',
-                    primary80: '#23395B',
+                    primary100: '#1C2D48',
+                    primary80: '#1C2D48',
                     primary60: '#5BC9A6',
                     primary40: '#5BC9A6',
                     primary20: '#B1E1C3',
                     accent: '#D81E5B',
+                    filterBg: '#256769',
                 },
             },
         },
@@ -40,7 +61,10 @@ const adminDashboard = (database) => {
     const adminRouter = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
         authenticate: async (email, password) => {
             try {
-                return await LoginService.Login(email, password);
+                const { user } = await LoginService.Login(email, password);
+                if (!user) return false;
+                if (!user.permissions) return false;
+                return user.permissions.find((v) => v === 'ADMINISTRATOR');
             } catch (err) {
                 return false;
             }
