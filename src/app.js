@@ -15,6 +15,9 @@ const { jwtAuthMiddleware } = require('./middlewares/jwt_auth');
 // use helmet to increase http header security
 app.use(helmet());
 
+// Static assets
+app.use(express.static('assets'));
+
 // Add body json parsing middleware
 app.use(require('body-parser').json());
 

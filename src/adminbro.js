@@ -3,10 +3,10 @@ const AdminBro = require('admin-bro');
 const LoginService = require('./services/login');
 const config = require('./config');
 
-const userContent = { name: 'Manage Users', icon: 'User' };
-const itemContent = { name: 'Manage Items', icon: 'Catalog' };
-const requestContent = { name: 'Manage Requests', icon: 'ArrowsHorizontal' };
-const labContent = { name: 'Manage Labs', icon: 'Screen' };
+const userContent = { name: 'User Resources', icon: 'User' };
+const itemContent = { name: 'Item Resources', icon: 'Catalog' };
+const requestContent = { name: 'Request Resources', icon: 'ArrowsHorizontal' };
+const labContent = { name: 'Lab Resources', icon: 'Screen' };
 
 const adminDashboard = (database) => {
     // Admin dashboard configuration
@@ -27,6 +27,9 @@ const adminDashboard = (database) => {
             { resource: database.LabAssign, options: { parent: labContent } },
             { resource: database.TemporaryRequest, options: { parent: requestContent } },
         ],
+        dashboard: {
+            component: AdminBro.bundle('./dashboard'),
+        },
         rootPath: '/admin',
         branding: {
             companyName: 'Open Inventory System',
