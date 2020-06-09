@@ -1,6 +1,7 @@
 const express = require('express');
 const socketIo = require('socket.io');
-// const helmet = require('helmet');
+const cors = require('cors');
+const helmet = require('helmet');
 
 const config = require('./config');
 
@@ -10,16 +11,16 @@ const { errorHandlerMiddleware } = require('./middlewares/error_handler');
 const { jwtAuthMiddleware } = require('./middlewares/jwt_auth');
 
 // use helmet to increase http header security
-// app.use(helmet());
+app.use(helmet());
 
 // Add body json parsing middleware
 app.use(require('body-parser').json());
 
 // Avoid CORS same origin error in development. Remove in production
-// const cors = require('cors');
-// const { corsErrorHandlerMiddleware } = require('./middlewares/cors_error_handler');
-// app.use(cors());
-// app.use(corsErrorHandlerMiddleware);
+const { corsErrorHandlerMiddleware } = require('./middlewares/cors_error_handler');
+
+app.use(cors());
+app.use(corsErrorHandlerMiddleware);
 
 // Enable logging service
 const logger = require('./loaders/logger');
