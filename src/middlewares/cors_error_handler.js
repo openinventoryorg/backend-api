@@ -8,7 +8,7 @@
  * @param {NextFunction} next Next callback
  */
 const corsErrorHandlerMiddleware = (req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Origin', 'https://openinventoryorg.github.io/web-frontend/#/');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 };

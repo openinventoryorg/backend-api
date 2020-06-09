@@ -16,11 +16,11 @@ app.use(helmet());
 // Add body json parsing middleware
 app.use(require('body-parser').json());
 
-// Avoid CORS same origin error in development. Remove in production
-const { corsErrorHandlerMiddleware } = require('./middlewares/cors_error_handler');
+// Avoid CORS same origin error.
+// const { corsErrorHandlerMiddleware } = require('./middlewares/cors_error_handler');
 
 app.use(cors());
-app.use(corsErrorHandlerMiddleware);
+// app.use(corsErrorHandlerMiddleware);
 
 // Enable logging service
 const logger = require('./loaders/logger');
