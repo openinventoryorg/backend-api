@@ -2,6 +2,8 @@ const express = require('express');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const helmet = require('helmet');
+const AdminBro = require('admin-bro');
+AdminBro.registerAdapter(require('admin-bro-sequelizejs'));
 
 const config = require('./config');
 
@@ -43,28 +45,42 @@ require('./routes').defineEndPoints(app);
 // Error handling middleware
 app.use(errorHandlerMiddleware);
 
-// Listen to the indicated port
-const server = app.listen(config.port, () => {
-    logger.info(`Server started on port ${config.port}`);
-});
-
-// Socket.io connection
-const io = socketIo(server).of('/staff');
 const { jwtSocketAuthMiddleware } = require('./socket/auth_middleware');
 const onConnection = require('./socket/connection');
+const { getDatabase } = require('./helpers/get_database');
+const { adminDashboard } = require('./adminbro');
 
-// Socket authentication Layer
-io.use(jwtSocketAuthMiddleware);
+const startServer = async () => {
+    if (config.enableAdminPanel) {
+        // Initialize admin dashboard
+        const db = await getDatabase();
+        const { adminBro, adminRouter } = adminDashboard(db);
+        app.use(adminBro.options.rootPath, adminRouter);
+    }
 
-// Listen to socket connections
-io.on('connection', onConnection(io));
+    // Listen to the indicated port
+    const server = app.listen(config.port, () => {
+        logger.info(`Server started on port ${config.port}`);
+    });
 
-// Demo Page for socket connection testing
-app.get('/socket/demo', (req, res) => {
-    res.sendFile(`${__dirname}/socket/demo.html`);
-});
+    // Socket.io connection
+    const io = socketIo(server).of('/staff');
 
-// 404 error handler
-app.use((req, res) => {
-    res.status(404).send({ message: '404 route not found' });
-});
+    // Socket authentication Layer
+    io.use(jwtSocketAuthMiddleware);
+
+    // Listen to socket connections
+    io.on('connection', onConnection(io));
+
+    // Demo Page for socket connection testing
+    app.get('/socket/demo', (req, res) => {
+        res.sendFile(`${__dirname}/socket/demo.html`);
+    });
+
+    // 404 error handler
+    app.use((req, res) => {
+        res.status(404).send({ message: '404 route not found' });
+    });
+};
+
+startServer();
